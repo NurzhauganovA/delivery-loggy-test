@@ -1,0 +1,8 @@
+-- upgrade --
+ALTER TABLE "access_token" ALTER COLUMN "token" TYPE VARCHAR(4080) USING "token"::VARCHAR(4080);
+ALTER TABLE "refresh_token" ALTER COLUMN "token" TYPE VARCHAR(4080) USING "token"::VARCHAR(4080);
+ALTER TABLE "revoked_token" ALTER COLUMN "token" TYPE VARCHAR(4080) USING "token"::VARCHAR(4080);
+-- downgrade --
+ALTER TABLE "access_token" ALTER COLUMN "token" TYPE VARCHAR(9000) USING "token"::VARCHAR(9000);
+ALTER TABLE "refresh_token" ALTER COLUMN "token" TYPE VARCHAR(255) USING "token"::VARCHAR(255);
+ALTER TABLE "revoked_token" ALTER COLUMN "token" TYPE VARCHAR(255) USING "token"::VARCHAR(255);

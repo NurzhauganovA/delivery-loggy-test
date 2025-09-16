@@ -1,0 +1,22 @@
+[
+  {
+    "address": "Address 3",
+    "latitude": 72.122355,
+    "longitude": 54.142332
+  },
+  {
+    "address": "Address 4",
+    "latitude": 72.123355,
+    "longitude": 54.412332
+  },
+  {
+    "address": "Address 5",
+    "latitude": 72.123555,
+    "longitude": 54.122332
+  },
+  {
+    "address": "Address 6",
+    "latitude": 72.123255,
+    "longitude": 54.123732
+  }
+]

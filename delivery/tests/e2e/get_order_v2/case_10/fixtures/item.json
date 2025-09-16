@@ -1,0 +1,21 @@
+[
+    {
+        "id": 1,
+        "name": "Test",
+        "item_type": "document",
+        "delivery_time": "00:00",
+        "delivery_type": "{planned}",
+        "category_id": null,
+        "partner_id": 1,
+        "is_delivery_point_exists": true,
+        "has_postcontrol": true,
+        "accepted_delivery_statuses": "{}",
+        "distribute": true,
+        "message_for_noncall": "Test",
+        "courier_appointed_sms_on": false,
+        "courier_appointed_sms": null,
+        "days_to_delivery": 1,
+        "upload_from_gallery": true
+    }
+]
+

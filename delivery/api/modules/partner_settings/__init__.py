@@ -1,0 +1,2 @@
+from .infrastructure.db_table import PartnerSetting
+from .infrastructure.repository import PartnerSettingRepository

@@ -1,0 +1,43 @@
+service_name: &service_name redis
+service_port: &service_port 6379
+domain: &domain
+secret_tls_name: &secret_tls_name
+
+resources:
+  limits:
+    cpu: 0.2
+    memory: 128Mi
+  requests:
+    cpu: 0.1
+    memory: 64Mi
+
+replicaCount: 1
+
+rollingUpdate:
+  maxSurge: 1
+  maxUnavailable: 0
+
+nameOverride: *service_name
+fullnameOverride: *service_name
+
+ingress:
+  enabled: false
+
+service:
+  type: ClusterIP
+  port: *service_port
+  targetPort: *service_port
+
+ports:
+  - name: https
+    port: *service_port
+    targetPort: *service_port
+    protocol: TCP
+
+extraVolumeMounts: []
+
+extraVolumes: []
+imagePullSecrets:
+- name: myregistrykey
+
+cronjobs: []

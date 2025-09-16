@@ -1,0 +1,197 @@
+{
+  "country": {
+    "name": "Country"
+  },
+  "status": {
+    "name": "Новая заявка",
+    "icon": "new",
+    "is_optional": false,
+    "after": []
+  },
+  "city": {
+    "name": "City",
+    "country_id": 1
+  },
+  "user": [
+    {
+      "first_name": "Owner",
+      "last_name": "Doe",
+      "phone_number": "+77774567890"
+    },
+    {
+      "first_name": "Courier",
+      "last_name": "Doe",
+      "phone_number": "+77474567893"
+    },
+    {
+      "first_name": "Dispatcher",
+      "last_name": "Doe",
+      "phone_number": "+77024567892"
+    },
+    {
+      "first_name": "Manager",
+      "last_name": "Doe",
+      "phone_number": "+77014567891"
+    },
+    {
+      "first_name": "PartnerManager",
+      "last_name": "Doe",
+      "phone_number": "+77474567894"
+    }
+  ],
+  "profile_owner": {
+    "user_id": 1,
+    "profile_type": "owner",
+    "profile_content": {
+      "partner_id": null
+    }
+  },
+  "profile_courier": {
+    "user_id": 2,
+    "profile_type": "courier",
+    "profile_content": {
+      "city_id": 1,
+      "category": "A",
+      "at_work": true,
+      "experience_years": 10,
+      "experience_months": 3,
+      "start_work_hour": "10:00",
+      "end_work_hour": "20:00",
+      "schedule": [
+        "monday",
+        "tuesday",
+        "wednesday",
+        "thursday",
+        "friday",
+        "saturday",
+        "sunday"
+      ]
+    }
+  },
+  "profile_service_manager": {
+    "user_id": 5,
+    "profile_type": "service_manager",
+    "profile_content": {}
+  },
+  "partner": {
+    "name_kk": "Partner main kz",
+    "name_ru": "Partner main ru",
+    "name_en": "Partner main en",
+    "activity_name_ru": "Seller",
+    "address": "City Street 10, house 20",
+    "affiliated": true,
+    "article": "DOC",
+    "bin": "012345678912",
+    "is_commerce": true,
+    "consent_confirmed": true,
+    "is_government": false,
+    "is_international": false,
+    "manager_id": 1,
+    "courier_partner_id": null,
+    "leader_id": 1,
+    "email": "orgmain@gmail.com",
+    "registration_date": "2021-11-11 00:00:00.000000+00:00",
+    "responsible_person": "Person",
+    "user_id": 1,
+    "liq_decision_date": null,
+    "liq_date": null
+  },
+  "profile_dispatcher": {
+    "user_id": 3,
+    "profile_type": "dispatcher",
+    "profile_content": {
+      "partner_id": 1
+    }
+  },
+  "profile_manager": {
+    "user_id": 4,
+    "profile_type": "manager",
+    "profile_content": {
+      "partner_id": 1
+    }
+  },
+  "place": {
+    "city_id": 1,
+    "latitude": -89.99999999,
+    "longitude": 179.99999999,
+    "address": "Place address"
+  },
+  "partner.shipment_points": {
+    "name": "First place",
+    "partner_id": 1,
+    "place_id": 1
+  },
+  "itemcategory": {
+    "name": "Credit card",
+    "item_type": "document",
+    "partner_id": 1
+  },
+  "item": {
+    "name": "Credit card item",
+    "item_type": "document",
+    "partner_id": 1,
+    "delivery_time": "00:40",
+    "delivery_type": "planned",
+    "deliverygraph_id": 1,
+    "itemcategory_id": 1,
+    "post_control": true,
+    "courier_category": "D",
+    "is_delivery_point_exists": true,
+    "transports": [
+      "car",
+      "truck",
+      "pickup",
+      "bicycle",
+      "motorcycle"
+    ],
+    "places": [
+      "Place"
+    ],
+    "cities": [
+      1
+    ]
+  },
+  "item_shipment_points": {
+    "item_id": 1,
+    "shipment_point_id": 1
+  },
+  "order": {
+    "type": "planned",
+    "city_id": 1,
+    "receiver_name": "John Doe",
+    "receiver_iin": "101010101010",
+    "courier_id": 1,
+    "delivery_datetime": "2021-11-11T00:00:00+00:00",
+    "delivery_status": {
+      "status": "on-the-way-to-call-point"
+    },
+    "partner_id": 1,
+    "receiver_phone_number": "+77774567890",
+    "item_id": 1,
+    "comment": null,
+    "addresses": [
+      {
+        "position": 1,
+        "type": "shipment_point",
+        "place_id": 1
+      },
+      {
+        "position": 1,
+        "type": "delivery_point",
+        "place_id": 1
+      }
+    ]
+  },
+  "transport": {
+    "courier_id": 1,
+    "type": "car",
+    "plate_number": "888 XYZ",
+    "name": "Kia",
+    "fuel_consumption": 5.0,
+    "average_speed": 50,
+    "payload": 100.0,
+    "width": 100.0,
+    "height": 150.0,
+    "depth": 300.0
+  }
+}

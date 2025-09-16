@@ -1,0 +1,47 @@
+version: '3.4'
+
+
+services:
+  api:
+    build:
+      context: delivery
+      dockerfile: Dockerfile
+    image: globerce/api
+    volumes:
+      - ./delivery:/usr/app
+      - media:/app/media
+    ports:
+      - "5001:5000"
+    depends_on:
+      - redis
+      - postgres
+    env_file: .env
+    command: >
+      sh -c "
+       delivery-api
+      "
+
+  redis:
+    image: redis:latest
+    volumes:
+      - cache:/data
+    ports:
+      - "6379:6379"
+    logging:
+      driver: none
+
+  postgres:
+    image: postgres:14.9
+    ports:
+      - "5435:5432"
+    volumes:
+      - postgres:/var/lib/postgresql/data
+      - postgres:/backups
+    env_file: .env
+    logging:
+      driver: none
+
+volumes:
+  cache:
+  postgres:
+  media:

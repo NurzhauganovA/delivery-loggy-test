@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>PDF</title>
+</head>
+<body>
+<h4>Акт приема-передачи платежных карточек</h4>
+<p class="year">г. {city}</p>
+<table>
+    <tr>
+        <th>№</th>
+        <th>ID</th>
+        <th>ФИО</th>
+        <th>Город</th>
+        <th>Адрес доставки</th>
+        <th>Номер тел. клиента</th>
+        <th>Продукт</th>
+    </tr>
+    {order_list}
+</table>
+<footer>
+    <p>Общее количество заявок: {order_count}</p>
+    <p>Дата: ____.____.____</p>
+    <p>Время: ___:___</p>
+    <div class="sign-wrapper">
+        <div class="left-sign">
+            <p>Передал: {sorter} _________</p>
+            <p>подпись</p>
+        </div>
+        <div class="right-sign">
+            <p>Получил: {courier} _________</p>
+            <p>подпись</p>
+        </div>
+    </div>
+</footer>
+</body>
+</html>

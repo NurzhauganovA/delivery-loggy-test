@@ -1,0 +1,192 @@
+service_name: &service_name courier-services
+service_port: &service_port 5000
+media_root: &media_root /app/media
+
+domain: &domain back.loggy.kz
+secret_tls_name: &secret_tls_name back-loggy-kz-tls
+
+nameOverride: *service_name
+fullnameOverride: *service_name
+
+env:
+  LOG_LEVEL: "info"
+  DEBUG: "0"
+  ALLOW_SMS: "1"
+  API_RELOAD: "0"
+  ALLOW_SEND_FEEDBACK_LINK: "0"
+  SMS_SERVICE_TYPE: "dataloader"
+  POSTCONTROL_SMS_SERVICE_TYPE: "dataloader"
+  DATALOADER_SMS_URL: "https://ff-dataloader.bankffin.kz/sms-traffic/individual-sms"
+  POSTGRES_HOST: kz1-a-ff3cpn05qitcuil0.mdb.yandexcloud.kz
+  POSTGRES_PORT: 6432
+  POSTGRES_DB: courier_db
+  POSTGRES_USER: courier_user
+  REDIS_HOST: redis
+  REDIS_PORT: 6379
+  CONTAINER_TYPE: WEB
+  SECRET_KEY: "rJw5Jwj^whwTyWryW4Yw5jejWWYwThwtrGqeye"
+  ACCESS_TOKEN_LIFETIME: 15
+  REFRESH_TOKEN_LIFETIME: 525600
+  FRONT_TOKEN: "qetHq$j6E*ik&9W5^YhQ#t5HGW5ki8ikT&98:P)I_'68t(&I8keYThwQEtrFQEDaFaerGtEtAHGw"
+  BASE_URL: https://loggy.kz/
+  NONRESIDENT_LOGIN: "+77777770000"
+  NONRESIDENT_PWD: "CXNXo}GP"
+  NONRESIDENT_BASE: "https://non-resident.bankffin.kz"
+  NONRESIDENT_LOGIN_PREPROD: "+77777770000"
+  NONRESIDENT_PWD_PREPROD: "CXNXo}GP"
+  NONRESIDENT_BASE_PREPROD: "https://preprod-non-resident.trafficwave.kz"
+  SET_PAN: "/api/v1/delivery/set-pan/"
+  SET_OTP: "/api/v1/delivery/set-otp/"
+  FIREBASE_SERVER_KEY: "key=AAAALGKh4oQ:APA91bEe4z5DaT-mvRZnzxjD0mwNGC7_2Ntc0FLwvRlnTcLf26pPlzuzmc_TGjmiKpSnNSuCVnyC4XVAM1RxKMQ22frMrBeSmIQy9yPMGxh9FBn09d7ka2MjdtOeMqmZW4UesJBT-EES"
+  MEDIA_ROOT: *media_root
+  BACKEND_DOMAIN: *domain
+  FRONTEND_DOMAIN: mykhat.loggy.kz
+  FREEDOM_BANK_KZ_PARTNER_ID: "93"
+  POS_TERMINAL_PARTNER_ID: "91"
+
+  # Секреты, которые временно переносим в env на первое время переезда
+
+  # PostgreSQL
+  POSTGRES_PASSWORD: "RaCSbAC9pEbh35iF"
+
+  # POS Терминалы
+  POS_TERMINAL_OTP_BASE_URL: "https://acquiring.bankffin.kz/bffin-api-service"
+  POS_TERMINAL_OTP_AUTH_HEADER: "Basic b3ZlcmRyYWZ0OnlaUEN0ajNmYXd1SEM2QXpqMmZIbTl3d21FalByUWoz"
+  FREEDOM_POS_TERMINAL_REGISTRATION_BASE_URL: "https://acquiring.bankffin.kz/bffin-api-service/tms"
+  FREEDOM_POS_TERMINAL_REGISTRATION_TOKEN: "Basic b3ZlcmRyYWZ0OnlaUEN0ajNmYXd1SEM2QXpqMmZIbTl3d21FalByUWoz"
+
+  # Фридом Банк
+  FREEDOM_BANK_OTP_BASE_URL: "https://gw.freedombank.kz/api/otp/otp"
+  FREEDOM_BANK_OTP_USERNAME: "loggy"
+  FREEDOM_BANK_OTP_PASSWORD: "1TCsI/3QyTMhcr2aowtGB/ji+nBciIhf"
+  FREEDOM_BANK_KZ_CALLBACKS_TOKEN: "Basic bG9nZ3k6MVRDc0kvM1F5VE1oY3IyYW93dEdCL2ppK25CY2lJaGY="
+
+#secretEnv:
+#  - secretName: "courier-service"
+#    secretKeys: "password"
+#    secretEnvName: "POSTGRES_PASSWORD"
+#  - secretName: "courier-service"
+#    secretKeys: "POS_TERMINAL_OTP_BASE_URL"
+#    secretEnvName: "POS_TERMINAL_OTP_BASE_URL"
+#  - secretName: "courier-service"
+#    secretKeys: "POS_TERMINAL_OTP_AUTH_HEADER"
+#    secretEnvName: "POS_TERMINAL_OTP_AUTH_HEADER"
+#
+#  # Фридом Банк
+#  - secretName: "courier-service"
+#    secretKeys: "FREEDOM_BANK_OTP_BASE_URL"
+#    secretEnvName: "FREEDOM_BANK_OTP_BASE_URL"
+#
+#  - secretName: "courier-service"
+#    secretKeys: "FREEDOM_BANK_OTP_USERNAME"
+#    secretEnvName: "FREEDOM_BANK_OTP_USERNAME"
+#
+#  - secretName: "courier-service"
+#    secretKeys: "FREEDOM_BANK_OTP_PASSWORD"
+#    secretEnvName: "FREEDOM_BANK_OTP_PASSWORD"
+#
+#  - secretName: "courier-service"
+#    secretKeys: "FREEDOM_BANK_KZ_CALLBACKS_TOKEN"
+#    secretEnvName: "FREEDOM_BANK_KZ_CALLBACKS_TOKEN"
+#
+#  # POS Терминалы
+#  - secretName: "courier-service"
+#    secretKeys: "FREEDOM_POS_TERMINAL_REGISTRATION_BASE_URL"
+#    secretEnvName: "FREEDOM_POS_TERMINAL_REGISTRATION_BASE_URL"
+#
+#  - secretName: "courier-service"
+#    secretKeys: "FREEDOM_POS_TERMINAL_REGISTRATION_TOKEN"
+#    secretEnvName: "FREEDOM_POS_TERMINAL_REGISTRATION_TOKEN"
+
+
+replicaCount: 3
+
+rollingUpdate:
+  maxSurge: 1
+  maxUnavailable: 0
+
+ingress:
+  enabled: true
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-yc-globerce
+    nginx.ingress.kubernetes.io/whitelist-source-range: 0.0.0.0/0
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "900"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "900"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "900"
+    nginx.ingress.kubernetes.io/proxy-body-size: "20M"
+    nginx.org/websocket-services: courier-services
+
+  hosts:
+    - host: *domain
+      paths:
+        - /
+  tls:
+    - secretName: *secret_tls_name
+      hosts:
+        - *domain
+
+service:
+  type: ClusterIP
+  port: *service_port
+  targetPort: *service_port
+
+ports:
+  - name: https
+    port: *service_port
+    targetPort: *service_port
+    protocol: TCP
+
+volumeMounts:
+ - name: courier-service
+   mountPath: *media_root
+
+volumes:
+ - name: courier-service
+   persistentVolumeClaim:
+     claimName: courier-prod
+
+
+livenessProbe:
+  tcpSocket:
+    port: *service_port
+  failureThreshold: 50
+  initialDelaySeconds: 30
+  periodSeconds: 5
+  successThreshold: 1
+  timeoutSeconds: 1
+
+readinessProbe:
+  tcpSocket:
+    port: *service_port
+  failureThreshold: 50
+  initialDelaySeconds: 15
+  periodSeconds: 5
+  successThreshold: 1
+  timeoutSeconds: 1
+
+resources:
+  limits:
+    cpu: 2
+    memory: 2Gi
+  requests:
+    cpu: 1
+    memory: 1.5Gi
+
+imagePullSecrets:
+- name: myregistrykey
+
+cronjobs: []
+# example command
+
+command:
+  - sh
+  - '-c'
+  - ./docker-entrypoint.sh
+
+hostAliases:
+  - ip: "172.17.58.169"
+    hostnames:
+      - gw.freedombank.kz
+  - ip: "149.154.188.121"
+    hostnames:
+      - ff-dataloader.bankffin.kz

@@ -1,0 +1,141 @@
+{
+  'city_id': 1,
+  'partner_id': 100,
+  'partner_order_id': None,
+  'main_order_id': None,
+  'item_id': 1,
+  'type': 'planned',
+  'delivery_datetime': '2024-02-20T23:59:00+00:00',
+  'delivery_status': {
+    'status': 'is_delivered',
+    'datetime': None,
+    'comment': None,
+    'reason': None
+  },
+  'receiver_iin': '860824302113',
+  'receiver_name': 'МАТАШЕВ АКБАР МУСЛИМЖАНОВИЧ',
+  'receiver_phone_number': '+77781254616',
+  'has_receiver_feedback': None,
+  'comment': '',
+  'area_id': 1,
+  'created_by': 'integration',
+  'order_group_id': None,
+  'revised': False,
+  'id': 1,
+  'order_chain_stages': None,
+  'initial_delivery_datetime': None,
+  'courier_id': 1,
+  'created_at': '2024-02-08T06:11:17.160374+00:00',
+  'position': None,
+  'courier': {
+    'id': 1,
+    'user': {
+      'id': 2,
+      'phone_number': '+77777777771',
+      'first_name': 'Курьер 1',
+      'middle_name': 'Курьерович 1',
+      'last_name': 'Курьеров 1'
+    }
+  },
+  'city': {
+    'id': 1,
+    'name': 'Almaty',
+    'timezone': 'Asia/Aqtau'
+  },
+  'area': {
+    'id': 1,
+    'slug': 'Весь город Алматы'
+  },
+  'partner': {
+    'id': 100,
+    'name': 'Курьерская Служба 1',
+    'article': 'ОB',
+    'courier_partner_id': None
+  },
+  'shipment_point_id': None,
+  'delivery_point_id': 1,
+  'addresses': [],
+  'item': {
+    'name': 'Базовая кредитная карта',
+    'has_postcontrol': False,
+    'message_for_noncall': None,
+    'upload_from_gallery': True,
+    'postcontrol_configs': [],
+    'postcontrol_cancellation_configs': [],
+    'accepted_delivery_statuses': []
+  },
+  'deliverygraph': {
+    'id': 1,
+    'name': None,
+    'slug': None,
+    'types': [
+      'urgent',
+      'operative',
+      'planned'
+    ],
+    'graph': [
+      {
+        'position': 1,
+        'id': 1,
+        'name': 'Новая заявка',
+        'slug': 'novaia-zaiavka',
+        'icon': 'order_new',
+        'button_name': None
+      },
+      {
+        'position': 2,
+        'id': 2,
+        'name': 'Курьер назначен',
+        'slug': 'kurer-naznachen',
+        'icon': 'courier_appointed',
+        'button_name': 'Принять в работу'
+      },
+      {
+        'position': 3,
+        'id': 3,
+        'name': 'Принято курьером в работу',
+        'slug': 'priniato-kurerom-v-rabotu',
+        'icon': 'courier_accepted',
+        'button_name': 'К точке доставки'
+      },
+      {
+        'position': 4,
+        'id': 4,
+        'name': 'В пути к точке доставки',
+        'slug': 'v-puti-k-tochke-dostavki',
+        'icon': 'otw_delivery_point',
+        'button_name': 'На точке доставки'
+      },
+      {
+        'position': 5,
+        'id': 5,
+        'name': 'На точке доставки',
+        'slug': 'na-tochke-dostavki',
+        'icon': 'on_delivery_point',
+        'button_name': 'Контакт с получателем'
+      },
+      {
+        'position': 6,
+        'id': 6,
+        'name': 'Контакт с получателем',
+        'slug': 'kontakt-s-poluchatelem',
+        'icon': 'at_client',
+        'button_name': 'Посылка передана'
+      },
+      {
+        'position': 7,
+        'id': 7,
+        'name': 'Доставлено',
+        'slug': 'dostavleno',
+        'icon': 'order_delivered',
+        'button_name': None
+      }
+    ],
+    'partner_id': None
+  },
+  'statuses': [],
+  'actual_delivery_datetime': '2024-02-20T11:21:50.279633+00:00',
+  'last_otp': None,
+  'current_status_id': 7,
+  'product': None
+}

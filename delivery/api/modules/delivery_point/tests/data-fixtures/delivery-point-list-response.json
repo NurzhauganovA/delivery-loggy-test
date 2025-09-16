@@ -1,0 +1,13 @@
+{
+  "items": [
+    {
+      "latitude": 72.12342,
+      "longitude": 54.12312,
+      "address": "Address 1",
+      "id": 1
+    }
+  ],
+  "current_page": 1,
+  "total_pages": 1,
+  "total": 1
+}

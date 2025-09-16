@@ -1,0 +1,85 @@
+from tortoise.exceptions import DoesNotExist
+from tortoise.expressions import Subquery, RawSQL
+from tortoise.query_utils import Prefetch
+
+from api import models, enums
+from api.schemas.crm import GetOrderResponse
+
+
+async def get_order(
+        order_id: int,
+        default_filter_args: list = None,
+) -> GetOrderResponse:
+    if default_filter_args is None:
+        default_filter_args = []
+    has_ready_for_shipment = f"order__deliverygraph.graph @? '$.slug[*] ? (@ == \"{enums.StatusSlug.READY_FOR_SHIPMENT}\")'"
+    deliverygraph_step_count = 'jsonb_array_length("order__deliverygraph"."graph")'
+    current_status_position = """(jsonb_path_query_first("order__deliverygraph"."graph", '$ ? (@.id == $val)', ('{
+                      "val": ' || "order"."current_status_id" || '}')::jsonb)) ->> 'position'"""
+
+    instance_qs = models.Order.all_objects.annotate(
+        last_otp=Subquery(
+            models.SMSPostControl.filter(
+                order_id=RawSQL('"order"."id"'),
+            ).order_by('-created_at').limit(1).values('created_at'),
+        ),
+        has_ready_for_shipment=RawSQL(has_ready_for_shipment),
+        deliverygraph_step_count=RawSQL(deliverygraph_step_count),
+        current_status_position=RawSQL(current_status_position),
+    ).filter(
+        *default_filter_args,
+        deliverygraph__id__isnull=False,  # needed to join deliverygraph table only.
+    ).distinct().get(id=order_id)
+    statuses_args = []
+
+    qs = instance_qs.prefetch_related(
+        Prefetch('status_set', models.OrderStatuses.filter(*statuses_args).prefetch_related('status'),
+                 'statuses'),
+        Prefetch('item__postcontrol_config_set', models.PostControlConfig.filter(
+            parent_config_id__isnull=True,
+        ).prefetch_related(
+            Prefetch('inner_param_set', models.PostControlConfig.all().prefetch_related(
+                Prefetch(
+                    'postcontrol_document_set',
+                    models.PostControl.filter(order_id=order_id),
+                    'postcontrol_documents',
+                ),
+            ), 'inner_params'),
+            Prefetch(
+                'postcontrol_document_set',
+                models.PostControl.filter(order_id=order_id),
+                'postcontrol_documents',
+            ),
+        ), 'postcontrol_configs'),
+
+        # Запрашиваем комментарии с изображениями и ролью пользователя
+        Prefetch(
+            "comments",
+            queryset=models.Comment.all().order_by('-created_at').select_related(
+                'user_role'
+            ).prefetch_related(
+                'images'
+            )
+        )
+
+    ).select_related(
+        'area', 'city', 'courier__user', 'item', 'deliverygraph',
+        'partner', 'current_status', 'shipment_point', 'delivery_point', 'product'
+    )
+
+    try:
+        order_obj = await qs
+    except DoesNotExist:
+        raise DoesNotExist(f'Order with provided ID: {order_id} was not found')
+
+    # Проставляем значение в поле courier_assigned_at
+    order_obj.courier_assigned_at = None
+    for status in order_obj.statuses:
+        if status.status_id == 2:
+            order_obj.courier_assigned_at = status.created_at
+            break
+
+
+    response = GetOrderResponse.from_orm(order_obj)
+
+    return response

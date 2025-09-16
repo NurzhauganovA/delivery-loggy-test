@@ -1,0 +1,4 @@
+[tool.aerich]
+tortoise_orm = "api.conf.tortoise_orm"
+location = "./"
+src_folder = "./../."

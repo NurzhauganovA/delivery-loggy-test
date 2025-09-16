@@ -1,0 +1,39 @@
+settings:
+  kubeContext: "kubernetes-admin@cluster.local" # the name of the context to be created
+  bearerToken: true
+  clusterURI: "https://kubernetes.default"
+
+certificates:
+  caCrt: "/var/run/secrets/kubernetes.io/serviceaccount/ca.crt"
+
+namespaces:
+  loggy-dev:
+
+preconfiguredHelmRepos:
+  - projects
+  - bitnami
+  - robjuz
+
+helmRepos:
+  bitnami: https://charts.bitnami.com/bitnami
+  robjuz: https://robjuz.github.io/helm-charts/
+
+appsTemplates:
+  default-chart: &default-chart
+    namespace: loggy-dev
+    enabled: true
+    chart: "projects/default-chart"
+    version: "1.9.3"
+
+apps:
+  courier-service-api:
+    <<: *default-chart
+    valuesFile: "k8s/ENVIRONMENT/courier-services-api.yaml"
+    set:
+      image.name: "IMAGE_TO_REPLACE:TAG"
+
+  redis:
+    <<: *default-chart
+    valuesFile: "k8s/ENVIRONMENT/redis.yaml"
+    set:
+      image.name: "redis:6.2.6-alpine"

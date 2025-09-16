@@ -1,0 +1,20 @@
+[
+  {
+    "id": 1,
+    "user_name": "Курьер 1 Курьеров 1 Курьерович 1",
+    "text": "Че там",
+    "created_at": "2024-02-09 10:10:10.000000 +00:00",
+    "order_id": 1,
+    "user_id": 1,
+    "user_role_id": "courier"
+  },
+  {
+    "id": 2,
+    "user_name": "Служба 1 Службавна 1 Службавна 1",
+    "text": "Все норм",
+    "created_at": "2024-02-09 12:10:10.000000 +00:00",
+    "order_id": 1,
+    "user_id": 2,
+    "user_role_id": "service_manager"
+  }
+]

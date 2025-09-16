@@ -1,0 +1,19 @@
+[
+  {
+    "id": 1,
+    "name": "Базовая кредитная карта",
+    "item_type": "document",
+    "delivery_time": "00:00",
+    "delivery_type": "{planned}",
+    "category_id": null,
+    "partner_id": null,
+    "is_delivery_point_exists": true,
+    "has_postcontrol": true,
+    "accepted_delivery_statuses": "{on-the-way-to-call-point,is_delivered,cancelled,postponed,noncall,rescheduled,being_finalized,cancelled_at_client,video_check_passed,video_unavailable,video_postcontrol,video_postcontrol_being_finalized,video_check_failed,sms_postcontrol,sms_postcontrol_being_finalized,sms_unavailable,sms_failed}",
+    "distribute": false,
+    "message_for_noncall": "Здравствуйте! Курьер не смог дозвониться до Вас. Просьба перезвонить по этому номеру",
+    "courier_appointed_sms_on": false,
+    "courier_appointed_sms": null,
+    "days_to_delivery": null
+  }
+]

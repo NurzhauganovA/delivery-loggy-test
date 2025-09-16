@@ -1,0 +1,2 @@
+from .infrastructure.db_table import PartnerShipmentPoint
+from .infrastructure.repository import ShipmentPointRepository

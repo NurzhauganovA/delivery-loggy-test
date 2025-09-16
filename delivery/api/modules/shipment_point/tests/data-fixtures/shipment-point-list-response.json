@@ -1,0 +1,29 @@
+{
+  "items": [
+    {
+      "latitude": 72.12342,
+      "longitude": 54.12312,
+      "name": "Адрес 1",
+      "partner": {
+        "id": 2,
+        "name_ru": "АО \"Отбасы банк\"",
+        "name_kk": "\"Отбасы банк\" АҚ",
+        "name_en": null
+      },
+      "address": "Address 1",
+      "city": {
+        "id": 1,
+        "name": "Алматы",
+        "country": {
+          "id": 1,
+          "name": "Kazakstan"
+        }
+      },
+      "history": null,
+      "id": 1
+    }
+  ],
+  "current_page": 1,
+  "total_pages": 1,
+  "total": 1
+}

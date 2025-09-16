@@ -1,0 +1,192 @@
+service_name: &service_name courier-service-api
+service_port: &service_port 5000
+media_root: &media_root /app/media
+
+domain: &domain api.preprod.loggy.kz
+secret_tls_name: &secret_tls_name api-preprod-loggy-kz-tls
+
+nameOverride: *service_name
+fullnameOverride: *service_name
+
+env:
+  DEBUG: "1"
+  ALLOW_SMS: "0"
+  ALLOW_SEND_FEEDBACK_LINK: "0"
+  SMS_SERVICE_TYPE: "dataloader"
+  API_RELOAD: "0"
+  POSTCONTROL_SMS_SERVICE_TYPE: "dataloader"
+  DATALOADER_SMS_URL: "https://dev-dataloader.trafficwave.kz/sms-traffic/individual-sms"
+  POSTGRES_HOST: kz1-a-tfotv877h6cn9gop.mdb.yandexcloud.kz
+  POSTGRES_PORT: 6432
+  POSTGRES_DB: courier_preprod_db
+  POSTGRES_USER: courier_preprod_user
+  REDIS_HOST: redis
+  REDIS_PORT: 6379
+  CONTAINER_TYPE: WEB
+  SECRET_KEY: ";lhq4'p9hjqthwY$"
+  ACCESS_TOKEN_LIFETIME: 525600
+  FRONT_TOKEN: "olkgj45oq9j3059yjq4yq35Yq4^q$^uW$5yW4JK75wEUY6QWtEjRU^&8EWyUhwETjWEyjW,tujRThwtyw45g"
+  REFRESH_TOKEN_LIFETIME: 525600
+  NONRESIDENT_LOGIN: "+77777732058"
+  NONRESIDENT_PWD: "1111"
+  NONRESIDENT_BASE: "https://non-resident.trafficwave.kz"
+  NONRESIDENT_LOGIN_PREPROD: "+77777770000"
+  NONRESIDENT_PWD_PREPROD: "CXNXo}GP"
+  NONRESIDENT_BASE_PREPROD: "https://preprod-non-resident.trafficwave.kz"
+  SET_PAN: "/api/v1/delivery/set-pan/"
+  SET_OTP: "/api/v1/delivery/set-otp/"
+  LOG_LEVEL: "info"
+  FIREBASE_SERVER_KEY: "key=AAAALGKh4oQ:APA91bEe4z5DaT-mvRZnzxjD0mwNGC7_2Ntc0FLwvRlnTcLf26pPlzuzmc_TGjmiKpSnNSuCVnyC4XVAM1RxKMQ22frMrBeSmIQy9yPMGxh9FBn09d7ka2MjdtOeMqmZW4UesJBT-EES"
+  MEDIA_ROOT: *media_root
+  BACKEND_DOMAIN: *domain
+  FRONTEND_DOMAIN: crm.preprod.loggy.kz
+  FREEDOM_BANK_KZ_PARTNER_ID: "131"
+  POS_TERMINAL_PARTNER_ID: "142"
+
+  # Секреты, которые временно переносим в env на первое время переезда
+
+  # PostgreSQL
+  POSTGRES_PASSWORD: "xXy2K2M5LEco7Mns"
+
+  # POS Терминалы
+  POS_TERMINAL_OTP_BASE_URL: "https://dev-2-all-proxy-in-one.trafficwave.kz/colvir/damu"
+  POS_TERMINAL_OTP_AUTH_HEADER: "Basic b3ZlcmRyYWZ0OldmbWhldFprbTZDa21qZm9CY2QzcFRRclZ0dEZzNUhU"
+  FREEDOM_POS_TERMINAL_REGISTRATION_BASE_URL: "https://dev-2-all-proxy-in-one.trafficwave.kz/colvir/damu/tms"
+  FREEDOM_POS_TERMINAL_REGISTRATION_TOKEN: "Basic b3ZlcmRyYWZ0OldmbWhldFprbTZDa21qZm9CY2QzcFRRclZ0dEZzNUhU"
+
+  # Фридом Банк
+  FREEDOM_BANK_OTP_BASE_URL: "https://dev-2-all-proxy-in-one.trafficwave.kz/bank/loggy/delivery/otp"
+  FREEDOM_BANK_OTP_USERNAME: "loggy"
+  FREEDOM_BANK_OTP_PASSWORD: "tNvpwH4HH8GGjPFYtjcEwR=="
+  FREEDOM_BANK_KZ_CALLBACKS_TOKEN: "Basic dHJhZmZpY3dhdmU6THJmU04zYnl0eG1ZdWFPN2xDQm5zbFNRaVFmdlM0cDA="
+
+#secretEnv:
+#  - secretName: "courier-service"
+#    secretKeys: "password"
+#    secretEnvName: "POSTGRES_PASSWORD"
+#  - secretName: "courier-service"
+#    secretKeys: "POS_TERMINAL_OTP_BASE_URL"
+#    secretEnvName: "POS_TERMINAL_OTP_BASE_URL"
+#  - secretName: "courier-service"
+#    secretKeys: "POS_TERMINAL_OTP_AUTH_HEADER"
+#    secretEnvName: "POS_TERMINAL_OTP_AUTH_HEADER"
+#
+#  # Фридом Банк
+#  - secretName: "courier-service"
+#    secretKeys: "FREEDOM_BANK_OTP_BASE_URL"
+#    secretEnvName: "FREEDOM_BANK_OTP_BASE_URL"
+#
+#  - secretName: "courier-service"
+#    secretKeys: "FREEDOM_BANK_OTP_USERNAME"
+#    secretEnvName: "FREEDOM_BANK_OTP_USERNAME"
+#
+#  - secretName: "courier-service"
+#    secretKeys: "FREEDOM_BANK_OTP_PASSWORD"
+#    secretEnvName: "FREEDOM_BANK_OTP_PASSWORD"
+#
+#  - secretName: "courier-service"
+#    secretKeys: "FREEDOM_BANK_KZ_CALLBACKS_TOKEN"
+#    secretEnvName: "FREEDOM_BANK_KZ_CALLBACKS_TOKEN"
+#
+#  # POS Терминалы
+#  - secretName: "courier-service"
+#    secretKeys: "FREEDOM_POS_TERMINAL_REGISTRATION_BASE_URL"
+#    secretEnvName: "FREEDOM_POS_TERMINAL_REGISTRATION_BASE_URL"
+#
+#  - secretName: "courier-service"
+#    secretKeys: "FREEDOM_POS_TERMINAL_REGISTRATION_TOKEN"
+#    secretEnvName: "FREEDOM_POS_TERMINAL_REGISTRATION_TOKEN"
+
+
+resources:
+  limits:
+    cpu: 0.3
+    memory: 500Mi
+  requests:
+    cpu: 0.1
+    memory: 150Mi
+
+replicaCount: 1
+
+rollingUpdate:
+  maxSurge: 1
+  maxUnavailable: 0
+
+ingress:
+  enabled: true
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-yc-globerce
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "900"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "900"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "900"
+    nginx.ingress.kubernetes.io/proxy-body-size: "20M"
+    nginx.org/websocket-services: courier-services
+    nginx.ingress.kubernetes.io/whitelist-source-range: >-
+      77.240.44.46/32,77.240.44.47/32,127.0.0.1/32,31.31.217.170/32,10.233.90.0/24,94.247.134.91/32,94.247.134.94/32,77.240.44.46/32,77.240.44.47/32,176.119.229.155/32,176.119.229.167/32,94.247.128.90/32,194.31.133.15/32,194.31.135.46/32,194.31.133.151/32,194.31.135.45/32,91.147.95.80/29,195.49.209.171,185.102.75.178,91.147.111.59/32,91.147.111.60/32,172.16.80.62/24,31.31.218.158/24,95.141.143.19/24,91.213.247.2/24,176.119.131.241/32,172.16.22.8/32,87.247.8.206/32,172.17.56.0/24,149.154.188.102/32,193.43.251.161
+
+  hosts:
+    - host: *domain
+      paths:
+        - /
+  tls:
+    - secretName: *secret_tls_name
+      hosts:
+        - *domain
+
+service:
+  type: ClusterIP
+  port: *service_port
+  targetPort: *service_port
+
+ports:
+  - name: https
+    port: *service_port
+    targetPort: *service_port
+    protocol: TCP
+
+volumeMounts:
+ - name: courier-service-preprod
+   mountPath: *media_root
+
+volumes:
+ - name: courier-service-preprod
+   persistentVolumeClaim:
+     claimName: courier-preprod
+
+
+livenessProbe:
+  tcpSocket:
+    port: *service_port
+  failureThreshold: 50
+  initialDelaySeconds: 30
+  periodSeconds: 5
+  successThreshold: 1
+  timeoutSeconds: 1
+
+readinessProbe:
+  tcpSocket:
+    port: *service_port
+  failureThreshold: 50
+  initialDelaySeconds: 20
+  periodSeconds: 5
+  successThreshold: 1
+  timeoutSeconds: 1
+
+
+imagePullSecrets:
+- name: myregistrykey
+
+cronjobs: []
+# example command
+
+command:
+  - sh
+  - '-c'
+  - ./docker-entrypoint.sh
+
+
+hostAliases:
+  # Это адрес прода. Но так как кластер один, нужно для проверки.
+  - ip: "149.154.188.121"
+    hostnames:
+      - ff-dataloader.bankffin.kz

@@ -1,0 +1,156 @@
+[
+    {
+        "id": 1,
+        "graph": [
+            {
+              "id": 1,
+              "icon": "order_new",
+              "slug": "novaia-zaiavka",
+              "name_en": "New order",
+              "name_ru": "Новая заявка",
+              "position": 1,
+              "button_name_en": null,
+              "button_name_ru": null
+            },
+            {
+              "id": 2,
+              "icon": "courier_appointed",
+              "slug": "kurer-naznachen",
+              "name_en": "Courier assigned",
+              "name_ru": "Курьер назначен",
+              "position": 2,
+              "button_name_en": "Accept to work",
+              "button_name_ru": "Принять в работу"
+            },
+            {
+              "id": 3,
+              "icon": "courier_accepted",
+              "slug": "priniato-kurerom-v-rabotu",
+              "name_en": "Accepted by courier",
+              "name_ru": "Принято курьером в работу",
+              "position": 3,
+              "button_name_en": "To the client",
+              "button_name_ru": "К точке вывоза"
+            },
+            {
+              "id": 25,
+              "icon": "at_client",
+              "slug": "u-klienta",
+              "name_en": "At the client",
+              "name_ru": "У клиента",
+              "position": 4,
+              "button_name_en": "Send SMS with code",
+              "button_name_ru": "Отправить SMS с кодом"
+            },
+            {
+              "id": 20,
+              "icon": "post_control",
+              "slug": "kod-otpravlen",
+              "name_en": "Code sent",
+              "name_ru": "Код отправлено",
+              "position": 5,
+              "button_name_en": "Verify code",
+              "button_name_ru": "Проверить код"
+            },
+            {
+              "id": 24,
+              "icon": "post_control",
+              "slug": "skanirovanie-karty",
+              "name_en": "Card scanning",
+              "name_ru": "Сканирование карты",
+              "position": 6,
+              "button_name_en": "Scan the card",
+              "button_name_ru": "Сканировать карту"
+            },
+            {
+              "id": 7,
+              "icon": "order_delivered",
+              "slug": "dostavleno",
+              "name_en": "Delivered",
+              "name_ru": "Доставлено",
+              "position": 7,
+              "button_name_en": null,
+              "button_name_ru": null
+            }
+        ],
+        "partner_id": 1,
+        "name": "Test",
+        "slug": "test",
+        "types": "{urgent,planned}",
+        "graph_courier": [
+              {
+                "id": 1,
+                "icon": "order_new",
+                "slug": "novaia-zaiavka",
+                "name_en": "New order",
+                "name_ru": "Новая заявка",
+                "position": 1,
+                "button_name_en": null,
+                "button_name_ru": null
+              },
+              {
+                "id": 2,
+                "icon": "courier_appointed",
+                "slug": "kurer-naznachen",
+                "name_en": "Courier assigned",
+                "name_ru": "Курьер назначен",
+                "position": 2,
+                "button_name_en": "Accept to work",
+                "button_name_ru": "Принять в работу"
+              },
+              {
+                "id": 3,
+                "icon": "courier_accepted",
+                "slug": "priniato-kurerom-v-rabotu",
+                "name_en": "Accepted by courier",
+                "name_ru": "Принято курьером в работу",
+                "position": 3,
+                "button_name_en": "To the client",
+                "button_name_ru": "К точке вывоза"
+              },
+              {
+                "id": 25,
+                "icon": "at_client",
+                "slug": "u-klienta",
+                "name_en": "At the client",
+                "name_ru": "У клиента",
+                "position": 4,
+                "button_name_en": "Send SMS with code",
+                "button_name_ru": "Отправить SMS с кодом"
+              },
+              {
+                "id": 20,
+                "icon": "post_control",
+                "slug": "kod-otpravlen",
+                "name_en": "Code sent",
+                "name_ru": "Код отправлено",
+                "position": 5,
+                "button_name_en": "Verify code",
+                "button_name_ru": "Проверить код"
+              },
+              {
+                "id": 24,
+                "icon": "post_control",
+                "slug": "skanirovanie-karty",
+                "name_en": "Card scanning",
+                "name_ru": "Сканирование карты",
+                "position": 6,
+                "button_name_en": "Scan the card",
+                "button_name_ru": "Сканировать карту"
+              },
+              {
+                "id": 7,
+                "icon": "order_delivered",
+                "slug": "dostavleno",
+                "name_en": "Delivered",
+                "name_ru": "Доставлено",
+                "position": 7,
+                "button_name_en": null,
+                "button_name_ru": null
+              }
+            ],
+        "name_en": "Test",
+        "name_ru": "Test",
+        "name_kk": "Test"
+    }
+]

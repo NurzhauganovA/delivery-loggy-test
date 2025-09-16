@@ -1,0 +1,12 @@
+-- upgrade --
+CREATE TABLE IF NOT EXISTS "permissions" (
+    "id" SERIAL NOT NULL PRIMARY KEY,
+    "name" VARCHAR(255) NOT NULL UNIQUE,
+    "slug" VARCHAR(255) NOT NULL UNIQUE
+);;
+CREATE TABLE "groups_permissions" ("groups_id" INT NOT NULL REFERENCES "groups" ("id") ON DELETE CASCADE,"permission_id" INT NOT NULL REFERENCES "permissions" ("id") ON DELETE CASCADE);
+CREATE TABLE "user_permissions" ("user_id" INT NOT NULL REFERENCES "user" ("id") ON DELETE CASCADE,"permission_id" INT NOT NULL REFERENCES "permissions" ("id") ON DELETE CASCADE);
+-- downgrade --
+DROP TABLE IF EXISTS "groups_permissions" cascade;
+DROP TABLE IF EXISTS "user_permissions" cascade;
+DROP TABLE IF EXISTS "permissions" cascade;

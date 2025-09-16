@@ -1,0 +1,36 @@
+-- upgrade --
+ALTER TABLE "profile_service_manager" DROP CONSTRAINT "profile_service_manager_user_id_fkey";
+ALTER TABLE "profile_owner" DROP CONSTRAINT "profile_owner_user_id_fkey";
+ALTER TABLE "profile_manager" DROP CONSTRAINT "profile_manager_user_id_fkey";
+ALTER TABLE "profile_dispatcher" DROP CONSTRAINT "profile_dispatcher_user_id_fkey";
+ALTER TABLE "profile_courier" DROP CONSTRAINT "profile_courier_user_id_fkey";
+ALTER TABLE "partner" DROP CONSTRAINT "partner_manager_id_fkey";
+ALTER TABLE "partner" DROP CONSTRAINT "partner_leader_id_fkey";
+ALTER TABLE "partner" DROP COLUMN "manager_id";
+ALTER TABLE "partner" DROP COLUMN "leader_id";
+ALTER TABLE "profile_owner" ADD "partner_id" INT NOT NULL UNIQUE DEFAULT 1;
+ALTER TABLE "profile_service_manager" ADD "partner_id" INT NOT NULL DEFAULT 1;
+CREATE UNIQUE INDEX "uid_profile_cou_user_id_e9c740" ON "profile_courier" ("user_id");
+CREATE UNIQUE INDEX "uid_profile_dis_user_id_c15f60" ON "profile_dispatcher" ("user_id");
+CREATE UNIQUE INDEX "uid_profile_man_user_id_3851cf" ON "profile_manager" ("user_id");
+CREATE UNIQUE INDEX "uid_profile_own_user_id_fdb031" ON "profile_owner" ("user_id");
+ALTER TABLE "profile_service_manager" ADD CONSTRAINT "fk_profile__partner_40ba0755" FOREIGN KEY ("partner_id") REFERENCES "partner" ("id") ON DELETE CASCADE;
+CREATE UNIQUE INDEX "uid_profile_ser_user_id_23a48a" ON "profile_service_manager" ("user_id");
+-- downgrade --
+DROP INDEX "uid_profile_ser_user_id_23a48a";
+ALTER TABLE "profile_service_manager" DROP CONSTRAINT "fk_profile__partner_40ba0755";
+DROP INDEX "uid_profile_dis_user_id_c15f60";
+DROP INDEX "uid_profile_man_user_id_3851cf";
+DROP INDEX "uid_profile_cou_user_id_e9c740";
+DROP INDEX "uid_profile_own_user_id_fdb031";
+ALTER TABLE "partner" ADD "manager_id" INT;
+ALTER TABLE "partner" ADD "leader_id" INT;
+ALTER TABLE "profile_owner" DROP COLUMN "partner_id";
+ALTER TABLE "profile_service_manager" DROP COLUMN "partner_id";
+ALTER TABLE "partner" ADD CONSTRAINT "partner_manager_id_fkey" FOREIGN KEY ("manager_id") REFERENCES "profile_service_manager" ("id") ON DELETE SET NULL;
+ALTER TABLE "partner" ADD CONSTRAINT "partner_leader_id_fkey" FOREIGN KEY ("leader_id") REFERENCES "profile_owner" ("id") ON DELETE SET NULL;
+ALTER TABLE "profile_owner" ADD CONSTRAINT "profile_owner_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "user" ("id") ON DELETE CASCADE;
+ALTER TABLE "profile_courier" ADD CONSTRAINT "profile_courier_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "user" ("id") ON DELETE CASCADE;
+ALTER TABLE "profile_manager" ADD CONSTRAINT "profile_manager_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "user" ("id") ON DELETE CASCADE;
+ALTER TABLE "profile_dispatcher" ADD CONSTRAINT "profile_dispatcher_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "user" ("id") ON DELETE CASCADE;
+ALTER TABLE "profile_service_manager" ADD CONSTRAINT "profile_service_manager_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "user" ("id") ON DELETE CASCADE;

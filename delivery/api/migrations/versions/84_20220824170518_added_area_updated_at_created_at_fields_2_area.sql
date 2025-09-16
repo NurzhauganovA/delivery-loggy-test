@@ -1,0 +1,8 @@
+-- upgrade --
+ALTER TABLE "area" ADD "updated_at" TIMESTAMPTZ NOT NULL  DEFAULT CURRENT_TIMESTAMP;
+ALTER TABLE "area" ADD "archived" BOOL NOT NULL  DEFAULT False;
+ALTER TABLE "area" ADD "created_at" TIMESTAMPTZ NOT NULL  DEFAULT CURRENT_TIMESTAMP;
+-- downgrade --
+ALTER TABLE "area" DROP COLUMN "updated_at";
+ALTER TABLE "area" DROP COLUMN "archived";
+ALTER TABLE "area" DROP COLUMN "created_at";

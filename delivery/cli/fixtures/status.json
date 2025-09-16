@@ -1,0 +1,419 @@
+{
+  "status": [
+    {
+      "id": 1,
+      "icon": "order_new",
+      "name": "Новая заявка",
+      "is_optional": false,
+      "after": [],
+      "partner_id": null,
+      "slug": "novaia-zaiavka"
+    },
+    {
+      "id": 2,
+      "icon": "courier_appointed",
+      "name": "Курьер назначен",
+      "is_optional": false,
+      "after": [
+        {
+          "id": 1,
+          "name": "Новая заявка"
+        }
+      ],
+      "partner_id": null,
+      "slug": "kurer-naznachen"
+    },
+    {
+      "id": 3,
+      "icon": "courier_accepted",
+      "name": "Принято курьером в работу",
+      "is_optional": false,
+      "after": [
+        {
+          "id": 2,
+          "name": "Курьер назначен"
+        },
+        {
+          "id": 9,
+          "name": "Подготовка к отправке"
+        }
+      ],
+      "partner_id": null,
+      "slug": "priniato-kurerom-v-rabotu"
+    },
+    {
+      "id": 4,
+      "icon": "otw_delivery_point",
+      "name": "В пути к точке доставки",
+      "is_optional": false,
+      "after": [
+        {
+          "id": 3,
+          "name": "Принято курьером в работу"
+        },
+        {
+          "id": 11,
+          "name": "На точке вывоза"
+        }
+      ],
+      "partner_id": null,
+      "slug": "v-puti-k-tochke-dostavki"
+    },
+    {
+      "id": 5,
+      "icon": "on_delivery_point",
+      "name": "На точке доставки",
+      "is_optional": false,
+      "after": [
+        {
+          "id": 4,
+          "name": "В пути к точке доставки"
+        }
+      ],
+      "partner_id": null,
+      "slug": "na-tochke-dostavki"
+    },
+    {
+      "id": 6,
+      "icon": "at_client",
+      "name": "Контакт с получателем",
+      "is_optional": false,
+      "after": [
+        {
+          "id": 5,
+          "name": "На точке доставки"
+        }
+      ],
+      "partner_id": null,
+      "slug": "kontakt-s-poluchatelem"
+    },
+    {
+      "id": 7,
+      "icon": "order_delivevred",
+      "name": "Доставлено",
+      "is_optional": true,
+      "after": [
+        {
+          "id": 6,
+          "name": "Контакт с получателем"
+        },
+        {
+          "id": 12,
+          "name": "Последконтроль"
+        },
+        {
+          "id": 17,
+          "name": "Видеоидентификация"
+        },
+        {
+          "id": 18,
+          "name": "Видеоидентификация пройдена"
+        },
+        {
+          "id": 20,
+          "name": "Отправка SMS"
+        }
+      ],
+      "partner_id": null,
+      "slug": "dostavleno"
+    },
+    {
+      "id": 8,
+      "icon": "sent-for-preparation",
+      "name": "Отправлено на подготовку",
+      "is_optional": true,
+      "after": [
+        {
+          "id": 1,
+          "name": "Новая заявка"
+        },
+        {
+          "id": 2,
+          "name": "Курьер назначен"
+        }
+      ],
+      "partner_id": null,
+      "slug": "otpravleno-na-podgotovku"
+    },
+    {
+      "id": 9,
+      "icon": "prepare-to-send",
+      "name": "Подготовка к отправке",
+      "is_optional": true,
+      "after": [
+        {
+          "id": 8,
+          "name": "Отправлено на подготовку"
+        }
+      ],
+      "partner_id": null,
+      "slug": "podogotovka-k-otpravku"
+    },
+    {
+      "id": 10,
+      "icon": "ready-to-send",
+      "name": "Готово к отправке",
+      "is_optional": true,
+      "after": [
+        {
+          "id": 9,
+          "name": "Подготовка к отправке"
+        }
+      ],
+      "partner_id": null,
+      "slug": "gotovo-k-otpravke"
+    },
+    {
+      "id": 11,
+      "icon": "at-the-call-point",
+      "name": "На точке вывоза",
+      "is_optional": true,
+      "after": [
+        {
+          "id": 15,
+          "name": "В пути к точке вывоза"
+        }
+      ],
+      "partner_id": null,
+      "slug": "na-tochke-vyvoza"
+    },
+    {
+      "id": 12,
+      "icon": "post_control",
+      "name": "Последконтроль",
+      "is_optional": true,
+      "after": [
+        {
+          "id": 6,
+          "name": "Контакт с получателем"
+        },
+        {
+          "id": 16,
+          "name": "Фотографирование"
+        }
+      ],
+      "partner_id": null,
+      "slug": "posledkontrol"
+    },
+    {
+      "id": 13,
+      "icon": "reassignment",
+      "name": "Переназначение",
+      "is_optional": true,
+      "after": [
+        {
+          "id": 2,
+          "name": "Курьер назначен"
+        },
+        {
+          "id": 3,
+          "name": "Принято курьером в работу"
+        },
+        {
+          "id": 4,
+          "name": "В пути к точке доставки"
+        },
+        {
+          "id": 5,
+          "name": "На точке доставки"
+        }
+      ],
+      "partner_id": null,
+      "slug": "perenaznachenie"
+    },
+    {
+      "id": 15,
+      "icon": "otw_delivery_point",
+      "name": "В пути к точке вывоза",
+      "is_optional": true,
+      "after": [
+        {
+          "id": 3,
+          "name": "Принято курьером в работу"
+        }
+      ],
+      "partner_id": null,
+      "slug": "v-puti-k-tochke-vyvoza"
+    },
+    {
+      "id": 16,
+      "icon": "post_control",
+      "name": "Фотографирование",
+      "is_optional": true,
+      "after": [
+        {
+          "id": 6,
+          "name": "Контакт с получателем"
+        },
+        {
+          "id": 24,
+          "name": "Сканирование карты"
+        }
+      ],
+      "partner_id": null,
+      "slug": "fotografirovanie"
+    },
+    {
+      "id": 17,
+      "icon": "post_control",
+      "name": "Видеоидентификация",
+      "is_optional": true,
+      "after": [
+        {
+          "id": 6,
+          "name": "Контакт с получателем"
+        },
+        {
+          "id": 20,
+          "name": "Отправка SMS"
+        }
+      ],
+      "partner_id": null,
+      "slug": "videoidentifikatsiia"
+    },
+    {
+      "id": 18,
+      "icon": "post_control",
+      "name": "Видеоидентификация пройдена",
+      "is_optional": true,
+      "after": [
+        {
+          "id": 17,
+          "name": "Видеоидентификация"
+        }
+      ],
+      "partner_id": null,
+      "slug": "videoidentifikatsiia-proidena"
+    },
+    {
+      "id": 20,
+      "icon": "post_control",
+      "name": "Отправка SMS",
+      "is_optional": true,
+      "after": [
+        {
+          "id": 6,
+          "name": "Контакт с получателем"
+        },
+        {
+          "id": 25,
+          "name": "У клиента"
+        }
+      ],
+      "partner_id": null,
+      "slug": "kod-otpravlen"
+    },
+    {
+      "id": 22,
+      "icon": "ready-to-send",
+      "name": "Готово у партнера",
+      "is_optional": true,
+      "after": [
+        {
+          "id": 2,
+          "name": "Курьер назначен"
+        }
+      ],
+      "partner_id": null,
+      "slug": "gotovo-u-partnera"
+    },
+    {
+      "id": 24,
+      "icon": "post_control",
+      "name": "Сканирование карты",
+      "is_optional": true,
+      "after": [
+        {
+          "id": 20,
+          "name": "Код отправлен"
+        }
+      ],
+      "partner_id": null,
+      "slug": "skanirovanie-karty"
+    },
+    {
+      "id": 25,
+      "icon": "at_client",
+      "name": "У клиента",
+      "is_optional": true,
+      "after": [
+        {
+          "id": 3,
+          "name": "Принято курьером в работу"
+        }
+      ],
+      "partner_id": null,
+      "slug": "u-klienta"
+    },
+    {
+      "id": 26,
+      "icon": "packed",
+      "name": "Упаковано",
+      "is_optional": true,
+      "after": [
+        {
+          "id": 1,
+          "name": "Новая заявка"
+        }
+      ],
+      "partner_id": null,
+      "slug": "upakovano"
+    },
+    {
+      "id": 27,
+      "icon": "ready_for_pickup",
+      "name": "Готово к вывозу",
+      "is_optional": true,
+      "after": [
+        {
+          "id": 26,
+          "name": "Упаковано"
+        }
+      ],
+      "partner_id": null,
+      "slug": "gotovo-k-vyvozu"
+    },
+    {
+      "id": 28,
+      "icon": "at_revise",
+      "name": "На сверке",
+      "is_optional": true,
+      "after": [
+        {
+          "id": 27,
+          "name": "Готово к вывозу"
+        }
+      ],
+      "partner_id": null,
+      "slug": "na-sverke"
+    },
+    {
+      "id": 29,
+      "icon": "at_courier",
+      "name": "Вывезено курьером",
+      "is_optional": true,
+      "after": [
+        {
+          "id": 28,
+          "name": "На сверке"
+        }
+      ],
+      "partner_id": null,
+      "slug": "vivezeno-kurerom"
+    },
+    {
+      "id": 30,
+      "icon": "at_courier_service",
+      "name": "Принято курьерской службой",
+      "is_optional": true,
+      "after": [
+        {
+          "id": 229,
+          "name": "Вывезено курьером"
+        }
+      ],
+      "partner_id": null,
+      "slug": "prinyato-kurerskoy-sluzhboy"
+    }
+  ]
+}

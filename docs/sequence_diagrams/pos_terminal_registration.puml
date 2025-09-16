@@ -1,0 +1,20 @@
+@startuml
+actor "Courier" as courier
+participant "Mobile App" as mobile_app
+participant "Backend" as backend
+participant "External service" as external_service
+
+courier -> mobile_app: registrate terminal
+mobile_app -> backend: PUT /v2/order/{order_id}/status
+backend -> external_service: POST /process/start
+backend <-- external_service: 200 OK
+loop async polling result
+backend -> external_service: GET /process/status
+backend <-- external_service: result
+end
+loop sync polling result
+mobile_app -> backend: GET /order/{order_id}/product/{product_id}
+mobile_app <-- backend: result
+end
+courier <-- mobile_app: registration complete
+@enduml

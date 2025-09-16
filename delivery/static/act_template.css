@@ -1,0 +1,68 @@
+h4 {
+    text-align: center;
+}
+
+.year {
+    text-align: right;
+}
+
+table {
+    border-collapse: collapse;
+    text-align: center;
+
+}
+
+@page {
+    size: A4 portrait;
+    margin: 2.5cm;
+    padding: 0;
+    color: red;
+}
+
+td,
+th {
+    border: 1px solid black;
+    padding: 5px;
+    word-wrap: break-word;
+    max-width: 200px;
+}
+
+td:first-child {
+    max-width: 1.5cm;
+}
+
+footer {
+    font-style: italic;
+}
+
+.sign-wrapper {
+    display: flex;
+    justify-content: space-between;
+}
+
+.left-sign {
+    width: fit-content;
+}
+
+.left-sign p:first-child {
+    margin: 0;
+}
+
+.left-sign p:last-child {
+    margin-top: 2px;
+    text-align: right;
+}
+
+
+.right-sign {
+    width: fit-content;
+}
+
+.right-sign p:first-child {
+    margin: 0;
+}
+
+.right-sign p:last-child {
+    margin-top: 2px;
+    text-align: right;
+}
