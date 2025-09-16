@@ -2586,6 +2586,44 @@ async def get_order_for_order_sms_postcontrol_check(
         order_id: int,
 ):
     order_qs = Order.get(id=order_id).prefetch_related(
+        Prefetch('item__postcontrol_config_set', models.PostControlConfig.filter(
+            parent_config_id__isnull=True,
+            type=PostControlType.POST_CONTROL.value,
+        ).prefetch_related(
+            Prefetch('inner_param_set', models.PostControlConfig.filter(
+                type=PostControlType.POST_CONTROL.value,
+            ).prefetch_related(
+                Prefetch(
+                    'postcontrol_document_set',
+                    models.PostControl.filter(order_id=order_id),
+                    'postcontrol_documents',
+                ),
+            ), 'inner_params'),
+            Prefetch(
+                'postcontrol_document_set',
+                models.PostControl.filter(order_id=order_id),
+                'postcontrol_documents',
+            ),
+        ), 'postcontrol_configs'),
+        Prefetch('item__postcontrol_config_set', models.PostControlConfig.filter(
+            parent_config_id__isnull=True,
+            type=PostControlType.CANCELED.value,
+        ).prefetch_related(
+            Prefetch('inner_param_set', models.PostControlConfig.filter(
+                type=PostControlType.CANCELED.value,
+            ).prefetch_related(
+                Prefetch(
+                    'postcontrol_document_set',
+                    models.PostControl.filter(order_id=order_id),
+                    'postcontrol_documents',
+                ),
+            ), 'inner_params'),
+            Prefetch(
+                'postcontrol_document_set',
+                models.PostControl.filter(order_id=order_id),
+                'postcontrol_documents',
+            ),
+        ), 'postcontrol_cancellation_configs'),
         Prefetch('status_set', OrderStatuses.all().prefetch_related('status'),
                  'statuses'),
         Prefetch('address_set', OrderAddress.all().prefetch_related('place'),
