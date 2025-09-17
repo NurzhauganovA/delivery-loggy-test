@@ -1,4 +1,8 @@
+import os
+
 import pytest
+
+from tests.utils import get_sql_script_from_fixtures
 
 
 def default_permissions_insert_script() -> str:
@@ -481,81 +485,104 @@ def default_groups_permissions_insert_script() -> str:
 
 def statuses_insert_script() -> str:
     return """
-        INSERT INTO public.status (id, icon, name, is_optional, after, partner_id, slug) VALUES (8, 'sent-for-preparation', 'Отправлено на подготовку', true, '[{"id": 1, "name": "Новая заявка"}, {"id": 2, "name": "Курьер назначен"}]', null, 'otpravleno-na-podgotovku');
-        INSERT INTO public.status (id, icon, name, is_optional, after, partner_id, slug) VALUES (9, 'prepare-to-send', 'Подготовка к отправке', true, '[{"id": 8, "name": "Отправлено на подготовку"}]', null, 'podogotovka-k-otpravku');
-        INSERT INTO public.status (id, icon, name, is_optional, after, partner_id, slug) VALUES (11, 'at-the-call-point', 'На точке вывоза', true, '[{"id": 15, "name": "В пути к точке вывоза"}]', null, 'na-tochke-vyvoza');
-        INSERT INTO public.status (id, icon, name, is_optional, after, partner_id, slug) VALUES (22, 'ready-to-send', 'Готово у партнера', true, '[{"id": 2, "name": "Курьер назначен"}]', null, 'gotovo-u-partnera');
-        INSERT INTO public.status (id, icon, name, is_optional, after, partner_id, slug) VALUES (3, 'courier_accepted', 'Принято курьером в работу', false, '[{"id": 2, "name": "Курьер назначен"}, {"id": 9, "name": "Подготовка к отправке"}]', null, 'priniato-kurerom-v-rabotu');
-        INSERT INTO public.status (id, icon, name, is_optional, after, partner_id, slug) VALUES (15, 'otw_delivery_point', 'В пути к точке вывоза', true, '[{"id": 3, "name": "Принято курьером в работу"}]', null, 'v-puti-k-tochke-vyvoza');
-        INSERT INTO public.status (id, icon, name, is_optional, after, partner_id, slug) VALUES (13, 'reassignment', 'Переназначение', true, '[{"id": 2, "name": "Курьер назначен"}, {"id": 3, "name": "Принято курьером в работу"}, {"id": 4, "name": "В пути к точке доставки"}, {"id": 5, "name": "На точке доставки"}]', null, 'perenaznachenie');
-        INSERT INTO public.status (id, icon, name, is_optional, after, partner_id, slug) VALUES (18, 'post_control', 'Видеоидентификация пройдена', true, '[{"id": 17, "name": "Видеоидентификация"}]', null, 'videoidentifikatsiia-proidena');
-        INSERT INTO public.status (id, icon, name, is_optional, after, partner_id, slug) VALUES (4, 'otw_delivery_point', 'В пути к точке доставки', false, '[{"id": 3, "name": "Принято курьером в работу"}, {"id": 11, "name": "На точке вывоза"}]', null, 'v-puti-k-tochke-dostavki');
-        INSERT INTO public.status (id, icon, name, is_optional, after, partner_id, slug) VALUES (1, 'order_new', 'Новая заявка', false, '[]', null, 'novaia-zaiavka');
-        INSERT INTO public.status (id, icon, name, is_optional, after, partner_id, slug) VALUES (2, 'courier_appointed', 'Курьер назначен', false, '[{"id": 1, "name": "Новая заявка"}]', null, 'kurer-naznachen');
-        INSERT INTO public.status (id, icon, name, is_optional, after, partner_id, slug) VALUES (5, 'on_delivery_point', 'На точке доставки', false, '[{"id": 4, "name": "В пути к точке доставки"}]', null, 'na-tochke-dostavki');
-        INSERT INTO public.status (id, icon, name, is_optional, after, partner_id, slug) VALUES (6, 'at_client', 'Контакт с получателем', false, '[{"id": 5, "name": "На точке доставки"}]', null, 'kontakt-s-poluchatelem');
-        INSERT INTO public.status (id, icon, name, is_optional, after, partner_id, slug) VALUES (10, 'ready-to-send', 'Готово к отправке', true, '[{"id": 9, "name": "Подготовка к отправке"}]', null, 'gotovo-k-otpravke');
-        INSERT INTO public.status (id, icon, name, is_optional, after, partner_id, slug) VALUES (24, 'post_control', 'Сканирование карты', true, '[{"id": 20, "name": "Код отправлен"}]', null, 'skanirovanie-karty');
-        INSERT INTO public.status (id, icon, name, is_optional, after, partner_id, slug) VALUES (25, 'at_client', 'У клиента', true, '[{"id": 3, "name": "Принято курьером в работу"}]', null, 'u-klienta');
-        INSERT INTO public.status (id, icon, name, is_optional, after, partner_id, slug) VALUES (20, 'post_control', 'Отправка SMS', true, '[{"id": 6, "name": "Контакт с получателем"}, {"id": 25, "name": "У клиента"}]', null, 'kod-otpravlen');
-        INSERT INTO public.status (id, icon, name, is_optional, after, partner_id, slug) VALUES (7, 'order_delivevred', 'Доставлено', true, '[{"id": 6, "name": "Контакт с получателем"}, {"id": 12, "name": "Последконтроль"}, {"id": 17, "name": "Видеоидентификация"}, {"id": 18, "name": "Видеоидентификация пройдена"}, {"id": 20, "name": "Отправка SMS"}]', null, 'dostavleno');
-        INSERT INTO public.status (id, icon, name, is_optional, after, partner_id, slug) VALUES (17, 'post_control', 'Видеоидентификация', true, '[{"id": 6, "name": "Контакт с получателем"}, {"id": 20, "name": "Отправка SMS"}]', null, 'videoidentifikatsiia');
-        INSERT INTO public.status (id, icon, name, is_optional, after, partner_id, slug) VALUES (23, 'ready-to-send', 'Готово к вывозу', false, '[]', null, 'gotovo-k-vyvozu');
-        INSERT INTO public.status (id, icon, name, is_optional, after, partner_id, slug) VALUES (16, 'post_control', 'Фотографирование', true, '[{"id": 6, "name": "Контакт с получателем"}, {"id": 24, "name": "Сканирование карты"}]', null, 'fotografirovanie');
-        INSERT INTO public.status (id, icon, name, is_optional, after, partner_id, slug) VALUES (12, 'post_control', 'Последконтроль', true, '[{"id": 6, "name": "Контакт с получателем"}, {"id": 16, "name": "Фотографирование"}]', null, 'posledkontrol');
-        INSERT INTO public.status (id, icon, name, is_optional, after, partner_id, slug) VALUES (26, 'post_control', 'Привязка карты к клиенту', true, '[{"id": 20, "name": "Отправка SMS"}]', null, 'priviazka-karty-k-klientu');
-        INSERT INTO public.status (id, icon, name, is_optional, after, partner_id, slug) VALUES (27, 'vydano', 'Выдано', true, '[{"id": 16, "name": "Фотографирование"}]', null, 'order_delivevred');
-        INSERT INTO public.status (id, icon, name, is_optional, after, partner_id, slug) VALUES (28, 'courier_accepted', 'Вывезено курьером', true, '[]', null, 'vyvezeno-kurerom');
-        INSERT INTO public.status (id, icon, name, is_optional, after, partner_id, slug) VALUES (29, 'at-the-call-point', 'Принято курьерской службой', true, '[]', null, 'priniato-kurerskoi-sluzhboi');
-        INSERT INTO public.status (id, icon, name, is_optional, after, partner_id, slug) VALUES (31, 'ready-to-send', 'Включено в группу', true, '[]', null, 'vkliucheno-v-gruppu');
-        INSERT INTO public.status (id, icon, name, is_optional, after, partner_id, slug) VALUES (32, 'at_client', 'На сверке', true, '[]', null, 'na-sverke');
-        INSERT INTO public.status (id, icon, name, is_optional, after, partner_id, slug) VALUES (30, 'packed', 'Упаковано', true, '[]', null, 'upakovano');
+        INSERT INTO public.status (id, icon, is_optional, after, partner_id, slug) VALUES (8, 'sent-for-preparation', true, '[{"id": 1, "name": "Новая заявка"}, {"id": 2, "name": "Курьер назначен"}]', null, 'otpravleno-na-podgotovku');
+        INSERT INTO public.status (id, icon, is_optional, after, partner_id, slug) VALUES (9, 'prepare-to-send', true, '[{"id": 8, "name": "Отправлено на подготовку"}]', null, 'podogotovka-k-otpravku');
+        INSERT INTO public.status (id, icon, is_optional, after, partner_id, slug) VALUES (11, 'at-the-call-point', true, '[{"id": 15, "name": "В пути к точке вывоза"}]', null, 'na-tochke-vyvoza');
+        INSERT INTO public.status (id, icon, is_optional, after, partner_id, slug) VALUES (22, 'ready-to-send', true, '[{"id": 2, "name": "Курьер назначен"}]', null, 'gotovo-u-partnera');
+        INSERT INTO public.status (id, icon, is_optional, after, partner_id, slug) VALUES (3, 'courier_accepted', false, '[{"id": 2, "name": "Курьер назначен"}, {"id": 9, "name": "Подготовка к отправке"}]', null, 'priniato-kurerom-v-rabotu');
+        INSERT INTO public.status (id, icon, is_optional, after, partner_id, slug) VALUES (15, 'otw_delivery_point', true, '[{"id": 3, "name": "Принято курьером в работу"}]', null, 'v-puti-k-tochke-vyvoza');
+        INSERT INTO public.status (id, icon, is_optional, after, partner_id, slug) VALUES (13, 'reassignment', true, '[{"id": 2, "name": "Курьер назначен"}, {"id": 3, "name": "Принято курьером в работу"}, {"id": 4, "name": "В пути к точке доставки"}, {"id": 5, "name": "На точке доставки"}]', null, 'perenaznachenie');
+        INSERT INTO public.status (id, icon, is_optional, after, partner_id, slug) VALUES (18, 'post_control', true, '[{"id": 17, "name": "Видеоидентификация"}]', null, 'videoidentifikatsiia-proidena');
+        INSERT INTO public.status (id, icon, is_optional, after, partner_id, slug) VALUES (4, 'otw_delivery_point', false, '[{"id": 3, "name": "Принято курьером в работу"}, {"id": 11, "name": "На точке вывоза"}]', null, 'v-puti-k-tochke-dostavki');
+        INSERT INTO public.status (id, icon, is_optional, after, partner_id, slug) VALUES (1, 'order_new', false, '[]', null, 'novaia-zaiavka');
+        INSERT INTO public.status (id, icon, is_optional, after, partner_id, slug) VALUES (2, 'courier_appointed', false, '[{"id": 1, "name": "Новая заявка"}]', null, 'kurer-naznachen');
+        INSERT INTO public.status (id, icon, is_optional, after, partner_id, slug) VALUES (5, 'on_delivery_point', false, '[{"id": 4, "name": "В пути к точке доставки"}]', null, 'na-tochke-dostavki');
+        INSERT INTO public.status (id, icon, is_optional, after, partner_id, slug) VALUES (6, 'at_client', false, '[{"id": 5, "name": "На точке доставки"}]', null, 'kontakt-s-poluchatelem');
+        INSERT INTO public.status (id, icon, is_optional, after, partner_id, slug) VALUES (10, 'ready-to-send', true, '[{"id": 9, "name": "Подготовка к отправке"}]', null, 'gotovo-k-otpravke');
+        INSERT INTO public.status (id, icon, is_optional, after, partner_id, slug) VALUES (24, 'post_control', true, '[{"id": 20, "name": "Код отправлен"}]', null, 'skanirovanie-karty');
+        INSERT INTO public.status (id, icon, is_optional, after, partner_id, slug) VALUES (25, 'at_client', true, '[{"id": 3, "name": "Принято курьером в работу"}]', null, 'u-klienta');
+        INSERT INTO public.status (id, icon, is_optional, after, partner_id, slug) VALUES (20, 'post_control', true, '[{"id": 6, "name": "Контакт с получателем"}, {"id": 25, "name": "У клиента"}]', null, 'kod-otpravlen');
+        INSERT INTO public.status (id, icon, is_optional, after, partner_id, slug) VALUES (7, 'order_delivevred', true, '[{"id": 6, "name": "Контакт с получателем"}, {"id": 12, "name": "Последконтроль"}, {"id": 17, "name": "Видеоидентификация"}, {"id": 18, "name": "Видеоидентификация пройдена"}, {"id": 20, "name": "Отправка SMS"}]', null, 'dostavleno');
+        INSERT INTO public.status (id, icon, is_optional, after, partner_id, slug) VALUES (17, 'post_control', true, '[{"id": 6, "name": "Контакт с получателем"}, {"id": 20, "name": "Отправка SMS"}]', null, 'videoidentifikatsiia');
+        INSERT INTO public.status (id, icon, is_optional, after, partner_id, slug) VALUES (23, 'ready-to-send', false, '[]', null, 'gotovo-k-vyvozu');
+        INSERT INTO public.status (id, icon, is_optional, after, partner_id, slug) VALUES (16, 'post_control', true, '[{"id": 6, "name": "Контакт с получателем"}, {"id": 24, "name": "Сканирование карты"}]', null, 'fotografirovanie');
+        INSERT INTO public.status (id, icon, is_optional, after, partner_id, slug) VALUES (12, 'post_control', true, '[{"id": 6, "name": "Контакт с получателем"}, {"id": 16, "name": "Фотографирование"}]', null, 'posledkontrol');
+        INSERT INTO public.status (id, icon, is_optional, after, partner_id, slug) VALUES (26, 'post_control', true, '[{"id": 20, "name": "Отправка SMS"}]', null, 'priviazka-karty-k-klientu');
+        INSERT INTO public.status (id, icon, is_optional, after, partner_id, slug) VALUES (27, 'vydano', true, '[{"id": 16, "name": "Фотографирование"}]', null, 'order_delivevred');
+        INSERT INTO public.status (id, icon, is_optional, after, partner_id, slug) VALUES (28, 'courier_accepted', true, '[]', null, 'vyvezeno-kurerom');
+        INSERT INTO public.status (id, icon, is_optional, after, partner_id, slug) VALUES (29, 'at-the-call-point', true, '[]', null, 'priniato-kurerskoi-sluzhboi');
+        INSERT INTO public.status (id, icon, is_optional, after, partner_id, slug) VALUES (31, 'ready-to-send', true, '[]', null, 'vkliucheno-v-gruppu');
+        INSERT INTO public.status (id, icon, is_optional, after, partner_id, slug) VALUES (32, 'at_client', true, '[]', null, 'na-sverke');
+        INSERT INTO public.status (id, icon, is_optional, after, partner_id, slug) VALUES (30, 'packed', true, '[]', null, 'upakovano');
     """
 
 
 def statuses_insert_script_v2() -> str:
     return """
-        INSERT INTO public.status (id, icon, name, is_optional, after, partner_id, slug, name_en, name_zh, name_ru, name_kk, code) VALUES (32, 'at_client', 'На сверке', true, '[]', null, 'na-sverke', 'On reconciliation', null, 'На сверке', 'На сверке', null);
-        INSERT INTO public.status (id, icon, name, is_optional, after, partner_id, slug, name_en, name_zh, name_ru, name_kk, code) VALUES (2, 'courier_appointed', 'Курьер назначен', false, '[{"id": 1, "name": "Новая заявка"}]', null, 'kurer-naznachen', 'Courier assigned', null, 'Курьер назначен', 'Курьер назначен', null);
-        INSERT INTO public.status (id, icon, name, is_optional, after, partner_id, slug, name_en, name_zh, name_ru, name_kk, code) VALUES (4, 'otw_delivery_point', 'В пути к точке доставки', false, '[{"id": 3, "name": "Принято курьером в работу"}, {"id": 11, "name": "На точке вывоза"}]', null, 'v-puti-k-tochke-dostavki', 'On the way to the delivery point', null, 'В пути к точке доставки', 'В пути к точке доставки', null);
-        INSERT INTO public.status (id, icon, name, is_optional, after, partner_id, slug, name_en, name_zh, name_ru, name_kk, code) VALUES (5, 'on_delivery_point', 'На точке доставки', false, '[{"id": 4, "name": "В пути к точке доставки"}]', null, 'na-tochke-dostavki', 'At the delivery point', null, 'На точке доставки', 'На точке доставки', null);
-        INSERT INTO public.status (id, icon, name, is_optional, after, partner_id, slug, name_en, name_zh, name_ru, name_kk, code) VALUES (6, 'at_client', 'Контакт с получателем', false, '[{"id": 5, "name": "На точке доставки"}]', null, 'kontakt-s-poluchatelem', 'Contact with the recipient', null, 'Контакт с получателем', 'Контакт с получателем', null);
-        INSERT INTO public.status (id, icon, name, is_optional, after, partner_id, slug, name_en, name_zh, name_ru, name_kk, code) VALUES (10, 'ready-to-send', 'Готово к отправке', true, '[{"id": 9, "name": "Подготовка к отправке"}]', null, 'gotovo-k-otpravke', 'Ready for shipment', null, 'Готово к отправке', 'Готово к отправке', null);
-        INSERT INTO public.status (id, icon, name, is_optional, after, partner_id, slug, name_en, name_zh, name_ru, name_kk, code) VALUES (7, 'order_delivevred', 'Доставлено', true, '[{"id": 6, "name": "Контакт с получателем"}, {"id": 12, "name": "Последконтроль"}, {"id": 17, "name": "Видеоидентификация"}, {"id": 18, "name": "Видеоидентификация пройдена"}, {"id": 20, "name": "Отправка SMS"}]', null, 'dostavleno', 'Delivered', null, 'Доставлено', 'Доставлено', 'delivered');
-        INSERT INTO public.status (id, icon, name, is_optional, after, partner_id, slug, name_en, name_zh, name_ru, name_kk, code) VALUES (12, 'post_control', 'Последконтроль', true, '[{"id": 6, "name": "Контакт с получателем"}, {"id": 16, "name": "Фотографирование"}]', null, 'posledkontrol', 'Post-control', null, 'Последконтроль', 'Последконтроль', null);
-        INSERT INTO public.status (id, icon, name, is_optional, after, partner_id, slug, name_en, name_zh, name_ru, name_kk, code) VALUES (13, 'reassignment', 'Переназначение', true, '[{"id": 2, "name": "Курьер назначен"}, {"id": 3, "name": "Принято курьером в работу"}, {"id": 4, "name": "В пути к точке доставки"}, {"id": 5, "name": "На точке доставки"}]', null, 'perenaznachenie', 'Rescheduling', null, 'Переназначение', 'Переназначение', null);
-        INSERT INTO public.status (id, icon, name, is_optional, after, partner_id, slug, name_en, name_zh, name_ru, name_kk, code) VALUES (16, 'post_control', 'Фотографирование', true, '[{"id": 6, "name": "Контакт с получателем"}, {"id": 24, "name": "Сканирование карты"}]', null, 'fotografirovanie', 'Photographing', null, 'Фотографирование', 'Фотографирование', 'photo_capturing');
-        INSERT INTO public.status (id, icon, name, is_optional, after, partner_id, slug, name_en, name_zh, name_ru, name_kk, code) VALUES (17, 'post_control', 'Видеоидентификация', true, '[{"id": 6, "name": "Контакт с получателем"}, {"id": 20, "name": "Отправка SMS"}]', null, 'videoidentifikatsiia', 'Video identification', null, 'Видеоидентификация', 'Видеоидентификация', null);
-        INSERT INTO public.status (id, icon, name, is_optional, after, partner_id, slug, name_en, name_zh, name_ru, name_kk, code) VALUES (18, 'post_control', 'Видеоидентификация пройдена', true, '[{"id": 17, "name": "Видеоидентификация"}]', null, 'videoidentifikatsiia-proidena', 'Video identification passed', null, 'Видеоидентификация пройдена', 'Видеоидентификация пройдена', null);
-        INSERT INTO public.status (id, icon, name, is_optional, after, partner_id, slug, name_en, name_zh, name_ru, name_kk, code) VALUES (23, 'ready-to-send', 'Готово к вывозу', true, '[]', null, 'gotovo-k-vyvozu', 'Ready for pickup', null, 'Готово к вывозу', 'Готово к вывозу', null);
-        INSERT INTO public.status (id, icon, name, is_optional, after, partner_id, slug, name_en, name_zh, name_ru, name_kk, code) VALUES (24, 'post_control', 'Сканирование карты', true, '[{"id": 20, "name": "Код отправлен"}]', null, 'skanirovanie-karty', 'Card scanning', null, 'Сканирование карты', 'Сканирование карты', null);
-        INSERT INTO public.status (id, icon, name, is_optional, after, partner_id, slug, name_en, name_zh, name_ru, name_kk, code) VALUES (25, 'at_client', 'У клиента', true, '[{"id": 3, "name": "Принято курьером в работу"}]', null, 'u-klienta', 'At client', null, 'У клиента', 'У клиента', 'send_otp');
-        INSERT INTO public.status (id, icon, name, is_optional, after, partner_id, slug, name_en, name_zh, name_ru, name_kk, code) VALUES (26, 'post_control', 'Привязка карты к клиенту', true, '[{"id": 20, "name": "Отправка SMS"}]', null, 'priviazka-karty-k-klientu', 'Card linked to client', null, 'Привязка карты к клиенту', 'Привязка карты к клиенту', null);
-        INSERT INTO public.status (id, icon, name, is_optional, after, partner_id, slug, name_en, name_zh, name_ru, name_kk, code) VALUES (28, 'courier_accepted', 'Вывезено курьером', true, '[]', null, 'vyvezeno-kurerom', 'Taken by courier', null, 'Вывезено курьером', 'Вывезено курьером', null);
-        INSERT INTO public.status (id, icon, name, is_optional, after, partner_id, slug, name_en, name_zh, name_ru, name_kk, code) VALUES (29, 'at-the-call-point', 'Принято курьерской службой', true, '[]', null, 'priniato-kurerskoi-sluzhboi', 'Accepted by courier service', null, 'Принято курьерской службой', 'Принято курьерской службой', null);
-        INSERT INTO public.status (id, icon, name, is_optional, after, partner_id, slug, name_en, name_zh, name_ru, name_kk, code) VALUES (30, 'packed', 'Упаковано', true, '[]', null, 'upakovano', 'Packed', null, 'Упаковано', 'Упаковано', null);
-        INSERT INTO public.status (id, icon, name, is_optional, after, partner_id, slug, name_en, name_zh, name_ru, name_kk, code) VALUES (31, 'ready-to-send', 'Включено в группу', true, '[]', null, 'vkliucheno-v-gruppu', 'Included in group', null, 'Включено в группу', 'Включено в группу', null);
-        INSERT INTO public.status (id, icon, name, is_optional, after, partner_id, slug, name_en, name_zh, name_ru, name_kk, code) VALUES (33, 'post_control', 'Последконтроль банк', true, '[]', null, 'posledkontrol_bank', 'Post-control bank', null, 'Последконтроль банк', 'Последконтроль банк', null);
-        INSERT INTO public.status (id, icon, name, is_optional, after, partner_id, slug, name_en, name_zh, name_ru, name_kk, code) VALUES (20, 'post_control', 'Отправка SMS', true, '[{"id": 6, "name": "Контакт с получателем"}, {"id": 25, "name": "У клиента"}]', null, 'kod-otpravlen', 'SMS Sent', null, 'Отправка SMS', 'Отправка SMS', 'verify_otp');
-        INSERT INTO public.status (id, icon, name, is_optional, after, partner_id, slug, name_en, name_zh, name_ru, name_kk, code) VALUES (27, 'vydano', 'Выдано', true, '[{"id": 16, "name": "Фотографирование"}]', null, 'order_delivevred', 'Completed', null, 'Выдано', 'Выдано', null);
-        INSERT INTO public.status (id, icon, name, is_optional, after, partner_id, slug, name_en, name_zh, name_ru, name_kk, code) VALUES (34, 'order_delivered', 'Завершено', false, null, null, 'zaversheno', 'Issued', null, 'Завершено', 'Завершено', null);
-        INSERT INTO public.status (id, icon, name, is_optional, after, partner_id, slug, name_en, name_zh, name_ru, name_kk, code) VALUES (1, 'order_new', 'Новая заявка', false, '[]', null, 'novaia-zaiavka', 'New order', null, 'Новая заявка', 'Новая заявка', 'new');
-        INSERT INTO public.status (id, icon, name, is_optional, after, partner_id, slug, name_en, name_zh, name_ru, name_kk, code) VALUES (3, 'courier_accepted', 'Принято курьером в работу', false, '[{"id": 2, "name": "Курьер назначен"}, {"id": 9, "name": "Подготовка к отправке"}]', null, 'priniato-kurerom-v-rabotu', 'Accepted by courier', null, 'Принято курьером в работу', 'Принято курьером в работу', 'in_way');
+        INSERT INTO public.status (id, icon, is_optional, after, partner_id, slug, name_en, name_zh, name_ru, name_kk, code) VALUES (32, 'at_client', true, '[]', null, 'na-sverke', 'On reconciliation', null, 'На сверке', 'На сверке', null);
+        INSERT INTO public.status (id, icon, is_optional, after, partner_id, slug, name_en, name_zh, name_ru, name_kk, code) VALUES (2, 'courier_appointed', false, '[{"id": 1, "name": "Новая заявка"}]', null, 'kurer-naznachen', 'Courier assigned', null, 'Курьер назначен', 'Курьер назначен', null);
+        INSERT INTO public.status (id, icon, is_optional, after, partner_id, slug, name_en, name_zh, name_ru, name_kk, code) VALUES (4, 'otw_delivery_point', false, '[{"id": 3, "name": "Принято курьером в работу"}, {"id": 11, "name": "На точке вывоза"}]', null, 'v-puti-k-tochke-dostavki', 'On the way to the delivery point', null, 'В пути к точке доставки', 'В пути к точке доставки', null);
+        INSERT INTO public.status (id, icon, is_optional, after, partner_id, slug, name_en, name_zh, name_ru, name_kk, code) VALUES (5, 'on_delivery_point', false, '[{"id": 4, "name": "В пути к точке доставки"}]', null, 'na-tochke-dostavki', 'At the delivery point', null, 'На точке доставки', 'На точке доставки', null);
+        INSERT INTO public.status (id, icon, is_optional, after, partner_id, slug, name_en, name_zh, name_ru, name_kk, code) VALUES (6, 'at_client', false, '[{"id": 5, "name": "На точке доставки"}]', null, 'kontakt-s-poluchatelem', 'Contact with the recipient', null, 'Контакт с получателем', 'Контакт с получателем', null);
+        INSERT INTO public.status (id, icon, is_optional, after, partner_id, slug, name_en, name_zh, name_ru, name_kk, code) VALUES (10, 'ready-to-send', true, '[{"id": 9, "name": "Подготовка к отправке"}]', null, 'gotovo-k-otpravke', 'Ready for shipment', null, 'Готово к отправке', 'Готово к отправке', null);
+        INSERT INTO public.status (id, icon, is_optional, after, partner_id, slug, name_en, name_zh, name_ru, name_kk, code) VALUES (7, 'order_delivevred', true, '[{"id": 6, "name": "Контакт с получателем"}, {"id": 12, "name": "Последконтроль"}, {"id": 17, "name": "Видеоидентификация"}, {"id": 18, "name": "Видеоидентификация пройдена"}, {"id": 20, "name": "Отправка SMS"}]', null, 'dostavleno', 'Delivered', null, 'Доставлено', 'Доставлено', 'delivered');
+        INSERT INTO public.status (id, icon, is_optional, after, partner_id, slug, name_en, name_zh, name_ru, name_kk, code) VALUES (12, 'post_control', true, '[{"id": 6, "name": "Контакт с получателем"}, {"id": 16, "name": "Фотографирование"}]', null, 'posledkontrol', 'Post-control', null, 'Последконтроль', 'Последконтроль', null);
+        INSERT INTO public.status (id, icon, is_optional, after, partner_id, slug, name_en, name_zh, name_ru, name_kk, code) VALUES (13, 'reassignment', true, '[{"id": 2, "name": "Курьер назначен"}, {"id": 3, "name": "Принято курьером в работу"}, {"id": 4, "name": "В пути к точке доставки"}, {"id": 5, "name": "На точке доставки"}]', null, 'perenaznachenie', 'Rescheduling', null, 'Переназначение', 'Переназначение', null);
+        INSERT INTO public.status (id, icon, is_optional, after, partner_id, slug, name_en, name_zh, name_ru, name_kk, code) VALUES (16, 'post_control', true, '[{"id": 6, "name": "Контакт с получателем"}, {"id": 24, "name": "Сканирование карты"}]', null, 'fotografirovanie', 'Photographing', null, 'Фотографирование', 'Фотографирование', 'photo_capturing');
+        INSERT INTO public.status (id, icon, is_optional, after, partner_id, slug, name_en, name_zh, name_ru, name_kk, code) VALUES (17, 'post_control', true, '[{"id": 6, "name": "Контакт с получателем"}, {"id": 20, "name": "Отправка SMS"}]', null, 'videoidentifikatsiia', 'Video identification', null, 'Видеоидентификация', 'Видеоидентификация', null);
+        INSERT INTO public.status (id, icon, is_optional, after, partner_id, slug, name_en, name_zh, name_ru, name_kk, code) VALUES (18, 'post_control', true, '[{"id": 17, "name": "Видеоидентификация"}]', null, 'videoidentifikatsiia-proidena', 'Video identification passed', null, 'Видеоидентификация пройдена', 'Видеоидентификация пройдена', 'verify_otp');
+        INSERT INTO public.status (id, icon, is_optional, after, partner_id, slug, name_en, name_zh, name_ru, name_kk, code) VALUES (23, 'ready-to-send', true, '[]', null, 'gotovo-k-vyvozu', 'Ready for pickup', null, 'Готово к вывозу', 'Готово к вывозу', null);
+        INSERT INTO public.status (id, icon, is_optional, after, partner_id, slug, name_en, name_zh, name_ru, name_kk, code) VALUES (24, 'post_control', true, '[{"id": 20, "name": "Код отправлен"}]', null, 'skanirovanie-karty', 'Card scanning', null, 'Сканирование карты', 'Сканирование карты', null);
+        INSERT INTO public.status (id, icon, is_optional, after, partner_id, slug, name_en, name_zh, name_ru, name_kk, code) VALUES (25, 'at_client', true, '[{"id": 3, "name": "Принято курьером в работу"}]', null, 'u-klienta', 'At client', null, 'У клиента', 'У клиента', 'send_otp');
+        INSERT INTO public.status (id, icon, is_optional, after, partner_id, slug, name_en, name_zh, name_ru, name_kk, code) VALUES (26, 'post_control', true, '[{"id": 20, "name": "Отправка SMS"}]', null, 'priviazka-karty-k-klientu', 'Card linked to client', null, 'Привязка карты к клиенту', 'Привязка карты к клиенту', null);
+        INSERT INTO public.status (id, icon, is_optional, after, partner_id, slug, name_en, name_zh, name_ru, name_kk, code) VALUES (28, 'courier_accepted', true, '[]', null, 'vyvezeno-kurerom', 'Taken by courier', null, 'Вывезено курьером', 'Вывезено курьером', null);
+        INSERT INTO public.status (id, icon, is_optional, after, partner_id, slug, name_en, name_zh, name_ru, name_kk, code) VALUES (29, 'at-the-call-point', true, '[]', null, 'priniato-kurerskoi-sluzhboi', 'Accepted by courier service', null, 'Принято курьерской службой', 'Принято курьерской службой', null);
+        INSERT INTO public.status (id, icon, is_optional, after, partner_id, slug, name_en, name_zh, name_ru, name_kk, code) VALUES (30, 'packed', true, '[]', null, 'upakovano', 'Packed', null, 'Упаковано', 'Упаковано', null);
+        INSERT INTO public.status (id, icon, is_optional, after, partner_id, slug, name_en, name_zh, name_ru, name_kk, code) VALUES (31, 'ready-to-send', true, '[]', null, 'vkliucheno-v-gruppu', 'Included in group', null, 'Включено в группу', 'Включено в группу', null);
+        INSERT INTO public.status (id, icon, is_optional, after, partner_id, slug, name_en, name_zh, name_ru, name_kk, code) VALUES (3, 'courier_accepted', true, '[]', null, 'vyvezeno-kurerom', 'Taken by courier', null, 'Вывезено курьером', 'Вывезено курьером', 'courier_accepted');
+        INSERT INTO public.status (id, icon, is_optional, after, partner_id, slug, name_en, name_zh, name_ru, name_kk, code) VALUES (36, 'pos_terminal_registration', false, null, null, 'vvod-seriynogo-nomera-i-modeli', 'Enter serial number and model', null, 'Ввод серийного номера и модели', 'Ввод серийного номера и модели', 'pos_terminal_registration');
+        INSERT INTO public.status (id, icon, is_optional, after, partner_id, slug, name_en, name_zh, name_ru, name_kk, code) VALUES (1, 'order_new', false, '[]', null, 'novaia-zaiavka', 'New order', null, 'Новая заявка', 'Новая заявка', 'new');
+        INSERT INTO public.status (id, icon, is_optional, after, partner_id, slug, name_en, name_zh, name_ru, name_kk, code) VALUES (35, 'card_returned_to_bank', false, null, null, 'card-returned-to-bank', 'Card was returned to bank', null, 'Карта возвращена в банк', 'Карта возвращена в банк', 'card_returned_to_bank');
     """
 
 
 def default_countries_insert_script() -> str:
     return """ 
-        INSERT INTO public.country (id, name, name_en, name_zh, name_ru, name_kk) VALUES (2, 'Россия', 'Russia', null, 'Россия', 'Ресей');
-        INSERT INTO public.country (id, name, name_en, name_zh, name_ru, name_kk) VALUES (1, 'Казахстан', 'Kazakhstan', null, 'Казахстан', 'Казахстан');
+        INSERT INTO public.country (id, name_ru, name_en, name_zh, name_kk) VALUES (2, 'Россия', 'Russia', null, 'Ресей');
+        INSERT INTO public.country (id, name_ru, name_en, name_zh, name_kk) VALUES (1, 'Казахстан', 'Kazakhstan', null, 'Казахстан');
 
     """
 
 
 def default_cities_insert_script() -> str:
     return """
-        INSERT INTO public.city (id, name, longitude, latitude, timezone, country_id, name_en, name_zh, name_ru, name_kk) VALUES (1, 'Алматы', null, null, 'Asia/Aqtau', 1, 'Almaty', null, 'Алматы', 'Алматы');
-        INSERT INTO public.city (id, name, longitude, latitude, timezone, country_id, name_en, name_zh, name_ru, name_kk) VALUES (2, 'Астана', null, null, 'Asia/Aqtau', 1, 'Astana', null, 'Астана', 'Астана');
-        INSERT INTO public.city (id, name, longitude, latitude, timezone, country_id, name_en, name_zh, name_ru, name_kk) VALUES (3, 'Караганда', null, null, 'Asia/Aqtau', 1, 'Qaraganda', null, 'Караганда', 'Караганда');
-        INSERT INTO public.city (id, name, longitude, latitude, timezone, country_id, name_en, name_zh, name_ru, name_kk) VALUES (4, 'Москва', null, null, 'Europe/Moscow', 2, 'Moscow', null, 'Москва', 'Москва');
+        INSERT INTO public.city (id, longitude, latitude, timezone, country_id, name_en, name_zh, name_ru, name_kk) VALUES (1, null, null, 'Asia/Aqtau', 1, 'Almaty', null, 'Алматы', 'Алматы');
+        INSERT INTO public.city (id, longitude, latitude, timezone, country_id, name_en, name_zh, name_ru, name_kk) VALUES (2, null, null, 'Asia/Aqtau', 1, 'Astana', null, 'Астана', 'Астана');
+        INSERT INTO public.city (id, longitude, latitude, timezone, country_id, name_en, name_zh, name_ru, name_kk) VALUES (3, null, null, 'Asia/Aqtau', 1, 'Qaraganda', null, 'Караганда', 'Караганда');
+        INSERT INTO public.city (id, longitude, latitude, timezone, country_id, name_en, name_zh, name_ru, name_kk) VALUES (4, null, null, 'Europe/Moscow', 2, 'Moscow', null, 'Москва', 'Москва');
     """
+
+
+@pytest.fixture
+def default_pre_start_sql_script(request) -> str:
+    """
+        Returns:
+            INSERT SQL скрипт с созданием записей в таблицах, находящихся в tables_and_fixtures
+    """
+    tables_and_fixtures = {
+        'public."country"': 'country',
+        'public."city"': 'city',
+        'public."permissions"': 'permissions',
+        'public."groups"': 'groups',
+        'public."groups_permissions"': 'groups_permissions',
+        'public."status"': 'status',
+    }
+
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+
+    scripts = get_sql_script_from_fixtures(
+        current_dir=script_dir,
+        fixtures=tables_and_fixtures,
+    )
+
+    return scripts

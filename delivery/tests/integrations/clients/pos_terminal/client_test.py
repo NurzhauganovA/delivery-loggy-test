@@ -3,6 +3,7 @@ import pytest
 from api.clients.pos_terminal import POSTerminalClient
 
 
+@pytest.mark.skip(reason="Интеграционный тест")
 @pytest.mark.asyncio
 async def test_registrate_pos_terminal(client: POSTerminalClient):
     """Отправка ОТП"""
@@ -22,6 +23,8 @@ async def test_registrate_pos_terminal(client: POSTerminalClient):
         courier_full_name="Тестовый Курьер Курьерович",
         request_number_ref=None,
         is_installment_enabled=False,
+        inventory_number=None,
+        sum=0.0,
     )
     assert response.status_code == 200
 

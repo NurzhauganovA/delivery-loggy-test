@@ -23,7 +23,6 @@ class DeliveryGraph(Model):
         to_field='id',
         null=True,
     )
-    name = fields.CharField(max_length=128)
     name_en = fields.CharField(max_length=128, null=True)
     name_kk = fields.CharField(max_length=128, null=True)
     name_ru = fields.CharField(max_length=128, null=True)

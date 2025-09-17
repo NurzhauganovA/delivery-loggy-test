@@ -19,6 +19,7 @@ async def save_courier_geolocation(
             model_type=enums.HistoryModelName.ORDER,
             model_id=order_obj.id,
             request_method=enums.RequestMethods.POST,
+            action_type=enums.ActionType.SAVE_COURIER_GEOLOCATION,
             action_data={
                 'coordinates': {
                     'latitude': data.latitude,

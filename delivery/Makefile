@@ -29,7 +29,7 @@ test:
 
 makemigrations:
 	# Запуск: make makemigrations name = <name_of_migtration>
-	sudo docker compose exec api bash -c 'cd api/migrations; aerich migrate --name "$(name)"'
+	sudo docker-compose exec api bash -c 'cd api/migrations; aerich migrate --name "$(name)"'
 
 upgradedb:
 	sudo docker-compose exec api bash -c 'cd api/migrations; aerich upgrade'

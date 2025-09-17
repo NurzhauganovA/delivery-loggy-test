@@ -20,6 +20,6 @@
             "address": "Улица Соседа Дом Логопеда 12"
         },
         "current_status": "novaia-zaiavka",
-        "delivery_status": "address-changed"
+        "delivery_status": "address_changed"
     }
 }

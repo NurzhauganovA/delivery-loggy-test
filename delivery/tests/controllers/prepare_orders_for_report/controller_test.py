@@ -1,5 +1,5 @@
-import os
 import json
+import os
 from datetime import datetime
 
 import pytest
@@ -20,6 +20,7 @@ CASES_PATH = f'{CUR_DIR}/controllers/prepare_orders_for_report/cases'
 
 @pytest.mark.asyncio
 async def test_prepare_orders_for_report_other(
+    request,
     db,
     pre_start_sql_script,
     run_pre_start_sql_script,
@@ -80,3 +81,28 @@ async def test_prepare_orders_for_report_bank_manager(
     courier_appointed_at = datetime.strftime(response[0][-3], '%Y-%m-%d %H:%M:%S')
 
     assert courier_appointed_at == expected
+
+
+@pytest.mark.asyncio
+async def test_prepare_orders_for_report_status(
+    db,
+    pre_start_sql_script,
+    run_pre_start_sql_script,
+    ):
+
+    await run_pre_start_sql_script(pre_start_sql_script)
+
+    path = f'{CASES_PATH}/status.json'
+    with open(path) as file:
+        fixture = json.load(file)
+        values = fixture['values']
+        columns = values['columns']
+
+    response = await prepare_orders_for_report(columns=columns)
+    order0_status = response[0][16]
+    order1_status = response[1][16]
+    order2_status = response[2][16]
+
+    assert order0_status == 'Доставлено'
+    assert order1_status == 'На доработке'
+    assert order2_status == 'Архивировано'

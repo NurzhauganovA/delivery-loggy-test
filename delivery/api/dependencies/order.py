@@ -4,6 +4,7 @@ import fastapi
 from fastapi import Depends, Body
 from fastapi import Security
 from loguru import logger
+from tortoise import Tortoise
 from tortoise.expressions import Q
 from tortoise.query_utils import Prefetch
 
@@ -15,7 +16,8 @@ from api.dependencies.partners_ids import (
 from .. import auth
 from .. import models
 from .. import schemas
-from ..enums import AddressType, OrderStatus, PostControlType
+from ..domain.pan import Pan
+from ..enums import AddressType, OrderStatus, ProductType, PostControlType
 from ..enums import OrderDeliveryStatus
 from ..enums import OrderSearchType
 from ..enums import OrderType
@@ -443,6 +445,9 @@ async def order_get_filter_args_base(
                     )
                 else:
                     args.append(Q(delivery_status__filter={'status__in': tuple(delivery_status)}))
+            if OrderDeliveryStatus.BEING_FINALIZED in delivery_status:
+                delivery_status.add(OrderDeliveryStatus.BEING_FINALIZED_ON_CANCEL.value)
+                args.append(Q(delivery_status__filter={'status__in': tuple(delivery_status)}))
             else:
                 args.append(Q(delivery_status__filter={'status__in': tuple(delivery_status)}))
 
@@ -626,20 +631,38 @@ async def order_validate_pan(
     pan: schemas.OrderPAN,
 ):
     order = await models.Order.get(id=order_id)
-    errors = []
+
     if not await models.PanValidationMask.filter(
         partner_id=order.partner_id,
         pan_mask__startswith=str(pan.pan)[:6]
     ).exists():
-        errors.append(('pan', 'Pan is not valid'))
+        raise exceptions.PydanticException(errors=[('pan', 'Pan is not valid')])
 
-    if await models.PAN.filter(pan=pan.pan).exclude(order_id=order_id).exists():
-        errors.append(('pan', 'already linked to another order'))
-    if await models.PAN.filter(pan=pan.pan, order_id=order_id).exists():
-        errors.append(('pan', 'already linked to this order'))
+    # Проверим, был ли этот Номер карты уже привязан к текущей заявке
+    current_product = await models.Product.get_or_none(order_id=order_id)
+    if current_product and current_product.attributes.get('pan') == Pan(value=pan.pan).value:
+        raise exceptions.PydanticException(errors=[('pan', 'already linked to this order')])
 
-    if errors:
-        raise exceptions.PydanticException(errors=errors)
+    # Проверим, был ли этот Номер карты уже привязан к другим заявкам
+    conn = Tortoise.get_connection("default")
+    result = await conn.execute_query_dict(
+        """
+            SELECT 1
+            FROM public.product
+            WHERE type = 'card'
+            AND pan_suffix = $1
+            AND attributes->>'pan' = $2
+            AND order_id != $3
+            LIMIT 1
+        """,
+        [
+            Pan(value=pan.pan).get_suffix(),
+            Pan(value=pan.pan).value,
+            order_id,
+        ]
+    )
+    if result:
+        raise exceptions.PydanticException(errors=[('pan', 'already linked to another order')])
 
     return pan
 
@@ -687,7 +710,7 @@ async def order_status_validate_payload(
             if StatusSlug.SMS_SENT.value in graph_statuses and not accepted_otp_exists:
                 errors.append(('status_id', previous_step))
         case StatusSlug.PHOTO_CAPTURING:
-            if StatusSlug.SCAN_CARD.value in graph_statuses and (not await order_obj.pan_set.all().exists() or not (await order_obj.product).type == ProductType.CARD.value):
+            if StatusSlug.SCAN_CARD.value in graph_statuses and not (await order_obj.product).type == ProductType.CARD.value:
                 errors.append(('status_id', previous_step))
         case StatusSlug.POST_CONTROL:
             postcontrol_configs = await order_obj.item.postcontrol_config_set.filter(
@@ -749,6 +772,7 @@ async def order_check_if_delivered(
 
 async def order_check_for_cancel(
     order_id: int,
+    reason: str = fastapi.Body(embed=True),
 ) -> int:
     order_obj = await models.Order.filter(
         id=order_id,
@@ -800,10 +824,84 @@ async def order_check_for_cancel(
         order_id=order_id,
         type=PostControlType.CANCELED.value,
     ).exists()
-    if postcontrol_cancellation_configs and not postcontrol_cancel_docs_exists:
+    if reason.lower() == 'возврат по истечению срока':
+        if postcontrol_cancellation_configs and not postcontrol_cancel_docs_exists:
+            raise exceptions.HTTPBadRequestException(
+                'At least one image is required',
+            )
+    else:
+        if postcontrol_cancel_docs_exists:
+            raise exceptions.HTTPBadRequestException(
+                'Image is not allowed for this cancellation reason',
+            )
+    return order_id
+
+
+async def order_check_for_accept_cancel(
+    order_id: int,
+) -> int:
+    order_obj = await models.Order.filter(
+        id=order_id,
+    ).select_related('current_status').first().prefetch_related(
+        Prefetch('item__postcontrol_config_set', models.PostControlConfig.filter(
+            parent_config_id__isnull=True,
+            type=PostControlType.CANCELED.value,
+        ).prefetch_related(
+            Prefetch('inner_param_set', models.PostControlConfig.filter(
+                type=PostControlType.CANCELED.value,
+            ).prefetch_related(
+                Prefetch(
+                    'postcontrol_document_set',
+                    models.PostControl.filter(order_id=order_id),
+                    'postcontrol_documents',
+                ),
+            ), 'inner_params'),
+            Prefetch(
+                'postcontrol_document_set',
+                models.PostControl.filter(order_id=order_id),
+                'postcontrol_documents',
+            ),
+        ), 'postcontrol_cancellation_configs')
+    )
+    if order_obj is None:
         raise exceptions.HTTPBadRequestException(
-            'At least one image is required',
+            'Not found',
         )
+    if order_obj.current_status.slug in (StatusSlug.ISSUED.value, StatusSlug.DELIVERED.value):
+        raise exceptions.HTTPBadRequestException(
+            'Already completed',
+        )
+    if order_obj.delivery_status['status'] == OrderDeliveryStatus.CANCELLED.value:
+        raise exceptions.HTTPBadRequestException(
+            'Already cancelled',
+        )
+
+    postcontrol_cancellation_configs = order_obj.item.postcontrol_cancellation_configs
+    postcontrol_cancel_docs_exists = await models.PostControl.filter(
+        order_id=order_id,
+        type=PostControlType.CANCELED.value,
+    ).exists()
+    reason = order_obj.delivery_status['reason']
+    if reason.lower() == 'возврат по истечению срока':
+        if postcontrol_cancellation_configs and not postcontrol_cancel_docs_exists:
+            raise exceptions.HTTPBadRequestException(
+                'At least one image is required',
+            )
+        if postcontrol_cancellation_configs and postcontrol_cancel_docs_exists:
+            postcontrol_cancel_docs_nonaccepted_exists = await models.PostControl.filter(
+                order_id=order_id,
+                type=PostControlType.CANCELED.value,
+                resolution__not=PostControlResolution.ACCEPTED.value,
+            ).exists()
+            if postcontrol_cancel_docs_nonaccepted_exists:
+                raise exceptions.HTTPBadRequestException(
+                    'Accept all post-control images',
+                )
+    else:
+        if postcontrol_cancel_docs_exists:
+            raise exceptions.HTTPBadRequestException(
+                'Image is not allowed for this cancellation reason',
+            )
     return order_id
 
 

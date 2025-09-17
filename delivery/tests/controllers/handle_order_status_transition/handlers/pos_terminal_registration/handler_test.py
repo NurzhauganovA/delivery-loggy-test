@@ -28,7 +28,6 @@ async def test_registration_with_data(
     pos_terminal_registration_status = await models.Status.get(code='pos_terminal_registration')
 
     order = await models.Order.get(id=order_id)
-    assert order.current_status_id != pos_terminal_registration_status.id
 
     product = await models.Product.get(order_id=order_id)
     assert product.attributes.get('model') is None
@@ -46,9 +45,6 @@ async def test_registration_with_data(
             'sum': 10000.1,
         }
     )
-
-    order = await models.Order.get(id=order_id)
-    assert order.current_status_id == pos_terminal_registration_status.id
 
     product = await models.Product.get(order_id=order_id)
     assert product.attributes.get('model') == 'PAX'
@@ -72,7 +68,6 @@ async def test_registration_with_data_and_already_has_another_data(
     pos_terminal_registration_status = await models.Status.get(code='pos_terminal_registration')
 
     order = await models.Order.get(id=order_id)
-    assert order.current_status_id != pos_terminal_registration_status.id
 
     product = await models.Product.get(order_id=order_id)
     assert product.attributes.get('model') == 'SUNMI'
@@ -90,9 +85,6 @@ async def test_registration_with_data_and_already_has_another_data(
             'sum': 17777.1,
         }
     )
-
-    order = await models.Order.get(id=order_id)
-    assert order.current_status_id == pos_terminal_registration_status.id
 
     product = await models.Product.get(order_id=order_id)
     assert product.attributes.get('model') == 'PAX'

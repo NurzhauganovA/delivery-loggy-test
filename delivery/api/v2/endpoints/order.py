@@ -9,7 +9,7 @@ from loguru import logger
 from tortoise.exceptions import DoesNotExist
 
 from ...auth import get_current_user
-from api import controllers, schemas, dependencies, auth, PydanticException, exceptions
+from api import controllers, schemas, dependencies, auth, exceptions
 from api.domain.order import DeliveryGraphValidationError, BaseOrderDomainError
 from api.dependencies.controllers import get_handle_order_status_transition_controller
 from api.controllers.handle_order_status_transition import OrderStatusTransitionController
@@ -46,7 +46,7 @@ async def order_create_v2(
     """Create order. """
     # TODO: handle it beautifully
     if distribute_now and not order.delivery_point:
-        raise PydanticException(errors=('distribute_now', 'Can not distribute pickup orders'))
+        raise exceptions.PydanticException(errors=('distribute_now', 'Can not distribute pickup orders'))
     created_order_id = await controllers.order_create_v2(
         order,
         user=user,

@@ -15,7 +15,6 @@ from pydantic import(
     conset,
     Field,
     conint,
-    Extra,
     validator,
     StrictBool,
     StrictInt,
@@ -30,7 +29,7 @@ from .deliverygraph import(
     DeliveryGraphGet,
     DeliveryGraphGetV2,
 )
-from .. import enums, exceptions
+from api import enums, exceptions
 from api.common import validators
 from ..common.schema_base import BaseOutSchema
 from ..domain.pan import Pan
@@ -220,6 +219,7 @@ class DeliveryStatus(BaseModel):
             enums.OrderDeliveryStatus.CANCELED_AT_CLIENT,
             enums.OrderDeliveryStatus.RESCHEDULED,
             enums.OrderDeliveryStatus.BEING_FINALIZED_AT_CS,
+            enums.OrderDeliveryStatus.BEING_FINALIZED_ON_CANCEL,
         }:
             values['datetime'] = None
             values['reason'] = None
@@ -503,6 +503,26 @@ class Product(BaseOutSchema):
     name: str | None
     attributes: Union[dict, list]
 
+    @root_validator
+    def mask_pan(cls, values):
+        """
+            Если у продукта с типом card есть pan в attributes,
+            то наложим маску
+        """
+        product_type = values.get("type")
+
+        if product_type == "card":
+            current_pan = values.get("attributes", {}).get("pan")
+            if current_pan:
+                pan = Pan(value=current_pan)
+                values["attributes"]["pan"] = pan.get_masked()
+
+        return values
+
+
+class ProductList(BaseOutSchema):
+    name: str | None
+
 
 class OrderListV2(OrderOutBaseV2):
     initial_delivery_datetime: datetime.datetime | None
@@ -521,22 +541,22 @@ class OrderListV2(OrderOutBaseV2):
     product: Product | None = None
 
 
-class OrderPan(BaseOutSchema):
-    pan: str | None
-
-    @validator("pan", pre=True, always=True)
-    def format_pan(cls, v):
-        if v is None:
-            return v
-        return Pan(value=v).get_masked()
-
-
 class OrderGet(OrderList):
     courier_id: Optional[StrictInt]
     item: ItemGet
     last_otp: datetime.datetime | None
     statuses: List[OrderStatusGetWithDatetimeV2]
     current_status_id: int | None = None
+
+
+
+class OrderListMobile(OrderList):
+    courier_id: Optional[StrictInt]
+    item: ItemGet
+    last_otp: datetime.datetime | None
+    statuses: List[OrderStatusGetWithDatetimeV2]
+    current_status_id: int | None = None
+    product: ProductList | None
 
 
 class OrderGetV1(OrderList):
@@ -555,7 +575,6 @@ class OrderGetV2(OrderListV2):
     statuses: List[OrderStatusGetWithDatetime]
     last_otp: datetime.datetime | None
     actual_delivery_datetime: datetime.datetime | None
-    # pan_set: list[OrderPan] | None
     product: Product | None
     courier_assigned_at: datetime.datetime | None
 

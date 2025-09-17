@@ -1,14 +1,9 @@
+import os
+
 import pytest
 
-from tests.fixtures.default_pre_start_sql_scripts import (
-    default_groups_insert_script,
-    default_permissions_insert_script,
-    default_groups_permissions_insert_script,
-    default_countries_insert_script,
-    default_cities_insert_script,
-    statuses_insert_script
-)
-from tests.utils import json_fixture, query
+from tests.fixtures.default_pre_start_sql_scripts import default_pre_start_sql_script
+from tests.utils import get_sql_script_from_fixtures
 
 
 @pytest.fixture
@@ -30,279 +25,10 @@ def profile_data() -> dict[str, str]:
 @pytest.fixture
 def expected() -> dict:
     return {
-        "id": 1,
-        "type": "planned",
-        "delivery_datetime": "2024-02-20T23:59:00+00:00",
-        "delivery_status": {
-            "status": "is_delivered",
-            "datetime": None,
-            "comment": None,
-            "reason": None,
-        },
-        "receiver_iin": "860824302113",
-        "receiver_name": "МАТАШЕВ АКБАР МУСЛИМЖАНОВИЧ",
-        "receiver_phone_number": "+77781254616",
-        "comment": None,
-        "created_by": "integration",
-        "idn": None,
-        "initial_delivery_datetime": None,
-        "created_at": "2024-02-08T06:11:17.160374+00:00",
-        "courier": {
-            "id": 1,
-            "user": {
-                "id": 2,
-                "phone_number": "+77777777771",
-                "first_name": "Курьер 1",
-                "middle_name": "Курьерович 1",
-                "last_name": "Курьеров 1",
-            },
-        },
-        "city": {"id": 1, "name": "Almaty", "timezone": "Asia/Aqtau"},
-        "area": {"id": 1, "slug": "Весь город Алматы"},
-        "partner": {
-            "id": 1,
-            "name": "Курьерская Служба 1",
-            "article": "ОB",
-            "courier_partner_id": None,
-        },
-        "shipment_point": None,
-        "delivery_point": {
-            "id": 1,
-            "latitude": 43.165452,
-            "longitude": 76.874013,
-            "address": "Казахстан, Алматы, Алматы, Микрорайон Каргалы, д.25",
-        },
-        "item": {
-            "name": "Базовая кредитная карта",
-            "has_postcontrol": True,
-            "message_for_noncall": 'Здравствуйте! Курьер не смог дозвониться до Вас. Просьба перезвонить по этому номеру',
-            "upload_from_gallery": True,
-            "postcontrol_configs": [
-                {
-                    "id": 3,
-                    "inner_params": [
-                        {
-                            "document_code": None,
-                            "id": 4,
-                            "name": "Послед контроль " "отмены - " "фотография 1",
-                            "postcontrol_documents": [
-                                {
-                                    'comment': None,
-                                     'id': 3,
-                                     'image': '/media/postcontrols/240ec173-8c4b-4f2a-8953-e6dd997ba8c4.jpg',
-                                     'resolution': 'accepted'
-                                }
-                            ],
-                            "send": False,
-                        },
-                        {
-                            "document_code": None,
-                            "id": 5,
-                            "name": "Послед контроль " "отмены - " "фотография 2",
-                            "postcontrol_documents": [
-                                {
-                                    'comment': None,
-                                 'id': 4,
-                                 'image': '/media/postcontrols/240ec173-8c4b-4f2a-8953-e6dd997ba8c4.jpg',
-                                 'resolution': 'accepted'
-                                }
-                            ],
-                            "send": False,
-                        },
-                    ],
-                    "name": "Послед контроль отмены",
-                    "postcontrol_documents": [],
-                },
-                {
-                    "id": 1,
-                    "name": "Фотография последконтроля",
-                    "inner_params": [],
-                    "postcontrol_documents": [
-                        {
-                            "id": 1,
-                            "image": "/media/postcontrols/453cd1b1-1379-4723-ad47-bac2560394fd.jpg",
-                            "resolution": "accepted",
-                            "comment": None
-                        }
-                    ]
-                },
-                {
-                    "id": 2,
-                    "name": "Фотография последконтроля 1",
-                    "inner_params": [],
-                    "postcontrol_documents": [
-                        {
-                            "id": 2,
-                            "image": "/media/postcontrols/240ec173-8c4b-4f2a-8953-e6dd997ba8c4.jpg",
-                            "resolution": "accepted",
-                            "comment": None
-                        }
-                    ]
-                }
-            ],
-            "accepted_delivery_statuses": [
-                'on-the-way-to-call-point',
-                'is_delivered',
-                'cancelled',
-                'postponed',
-                'noncall',
-                'rescheduled',
-                'being_finalized',
-                'cancelled_at_client',
-                'video_check_passed',
-                'video_unavailable',
-                'video_postcontrol',
-                'video_postcontrol_being_finalized',
-                'video_check_failed',
-                'sms_postcontrol',
-                'sms_postcontrol_being_finalized',
-                'sms_unavailable',
-                'sms_failed'
-            ],
-        },
-        "deliverygraph_step_count": 7,
-        "current_status_position": 7,
-        "current_status": {
-            "id": 7,
-            "name": None,
-            "icon": "order_delivevred",
-            "slug": "dostavleno",
-        },
-        "manager": None,
-        "product": None,
-        "deliverygraph": {
-            "graph": [
-                {
-                    "id": 1,
-                    "position": 1,
-                    "name": "Новая заявка",
-                    "slug": "novaia-zaiavka",
-                    "icon": "order_new",
-                    "button_name": None,
-                    "transitions": None,
-                    "status": None,
-                },
-                {
-                    "id": 2,
-                    "position": 2,
-                    "name": "Курьер назначен",
-                    "slug": "kurer-naznachen",
-                    "icon": "courier_appointed",
-                    "button_name": "Принять в работу",
-                    "transitions": None,
-                    "status": None,
-                },
-                {
-                    "id": 3,
-                    "position": 3,
-                    "name": "Принято курьером в работу",
-                    "slug": "priniato-kurerom-v-rabotu",
-                    "icon": "courier_accepted",
-                    "button_name": "К точке доставки",
-                    "transitions": None,
-                    "status": None,
-                },
-                {
-                    "id": 4,
-                    "position": 4,
-                    "name": "В пути к точке доставки",
-                    "slug": "v-puti-k-tochke-dostavki",
-                    "icon": "otw_delivery_point",
-                    "button_name": "На точке доставки",
-                    "transitions": None,
-                    "status": None,
-                },
-                {
-                    "id": 5,
-                    "position": 5,
-                    "name": "На точке доставки",
-                    "slug": "na-tochke-dostavki",
-                    "icon": "on_delivery_point",
-                    "button_name": "Контакт с получателем",
-                    "transitions": None,
-                    "status": None,
-                },
-                {
-                    "id": 6,
-                    "position": 6,
-                    "name": "Контакт с получателем",
-                    "slug": "kontakt-s-poluchatelem",
-                    "icon": "at_client",
-                    "button_name": "Посылка передана",
-                    "transitions": None,
-                    "status": None,
-                },
-                {
-                    "id": 7,
-                    "position": 7,
-                    "name": "Доставлено",
-                    "slug": "dostavleno",
-                    "icon": "order_delivered",
-                    "button_name": None,
-                    "transitions": None,
-                    "status": None,
-                },
-            ]
-        },
-        "statuses": [
-            {
-                "created_at": "2024-02-08T06:11:17.160374+00:00",
-                "status": {
-                    "after": [],
-                    "icon": "order_new",
-                    "id": 1,
-                    "is_optional": False,
-                    "name": None,
-                    "partner_id": None,
-                    "slug": "novaia-zaiavka",
-                },
-            },
-            {
-                "created_at": "2024-02-08T08:11:17.160374+00:00",
-                "status": {
-                    "after": [
-                        {"id": 2, "name": "Курьер назначен"},
-                        {"id": 9, "name": "Подготовка к отправке"},
-                    ],
-                    "icon": "courier_accepted",
-                    "id": 3,
-                    "is_optional": False,
-                    "name": None,
-                    "partner_id": None,
-                    "slug": "priniato-kurerom-v-rabotu",
-                },
-            },
-            {
-                "created_at": "2024-02-08T09:11:17.160374+00:00",
-                "status": {
-                    "after": [
-                        {"id": 3, "name": "Принято курьером в работу"},
-                        {"id": 11, "name": "На точке вывоза"},
-                    ],
-                    "icon": "otw_delivery_point",
-                    "id": 4,
-                    "is_optional": False,
-                    "name": None,
-                    "partner_id": None,
-                    "slug": "v-puti-k-tochke-dostavki",
-                },
-            },
-            {
-                "created_at": "2025-02-08T07:11:17.160374+00:00",
-                "status": {
-                    "after": [{"id": 1, "name": "Новая заявка"}],
-                    "icon": "courier_appointed",
-                    "id": 2,
-                    "is_optional": False,
-                    "name": None,
-                    "partner_id": None,
-                    "slug": "kurer-naznachen",
-                },
-            },
-        ],
-        "last_otp": None,
         "actual_delivery_datetime": "2024-02-20T11:21:50.279633+00:00",
-        "courier_assigned_at": "2025-02-08T07:11:17.160374+00:00",
+        "area": {"id": 1, "slug": "Весь город Алматы"},
+        "city": {"id": 1, "name": "Almaty", "timezone": "Asia/Aqtau"},
+        "comment": None,
         "comments": [
             {
                 "created_at": "2024-02-09T12:10:10+00:00",
@@ -347,23 +73,277 @@ def expected() -> dict:
                 "user_role": {"name": "Курьер", "slug": "courier"},
             },
         ],
+        "courier": {
+            "id": 1,
+            "user": {
+                "first_name": "Курьер 1",
+                "id": 2,
+                "last_name": "Курьеров 1",
+                "middle_name": "Курьерович 1",
+                "phone_number": "+77777777771",
+            },
+        },
+        "courier_assigned_at": "2025-02-08T07:11:17.160374+00:00",
+        "created_at": "2024-02-08T06:11:17.160374+00:00",
+        "created_by": "integration",
+        "current_status": {
+            "icon": "order_delivered",
+            "id": 7,
+            "name": "Delivered",
+            "slug": "dostavleno",
+        },
+        "current_status_position": 7,
+        "delivery_datetime": "2024-02-20T23:59:00+00:00",
+        "delivery_point": {
+            "address": "Казахстан, Алматы, Алматы, Микрорайон Каргалы, " "д.25",
+            "id": 1,
+            "latitude": 43.165452,
+            "longitude": 76.874013,
+        },
+        "delivery_status": {
+            "comment": None,
+            "datetime": None,
+            "reason": None,
+            "status": "is_delivered",
+        },
+        "deliverygraph": {
+            "graph": [
+                {
+                    "button_name": None,
+                    "icon": "order_new",
+                    "id": 1,
+                    "name": "Новая заявка",
+                    "position": 1,
+                    "slug": "novaia-zaiavka",
+                    "status": None,
+                    "transitions": None,
+                },
+                {
+                    "button_name": "Принять в работу",
+                    "icon": "courier_appointed",
+                    "id": 2,
+                    "name": "Курьер назначен",
+                    "position": 2,
+                    "slug": "kurer-naznachen",
+                    "status": None,
+                    "transitions": None,
+                },
+                {
+                    "button_name": "К точке доставки",
+                    "icon": "courier_accepted",
+                    "id": 3,
+                    "name": "Принято курьером в работу",
+                    "position": 3,
+                    "slug": "priniato-kurerom-v-rabotu",
+                    "status": None,
+                    "transitions": None,
+                },
+                {
+                    "button_name": "На точке доставки",
+                    "icon": "otw_delivery_point",
+                    "id": 4,
+                    "name": "В пути к точке доставки",
+                    "position": 4,
+                    "slug": "v-puti-k-tochke-dostavki",
+                    "status": None,
+                    "transitions": None,
+                },
+                {
+                    "button_name": "Контакт с получателем",
+                    "icon": "on_delivery_point",
+                    "id": 5,
+                    "name": "На точке доставки",
+                    "position": 5,
+                    "slug": "na-tochke-dostavki",
+                    "status": None,
+                    "transitions": None,
+                },
+                {
+                    "button_name": "Посылка передана",
+                    "icon": "at_client",
+                    "id": 6,
+                    "name": "Контакт с получателем",
+                    "position": 6,
+                    "slug": "kontakt-s-poluchatelem",
+                    "status": None,
+                    "transitions": None,
+                },
+                {
+                    "button_name": None,
+                    "icon": "order_delivered",
+                    "id": 7,
+                    "name": "Доставлено",
+                    "position": 7,
+                    "slug": "dostavleno",
+                    "status": None,
+                    "transitions": None,
+                },
+            ]
+        },
+        "deliverygraph_step_count": 7,
+        "id": 1,
+        "idn": None,
+        "initial_delivery_datetime": None,
+        "item": {
+            "accepted_delivery_statuses": [
+                "on-the-way-to-call-point",
+                "is_delivered",
+                "cancelled",
+                "postponed",
+                "noncall",
+                "rescheduled",
+                "being_finalized",
+                "cancelled_at_client",
+                "video_check_passed",
+                "video_unavailable",
+                "video_postcontrol",
+                "video_postcontrol_being_finalized",
+                "video_check_failed",
+                "sms_postcontrol",
+                "sms_postcontrol_being_finalized",
+                "sms_unavailable",
+                "sms_failed",
+            ],
+            "has_postcontrol": True,
+            "message_for_noncall": "Здравствуйте! Курьер не смог дозвониться до "
+            "Вас. Просьба перезвонить по этому номеру",
+            "name": "Базовая кредитная карта",
+            "postcontrol_configs": [
+                {
+                    "id": 3,
+                    "inner_params": [
+                        {
+                            "document_code": None,
+                            "id": 4,
+                            "name": "Послед контроль " "отмены - " "фотография 1",
+                            "postcontrol_documents": [
+                                {
+                                    "comment": None,
+                                    "id": 3,
+                                    "image": "/media/postcontrols/240ec173-8c4b-4f2a-8953-e6dd997ba8c4.jpg",
+                                    "resolution": "accepted",
+                                }
+                            ],
+                            "send": False,
+                        },
+                        {
+                            "document_code": None,
+                            "id": 5,
+                            "name": "Послед контроль " "отмены - " "фотография 2",
+                            "postcontrol_documents": [
+                                {
+                                    "comment": None,
+                                    "id": 4,
+                                    "image": "/media/postcontrols/240ec173-8c4b-4f2a-8953-e6dd997ba8c4.jpg",
+                                    "resolution": "accepted",
+                                }
+                            ],
+                            "send": False,
+                        },
+                    ],
+                    "name": "Послед контроль отмены",
+                    "postcontrol_documents": [],
+                },
+                {
+                    "id": 1,
+                    "inner_params": [],
+                    "name": "Фотография последконтроля",
+                    "postcontrol_documents": [
+                        {
+                            "comment": None,
+                            "id": 1,
+                            "image": "/media/postcontrols/453cd1b1-1379-4723-ad47-bac2560394fd.jpg",
+                            "resolution": "accepted",
+                        }
+                    ],
+                },
+                {
+                    "id": 2,
+                    "inner_params": [],
+                    "name": "Фотография последконтроля 1",
+                    "postcontrol_documents": [
+                        {
+                            "comment": None,
+                            "id": 2,
+                            "image": "/media/postcontrols/240ec173-8c4b-4f2a-8953-e6dd997ba8c4.jpg",
+                            "resolution": "accepted",
+                        }
+                    ],
+                },
+            ],
+            "upload_from_gallery": True,
+        },
+        "last_otp": None,
+        "manager": None,
+        "partner": {
+            "article": "ОB",
+            "courier_partner_id": None,
+            "id": 1,
+            "name": "Курьерская Служба 1",
+        },
+        "product": None,
+        "receiver_iin": "860824302113",
+        "receiver_name": "МАТАШЕВ АКБАР МУСЛИМЖАНОВИЧ",
+        "receiver_phone_number": "+77781254616",
+        "shipment_point": None,
+        "statuses": [
+            {
+                "created_at": "2024-02-08T06:11:17.160374+00:00",
+                "status": {
+                    "after": None,
+                    "icon": "order_new",
+                    "id": 1,
+                    "is_optional": False,
+                    "name": "New order",
+                    "partner_id": None,
+                    "slug": "novaia-zaiavka",
+                },
+            },
+            {
+                "created_at": "2024-02-08T08:11:17.160374+00:00",
+                "status": {
+                    "after": None,
+                    "icon": "courier_accepted",
+                    "id": 3,
+                    "is_optional": False,
+                    "name": "Accepted by courier for processing",
+                    "partner_id": None,
+                    "slug": "priniato-kurerom-v-rabotu",
+                },
+            },
+            {
+                "created_at": "2024-02-08T09:11:17.160374+00:00",
+                "status": {
+                    "after": None,
+                    "icon": "on_delivery_point",
+                    "id": 4,
+                    "is_optional": False,
+                    "name": "On the way to delivery point",
+                    "partner_id": None,
+                    "slug": "v-puti-k-tochke-dostavki",
+                },
+            },
+            {
+                "created_at": "2025-02-08T07:11:17.160374+00:00",
+                "status": {
+                    "after": None,
+                    "icon": "courier_appointed",
+                    "id": 2,
+                    "is_optional": False,
+                    "name": "Courier assigned",
+                    "partner_id": None,
+                    "slug": "kurer-naznachen",
+                },
+            },
+        ],
+        "type": "planned",
     }
 
 
 
 @pytest.fixture
-def pre_start_sql_script() -> str:
-    """Важен порядок скриптов, так как есть зависимость от внешних ключей у таблиц"""
-    scripts = [
-        default_groups_insert_script(),
-        default_permissions_insert_script(),
-        default_groups_permissions_insert_script(),
-        default_countries_insert_script(),
-        default_cities_insert_script(),
-        statuses_insert_script(),
-    ]
-
-    tables_and_fixtures = {
+def fixtures()-> dict:
+    return {
         'public."user"': 'user',
         'public."partner"': 'partner',
         'public."profile_service_manager"': 'profile_service_manager',
@@ -383,13 +363,12 @@ def pre_start_sql_script() -> str:
         'public."order.statuses"': 'order.statuses',
     }
 
-    for table, fixture in tables_and_fixtures.items():
-        fixtures = json_fixture.get_fixture(
-            'e2e/crm',
-            'get_order',
-            fixture,
-        )
-        insert_query = query.create_insert(table, fixtures)
-        scripts.append(insert_query)
 
-    return " ".join(scripts)
+@pytest.fixture
+def pre_start_sql_script(request, fixtures, default_pre_start_sql_script) -> str:
+    current_test_sql_scripts = get_sql_script_from_fixtures(
+        current_dir=os.path.dirname(str(request.fspath)),
+        fixtures=fixtures,
+    )
+
+    return default_pre_start_sql_script + current_test_sql_scripts

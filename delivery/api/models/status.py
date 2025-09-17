@@ -41,7 +41,6 @@ class Status(Model):
     partner_id: int
 
     class Meta:
-        unique_together = (('name', 'partner'),)
         table = 'status'
 
     @property

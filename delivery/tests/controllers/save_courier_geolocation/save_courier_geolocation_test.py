@@ -41,6 +41,7 @@ async def test_save_in_history(
     assert len(history_records) == 1
 
     history_record = history_records[0]
+    assert history_record.action_type == 'save_courier_geolocation'
     assert history_record.action_data == {'coordinates': {'latitude': '123.123', 'longitude': '456.456'}}
     assert history_record.model_id == 1
     assert history_record.model_type == 'Order'

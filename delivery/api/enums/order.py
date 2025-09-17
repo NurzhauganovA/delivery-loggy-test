@@ -12,6 +12,7 @@ class ProductType(descriptor.Descriptor):
     CARD = 'card'
     POS_TERMINAL = 'pos_terminal'
     GROUP_OF_CARDS = 'group_of_cards'
+    SEP_UNEMBOSSED = 'sep_unembossed'
 
 
 class CreatedType(descriptor.Descriptor):
@@ -159,6 +160,7 @@ class OrderDeliveryStatusQuery(descriptor.Descriptor):
     SMS_UNAVAILABLE = 'sms_unavailable'
     SMS_FAILED = 'sms_failed'
     NULL = 'null'
+    ADDRESS_CHANGED = 'address_changed'
 
 
 class OrderSMS(descriptor.Descriptor):

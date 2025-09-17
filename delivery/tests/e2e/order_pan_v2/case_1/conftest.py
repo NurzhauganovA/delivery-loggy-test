@@ -30,218 +30,224 @@ def profile_data() -> dict[str, str]:
 @pytest.fixture
 def expected():
     return {
-        'area': None,
-        'city': {'id': 1, 'name': 'Almaty', 'timezone': 'Asia/Aqtau'},
-        'comment': '',
-        'courier': {
-            'id': 1,
-            'user': {
-                'first_name': 'Служба 1',
-                'id': 1,
-                'last_name': 'Службавна 1',
-                'middle_name': 'Службавна 1',
-                'phone_number': '+77777777777'
-            }
+        "actual_delivery_datetime": "2024-02-20T11:21:50.279633+00:00",
+        "area": None,
+        "city": {"id": 1, "name": "Almaty", "timezone": "Asia/Aqtau"},
+        "comment": "",
+        "courier": {
+            "id": 1,
+            "user": {
+                "first_name": "Служба 1",
+                "id": 1,
+                "last_name": "Службавна 1",
+                "middle_name": "Службавна 1",
+                "phone_number": "+77777777777",
+            },
         },
-        'created_at': '2024-02-08T06:11:17.160374+00:00',
-        'created_by': 'integration',
-        'current_status': {
-            'icon': 'post_control',
-            'id': 20,
-            'name': None,
-            'slug': 'kod-otpravlen'
+        "courier_assigned_at": "2025-07-11T00:00:01+00:00",
+        "created_at": "2024-02-08T06:11:17.160374+00:00",
+        "created_by": "integration",
+        "current_status": {
+            "icon": "post_control",
+            "id": 20,
+            "name": None,
+            "slug": "kod-otpravlen",
         },
-        'current_status_position': 5,
-        'delivery_datetime': '2024-02-20T23:59:00+00:00',
-        'delivery_point': {
-            'address': 'Казахстан, Алматы, Алматы, Микрорайон Каргалы, д.25',
-            'id': 1,
-            'latitude': 43.165452,
-            'longitude': 76.874013
+        "current_status_position": 5,
+        "delivery_datetime": "2024-02-20T23:59:00+00:00",
+        "delivery_point": {
+            "address": "Казахстан, Алматы, Алматы, Микрорайон Каргалы, " "д.25",
+            "id": 1,
+            "latitude": 43.165452,
+            "longitude": 76.874013,
         },
-        'delivery_status': {
-            'comment': None,
-            'datetime': None,
-            'reason': None,
-            'status': 'is_delivered'
+        "delivery_status": {
+            "comment": None,
+            "datetime": None,
+            "reason": None,
+            "status": "is_delivered",
         },
-        'deliverygraph': {
-            'graph': [
+        "deliverygraph": {
+            "graph": [
                 {
-                    'button_name': None,
-                    'icon': 'order_new',
-                    'id': 1,
-                    'name': 'Новая заявка',
-                    'position': 1,
-                    'slug': 'novaia-zaiavka'
+                    "button_name": None,
+                    "icon": "order_new",
+                    "id": 1,
+                    "name": "Новая заявка",
+                    "position": 1,
+                    "slug": "novaia-zaiavka",
                 },
                 {
-                    'button_name': 'Принять в работу',
-                    'icon': 'courier_appointed',
-                    'id': 2,
-                    'name': 'Курьер назначен',
-                    'position': 2,
-                    'slug': 'kurer-naznachen'
+                    "button_name": "Принять в работу",
+                    "icon": "courier_appointed",
+                    "id": 2,
+                    "name": "Курьер назначен",
+                    "position": 2,
+                    "slug": "kurer-naznachen",
                 },
                 {
-                    'button_name': 'К клиенту',
-                    'icon': 'courier_accepted',
-                    'id': 3,
-                    'name': 'Принято курьером в работу',
-                    'position': 3,
-                    'slug': 'priniato-kurerom-v-rabotu'
+                    "button_name": "К клиенту",
+                    "icon": "courier_accepted",
+                    "id": 3,
+                    "name": "Принято курьером в работу",
+                    "position": 3,
+                    "slug": "priniato-kurerom-v-rabotu",
                 },
                 {
-                    'button_name': 'Отправить SMS с кодом',
-                    'icon': 'at_client',
-                    'id': 25,
-                    'name': 'У клиента',
-                    'position': 4,
-                    'slug': 'u-klienta'
+                    "button_name": "Отправить SMS с кодом",
+                    "icon": "at_client",
+                    "id": 25,
+                    "name": "У клиента",
+                    "position": 4,
+                    "slug": "u-klienta",
                 },
                 {
-                    'button_name': 'Проверить код',
-                    'icon': 'post_control',
-                    'id': 20,
-                    'name': 'Код отправлен',
-                    'position': 5,
-                    'slug': 'kod-otpravlen'
+                    "button_name": "Проверить код",
+                    "icon": "post_control",
+                    "id": 20,
+                    "name": "Код отправлен",
+                    "position": 5,
+                    "slug": "kod-otpravlen",
                 },
                 {
-                    'button_name': 'Сканировать карту',
-                    'icon': 'post_control',
-                    'id': 24,
-                    'name': 'Сканирование карты',
-                    'position': 6,
-                    'slug': 'skanirovanie-karty'
+                    "button_name": "Сканировать карту",
+                    "icon": "post_control",
+                    "id": 24,
+                    "name": "Сканирование карты",
+                    "position": 6,
+                    "slug": "skanirovanie-karty",
                 },
                 {
-                    'button_name': 'Отправить на последконтроль',
-                    'icon': 'post_control',
-                    'id': 16,
-                    'name': 'Фотографирование',
-                    'position': 7,
-                    'slug': 'fotografirovanie'
+                    "button_name": "Отправить на последконтроль",
+                    "icon": "post_control",
+                    "id": 16,
+                    "name": "Фотографирование",
+                    "position": 7,
+                    "slug": "fotografirovanie",
                 },
                 {
-                    'button_name': None,
-                    'icon': 'post_control',
-                    'id': 12,
-                    'name': 'Последконтроль',
-                    'position': 8,
-                    'slug': 'posledkontrol'
+                    "button_name": None,
+                    "icon": "post_control",
+                    "id": 12,
+                    "name": "Последконтроль",
+                    "position": 8,
+                    "slug": "posledkontrol",
                 },
                 {
-                    'button_name': None,
-                    'icon': 'order_delivered',
-                    'id': 7,
-                    'name': 'Доставлено',
-                    'position': 9,
-                    'slug': 'dostavleno'
-                }
+                    "button_name": None,
+                    "icon": "order_delivered",
+                    "id": 7,
+                    "name": "Доставлено",
+                    "position": 9,
+                    "slug": "dostavleno",
+                },
             ]
         },
-        'deliverygraph_step_count': 9,
-        'id': 1,
-        'idn': None,
-        'initial_delivery_datetime': None,
-        'item': {
-            'accepted_delivery_statuses': None,
-            'has_postcontrol': False,
-            'name': 'Базовая кредитная карта',
-            'postcontrol_configs': [],
-            'upload_from_gallery': True
+        "deliverygraph_step_count": 9,
+        "id": 1,
+        "idn": None,
+        "initial_delivery_datetime": None,
+        "item": {
+            "accepted_delivery_statuses": None,
+            "has_postcontrol": False,
+            "message_for_noncall": None,
+            "name": "Базовая кредитная карта",
+            "postcontrol_configs": [],
+            "upload_from_gallery": True,
         },
-        'last_otp': None,
-        'manager': None,
-        'partner': {
-            'article': 'ОB',
-            'courier_partner_id': None,
-            'id': 1,
-            'name': 'Курьерская Служба 1'
+        "last_otp": None,
+        "manager": None,
+        "partner": {
+            "article": "ОB",
+            "courier_partner_id": None,
+            "id": 1,
+            "name": "Курьерская Служба 1",
         },
-        'product': {
-            'attributes': {
-                'input_type': 'manually',
-                'pan': '5269880012192985',
-                'pan_suffix': '2985'
+        "product": {
+            "attributes": {
+                "input_type": "manually",
+                "pan": "5269********2985",
+                "pan_suffix": "2985",
             },
-            'id': 1,
-            'type': 'card'
+            "id": 1,
+            "name": None,
+            "type": "card",
         },
-        'receiver_iin': '860824302113',
-        'receiver_name': 'МАТАШЕВ АКБАР МУСЛИМЖАНОВИЧ',
-        'receiver_phone_number': '+77781254616',
-        'shipment_point': None,
-        'statuses': [
+        "receiver_iin": "860824302113",
+        "receiver_name": "МАТАШЕВ АКБАР МУСЛИМЖАНОВИЧ",
+        "receiver_phone_number": "+77781254616",
+        "shipment_point": None,
+        "statuses": [
             {
-                'created_at': '2025-07-11T00:00:00+00:00',
-                'status': {
-                    'after': [],
-                    'icon': 'order_new',
-                    'id': 1,
-                    'is_optional': False,
-                    'name': None,
-                    'partner_id': None,
-                    'slug': 'novaia-zaiavka'
-                }
+                "created_at": "2025-07-11T00:00:00+00:00",
+                "status": {
+                    "after": [],
+                    "icon": "order_new",
+                    "id": 1,
+                    "is_optional": False,
+                    "name": None,
+                    "partner_id": None,
+                    "slug": "novaia-zaiavka",
+                },
             },
             {
-                'created_at': '2025-07-11T00:00:01+00:00',
-                'status': {'after': [{'id': 1, 'name': 'Новая заявка'}],
-                           'icon': 'courier_appointed',
-                           'id': 2,
-                           'is_optional': False,
-                           'name': None,
-                           'partner_id': None,
-                           'slug': 'kurer-naznachen'}},
-            {'created_at': '2025-07-11T00:00:02+00:00',
-             'status': {'after': [{'id': 2, 'name': 'Курьер назначен'},
-                                  {'id': 9, 'name': 'Подготовка к отправке'}],
-                        'icon': 'courier_accepted',
-                        'id': 3,
-                        'is_optional': False,
-                        'name': None,
-                        'partner_id': None,
-                        'slug': 'priniato-kurerom-v-rabotu'}},
+                "created_at": "2025-07-11T00:00:01+00:00",
+                "status": {
+                    "after": [{"id": 1, "name": "Новая заявка"}],
+                    "icon": "courier_appointed",
+                    "id": 2,
+                    "is_optional": False,
+                    "name": None,
+                    "partner_id": None,
+                    "slug": "kurer-naznachen",
+                },
+            },
             {
-                'created_at': '2025-07-11T00:00:03+00:00',
-                'status': {
-                    'after': [
-                        {
-                            'id': 3,
-                            'name': 'Принято курьером в работу'
-                        }
+                "created_at": "2025-07-11T00:00:02+00:00",
+                "status": {
+                    "after": [
+                        {"id": 2, "name": "Курьер назначен"},
+                        {"id": 9, "name": "Подготовка к отправке"},
                     ],
-                    'icon': 'at_client',
-                    'id': 25,
-                    'is_optional': True,
-                    'name': None,
-                    'partner_id': None,
-                    'slug': 'u-klienta'
-                }
+                    "icon": "courier_accepted",
+                    "id": 3,
+                    "is_optional": False,
+                    "name": None,
+                    "partner_id": None,
+                    "slug": "priniato-kurerom-v-rabotu",
+                },
             },
-            {'created_at': '2025-07-11T00:00:04+00:00',
-             'status': {
-                 'after': [
-                     {
-                         'id': 6,
-                         'name': 'Контакт с получателем'
-                     },
-                     {
-                         'id': 25, 'name': 'У клиента'
-                     }
-                 ],
-                 'icon': 'post_control',
-                 'id': 20,
-                 'is_optional': True,
-                 'name': None,
-                 'partner_id': None,
-                 'slug': 'kod-otpravlen'
-             }
-             }
+            {
+                "created_at": "2025-07-11T00:00:03+00:00",
+                "status": {
+                    "after": [{"id": 3, "name": "Принято курьером в работу"}],
+                    "icon": "at_client",
+                    "id": 25,
+                    "is_optional": True,
+                    "name": None,
+                    "partner_id": None,
+                    "slug": "u-klienta",
+                },
+            },
+            {
+                "created_at": "2025-07-11T00:00:04+00:00",
+                "status": {
+                    "after": [
+                        {"id": 6, "name": "Контакт с получателем"},
+                        {"id": 25, "name": "У клиента"},
+                    ],
+                    "icon": "post_control",
+                    "id": 20,
+                    "is_optional": True,
+                    "name": None,
+                    "partner_id": None,
+                    "slug": "kod-otpravlen",
+                },
+            },
         ],
-        'type': 'planned'}
+        "type": "planned",
+    }
+
 
 
 @pytest.fixture
@@ -370,8 +376,8 @@ def item_insert_script() -> str:
 
 def delivery_graphs_insert_script() -> str:
     return """
-           INSERT INTO public.deliverygraph (id, graph, partner_id, name, slug, types, graph_courier, name_en, name_zh,
-                                             name_ru, name_kk)
+           INSERT INTO public.deliverygraph (id, graph, partner_id, name_ru, slug, types, graph_courier, name_en, name_zh,
+                                             name_kk)
            VALUES (11,
                    '[
                         {
@@ -522,7 +528,7 @@ def delivery_graphs_insert_script() -> str:
                           "button_name": null
                         }
                    ]',
-                   null, null, null, null); 
+                   null, null, null); 
            """
 
 
@@ -542,6 +548,18 @@ def orders_insert_script() -> str:
                                        allow_courier_assign, actual_delivery_datetime, current_status_id,
                                        shipment_point_id, delivery_point_id, courier_id)
            VALUES (1, 'planned', '2024-02-08 06:11:17.160374 +00:00', '2024-02-20 23:59:00.000000 +00:00',
+                   '{"status": "is_delivered"}', 'МАТАШЕВ АКБАР МУСЛИМЖАНОВИЧ', '860824302113', '+77781254616', '', 1,
+                   1, 1, null, null, null, false, 'integration', 11,
+                   '{"set_otp": "https://business.bankffin.kz/api/loggy/callbacks/set-otp/3928b9e9-91a5-481c-88d2-9980a3f75f10?token=f0ce3fd77de24e0a9b07e7a02da2aa02", "set_pan": null, "set_status": "https://business.bankffin.kz/api/loggy/callbacks/set-status/3928b9e9-91a5-481c-88d2-9980a3f75f10?token=f0ce3fd77de24e0a9b07e7a02da2aa02"}',
+                   null, null, false, true, '2024-02-20 11:21:50.279633 +00:00', 20, null, 1, 1);
+
+           INSERT INTO public."order" (id, type, created_at, delivery_datetime, delivery_status, receiver_name,
+                                       receiver_iin, receiver_phone_number, comment, city_id, item_id, partner_id,
+                                       partner_order_id, main_order_id, position, archived, created_by,
+                                       deliverygraph_id, callbacks, initial_delivery_datetime, order_group_id, revised,
+                                       allow_courier_assign, actual_delivery_datetime, current_status_id,
+                                       shipment_point_id, delivery_point_id, courier_id)
+           VALUES (2, 'planned', '2024-02-08 06:11:17.160374 +00:00', '2024-02-20 23:59:00.000000 +00:00',
                    '{"status": "is_delivered"}', 'МАТАШЕВ АКБАР МУСЛИМЖАНОВИЧ', '860824302113', '+77781254616', '', 1,
                    1, 1, null, null, null, false, 'integration', 11,
                    '{"set_otp": "https://business.bankffin.kz/api/loggy/callbacks/set-otp/3928b9e9-91a5-481c-88d2-9980a3f75f10?token=f0ce3fd77de24e0a9b07e7a02da2aa02", "set_pan": null, "set_status": "https://business.bankffin.kz/api/loggy/callbacks/set-status/3928b9e9-91a5-481c-88d2-9980a3f75f10?token=f0ce3fd77de24e0a9b07e7a02da2aa02"}',

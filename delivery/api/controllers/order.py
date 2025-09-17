@@ -84,12 +84,11 @@ async def order_statuses_get_count(order_default_args, order_group_default_args,
     return orders_count
 
 
-async def order_get_list_courier(pagination_params, default_filter_args, filter_args, profile_type):
-    orders = await models.order_get_list(
+async def order_get_list_mobile(pagination_params, default_filter_args, filter_args):
+    orders = await models.order_get_list_mobile(
         pagination_params,
         default_filter_args=default_filter_args,
         filter_args=filter_args,
-        profile_type=profile_type,
     )
     return orders
 
@@ -180,38 +179,30 @@ async def order_cancel(
     comment: str | None = None,
 ):
     try:
-        order_obj = await models.Order.get(*default_filter_args, id=order_id).prefetch_related(
-        Prefetch('item__postcontrol_config_set', models.PostControlConfig.filter(
-            parent_config_id__isnull=True,
-            type=PostControlType.CANCELED.value,
-        ).prefetch_related(
-            Prefetch('inner_param_set', models.PostControlConfig.filter(
-                type=PostControlType.CANCELED.value,
-            ).prefetch_related(
-                Prefetch(
-                    'postcontrol_document_set',
-                    models.PostControl.filter(order_id=order_id),
-                    'postcontrol_documents',
-                ),
-            ), 'inner_params'),
-            Prefetch(
-                'postcontrol_document_set',
-                models.PostControl.filter(order_id=order_id),
-                'postcontrol_documents',
-            ),
-        ), 'postcontrol_cancellation_configs')
-    ).select_related('current_status', 'item', 'city', 'courier__city')
+        order_obj = await models.Order.get(*default_filter_args, id=order_id)
     except DoesNotExist:
         raise exceptions.HTTPNotFoundException()
 
-    if order_obj.item.postcontrol_cancellation_configs:
-        return await models.order_request_cancellation(
-            order_obj=order_obj,
-            reason=reason,
-            user=user,
-            comment=comment,
-        )
-    return await models.order_cancel(order_obj, reason, user)
+    return await models.order_request_cancellation(
+        order_obj=order_obj,
+        reason=reason,
+        user=user,
+        comment=comment,
+    )
+
+
+async def order_accept_cancel(
+    order_id: int,
+    user: UserCurrent,
+    default_filter_args: list,
+):
+    try:
+        order_obj = await models.Order.get(*default_filter_args, id=order_id)
+
+    except DoesNotExist:
+        raise exceptions.HTTPNotFoundException()
+
+    return await models.order_accept_cancel(order_obj=order_obj, user=user)
 
 
 async def order_postpone(order_id: int, until: datetime, comment: str, user: UserCurrent, default_filter_args: list):

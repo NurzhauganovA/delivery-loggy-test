@@ -7,10 +7,6 @@ class DeliveryPoint(pydantic.BaseModel):
     address: str
 
 
-class Courier(pydantic.BaseModel):
+class ValidDeliveryPoint(pydantic.BaseModel):
     delivery_point: DeliveryPoint
     comment: str
-
-
-class Supervisor(pydantic.BaseModel):
-    delivery_point: DeliveryPoint

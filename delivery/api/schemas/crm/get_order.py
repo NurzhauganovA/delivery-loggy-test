@@ -1,7 +1,6 @@
 import datetime
 import typing
 
-from pydantic import root_validator
 from tortoise.contrib.pydantic import PydanticModel
 
 from api import enums
@@ -9,7 +8,7 @@ from api.enums import OrderType
 from api.schemas.deliverygraph import DeliveryGraphGetV2
 from api.schemas.order import (
     Courier, DeliveryStatus, Area, Partner, ShipmentPointGet, DeliveryPointGet, ItemV2, StatusGetV2, Product,
-    ItemGetV2, OrderStatusGetWithDatetime, OrderPan, City
+    ItemGetV2, OrderStatusGetWithDatetime, City
 )
 
 
@@ -66,16 +65,6 @@ class GetOrderResponse(PydanticModel):
     statuses: typing.List[OrderStatusGetWithDatetime]
     last_otp: datetime.datetime | None
     actual_delivery_datetime: datetime.datetime | None
-    # pan_set: list[OrderPan] | None
     product: Product | None
     courier_assigned_at: datetime.datetime | None
     comments: typing.List[Comment]
-
-    # TODO: Убрать после релиза LG-3
-    @root_validator(pre=False)
-    def set_pan_set_from_product(cls, values):
-        product = values.get("product")
-        if product and product.type == 'card' and product.attributes.get('pan'):
-
-            values["pan_set"] = [OrderPan(pan=product.attributes["pan"])]
-        return values

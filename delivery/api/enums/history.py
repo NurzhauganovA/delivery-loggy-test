@@ -22,3 +22,4 @@ class InitiatorType(enums.Descriptor):
 
 class ActionType(enums.Descriptor):
     CREATE_COMMENT = 'create_comment'
+    SAVE_COURIER_GEOLOCATION = 'save_courier_geolocation'

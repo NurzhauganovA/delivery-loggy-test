@@ -56,7 +56,8 @@ env:
   FREEDOM_POS_TERMINAL_REGISTRATION_TOKEN: "Basic b3ZlcmRyYWZ0OnlaUEN0ajNmYXd1SEM2QXpqMmZIbTl3d21FalByUWoz"
 
   # Фридом Банк
-  FREEDOM_BANK_OTP_BASE_URL: "https://gw.freedombank.kz/api/otp/otp"
+  # Обращение идет через туннель
+  FREEDOM_BANK_OTP_BASE_URL: "http://172.17.58.169:31404/delivery/otp"
   FREEDOM_BANK_OTP_USERNAME: "loggy"
   FREEDOM_BANK_OTP_PASSWORD: "1TCsI/3QyTMhcr2aowtGB/ji+nBciIhf"
   FREEDOM_BANK_KZ_CALLBACKS_TOKEN: "Basic bG9nZ3k6MVRDc0kvM1F5VE1oY3IyYW93dEdCL2ppK25CY2lJaGY="
@@ -163,14 +164,6 @@ readinessProbe:
   periodSeconds: 5
   successThreshold: 1
   timeoutSeconds: 1
-
-resources:
-  limits:
-    cpu: 2
-    memory: 2Gi
-  requests:
-    cpu: 1
-    memory: 1.5Gi
 
 imagePullSecrets:
 - name: myregistrykey

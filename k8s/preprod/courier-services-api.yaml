@@ -97,15 +97,6 @@ env:
 #    secretKeys: "FREEDOM_POS_TERMINAL_REGISTRATION_TOKEN"
 #    secretEnvName: "FREEDOM_POS_TERMINAL_REGISTRATION_TOKEN"
 
-
-resources:
-  limits:
-    cpu: 0.3
-    memory: 500Mi
-  requests:
-    cpu: 0.1
-    memory: 150Mi
-
 replicaCount: 1
 
 rollingUpdate:

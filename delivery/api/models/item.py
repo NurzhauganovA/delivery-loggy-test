@@ -164,6 +164,18 @@ async def item_get(
                 ),
                 to_attr='postcontrol_configs',
             ),
+            Prefetch(
+                relation='postcontrol_config_set',
+                queryset=models.PostControlConfig.filter(
+                    parent_config_id__isnull=True,
+                    type=PostControlType.CANCELED.value,
+                ).prefetch_related(
+                    Prefetch('inner_param_set', models.PostControlConfig.filter(
+                        type=PostControlType.CANCELED.value,
+                    ), 'inner_params'),
+                ),
+                to_attr='postcontrol_cancellation_configs',
+            ),
         ).select_related('partner', 'category')
 
     except DoesNotExist:
@@ -236,6 +248,7 @@ async def item_create(
     created_item = await Item.create(**payload_dict)
 
     await create_postcontrol_config_objects(postcontrol_configs, created_item.id)
+    await create_default_postcontrol_cancellation_configs(item_id=created_item.id)
 
     await created_item.deliverygraph_set.add(*deliverygraphs)
     if shipment_points:
@@ -260,6 +273,19 @@ async def item_create(
             to_attr='inner_params',
         ),
     )
+    created_item.postcontrol_cancellation_configs = await created_item.postcontrol_config_set.filter(
+        parent_config_id__isnull=True,
+        type=PostControlType.CANCELED.value,
+    ).prefetch_related(
+        Prefetch(
+            relation='inner_param_set',
+            queryset=models.PostControlConfig.filter(
+                parent_config_id__isnull=False,
+                type=PostControlType.CANCELED.value,
+            ),
+            to_attr='inner_params',
+        ),
+    )
     return schemas.ItemGet.from_orm(created_item)
 
 
@@ -271,6 +297,24 @@ async def create_postcontrol_config_objects(postcontrol_configs: list, item_id: 
             models.PostControlConfig(item_id=item_id, parent_config=config_obj, **inner) for inner in inner_params
         ]
         await models.PostControlConfig.bulk_create(inner_objects, 50)
+
+
+async def create_default_postcontrol_cancellation_configs(item_id: int) -> None:
+    postcontrol_config = await models.PostControlConfig.create(
+        item_id=item_id,
+        type=PostControlType.CANCELED.value,
+        name='Послед-контроль отмены'
+    )
+
+    inner_params = []
+    for i in range(1, 6):
+        inner_params.append(models.PostControlConfig(
+            item_id=item_id,
+            type=PostControlType.CANCELED.value,
+            parent_config=postcontrol_config,
+            name=f'Фотография {i}'
+        ))
+    await models.PostControlConfig.bulk_create(inner_params)
 
 
 async def update_postcontrol_config_objects(postcontrol_configs: list, item_id: int):

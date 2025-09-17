@@ -14,7 +14,6 @@ async def test_send(adapter: FreedomBankOTPAdapter):
         Ошибки быть не должно, send вернет None
     """
     await adapter.send(
-        phone_number="77000000000",
         partner_order_id="BFF000056"
     )
 
@@ -25,12 +24,10 @@ async def test_send_and_verify(adapter: FreedomBankOTPAdapter):
         Ошибки быть не должно
     """
     await adapter.send(
-        phone_number="77000000000",
         partner_order_id="BFF000056"
     )
 
     await adapter.verify(
-        phone_number="77000000000",
         partner_order_id="BFF000056",
         otp_code="1234",
     )
@@ -43,20 +40,7 @@ async def test_send_bad_request(adapter: FreedomBankOTPAdapter):
     """
     with pytest.raises(OTPBadRequestError, match="can not send otp, bad request"):
         await adapter.send(
-            phone_number="77000000002",
-            partner_order_id="BFF000056",
-        )
-
-
-@pytest.mark.asyncio
-async def test_send_without_phone_number(adapter: FreedomBankOTPAdapter):
-    """
-        Ошибка валидации, нет phone_number
-    """
-    with pytest.raises(OTPValidationError, match="phone_number is required"):
-        await adapter.send(
-            phone_number="",
-            partner_order_id="BFF000056",
+            partner_order_id="BFF000500",
         )
 
 
@@ -67,7 +51,6 @@ async def test_send_without_partner_order_id(adapter: FreedomBankOTPAdapter):
     """
     with pytest.raises(OTPValidationError, match="partner_order_id is required"):
         await adapter.send(
-            phone_number="77000000000",
             partner_order_id=""
         )
 
@@ -79,22 +62,8 @@ async def test_verify_bad_request(adapter: FreedomBankOTPAdapter):
     """
     with pytest.raises(OTPBadRequestError, match="can not verify otp, bad request"):
         await adapter.verify(
-            phone_number="77000000000",
-            partner_order_id="BFF000056",
+            partner_order_id="BFF00500",
             otp_code="2222",
-        )
-
-
-@pytest.mark.asyncio
-async def test_verify_without_phone_number(adapter: FreedomBankOTPAdapter):
-    """
-        Ошибка валидации, нет phone_number
-    """
-    with pytest.raises(OTPValidationError, match="phone_number is required"):
-        await adapter.verify(
-            phone_number="",
-            partner_order_id="BFF000056",
-            otp_code="1234",
         )
 
 
@@ -105,7 +74,6 @@ async def test_verify_without_partner_order_id(adapter: FreedomBankOTPAdapter):
     """
     with pytest.raises(OTPValidationError, match="partner_order_id is required"):
         await adapter.verify(
-            phone_number="77000000000",
             partner_order_id="",
             otp_code="1234",
         )
@@ -118,7 +86,6 @@ async def test_verify_without_otp_code(adapter: FreedomBankOTPAdapter):
     """
     with pytest.raises(OTPValidationError, match="otp_code is required"):
         await adapter.verify(
-            phone_number="77000000000",
             partner_order_id="BFF000056",
             otp_code="",
         )
@@ -131,7 +98,6 @@ async def test_verify_wrong_combinations_in_client_side(adapter: FreedomBankOTPA
     """
     with pytest.raises(OTPBadRequestError, match="wrong combinations of phone_number and request_id in client side"):
         await adapter.verify(
-            phone_number="77000000000",
             partner_order_id="BFF000056",
             otp_code="1111",
         )
@@ -143,7 +109,6 @@ async def test_verify_wrong_otp_during_verification_client_side(adapter: Freedom
     """
     with pytest.raises(OTPWrongOTPCode, match="wrong OTP, error OTP code verification in client side"):
         await adapter.verify(
-            phone_number="77000000000",
             partner_order_id="BFF000056",
             otp_code="3333",
         )

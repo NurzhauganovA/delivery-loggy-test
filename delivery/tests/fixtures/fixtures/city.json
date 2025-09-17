@@ -1,0 +1,46 @@
+[
+  {
+    "id": 1,
+    "longitude": null,
+    "latitude": null,
+    "timezone": "Asia/Aqtau",
+    "country_id": 1,
+    "name_en": "Almaty",
+    "name_zh": null,
+    "name_ru": "Алматы",
+    "name_kk": "Алматы"
+  },
+  {
+    "id": 2,
+    "longitude": null,
+    "latitude": null,
+    "timezone": "Asia/Aqtau",
+    "country_id": 1,
+    "name_en": "Astana",
+    "name_zh": null,
+    "name_ru": "Астана",
+    "name_kk": "Астана"
+  },
+  {
+    "id": 3,
+    "longitude": null,
+    "latitude": null,
+    "timezone": "Asia/Aqtau",
+    "country_id": 1,
+    "name_en": "Qaraganda",
+    "name_zh": null,
+    "name_ru": "Караганда",
+    "name_kk": "Караганда"
+  },
+  {
+    "id": 4,
+    "longitude": null,
+    "latitude": null,
+    "timezone": "Europe/Moscow",
+    "country_id": 2,
+    "name_en": "Moscow",
+    "name_zh": null,
+    "name_ru": "Москва",
+    "name_kk": "Москва"
+  }
+]

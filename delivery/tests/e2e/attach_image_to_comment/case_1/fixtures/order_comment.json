@@ -1,0 +1,11 @@
+[
+    {
+        "id": 1,
+        "text": "Sample comment text",
+        "order_id": 1,
+        "user_id": 1,
+        "user_name": "Службаева 1 Служба 1 Службаевна 1",
+        "user_role_id": "service_manager",
+        "created_at": "2025-04-14T12:00:00+00:00"
+    }
+]

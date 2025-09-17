@@ -29,7 +29,10 @@ async def test_get_statistics_by_supervisor(
 
     response = await client.get(
         url='/v1/statistics',
-        headers={'Authorization': 'Bearer ' + access_token},
+        headers={
+            'Authorization': 'Bearer ' + access_token,
+            'X-Locale': 'ru',
+        },
         params=params,
     )
     assert response.status_code == 200

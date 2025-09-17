@@ -1,7 +1,6 @@
 import pytest
 from freezegun import freeze_time
 
-from api.models import PAN
 from tests.fixtures.client import client
 from tests.fixtures.database import db, run_pre_start_sql_script
 

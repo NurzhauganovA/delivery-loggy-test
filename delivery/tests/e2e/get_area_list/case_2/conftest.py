@@ -34,7 +34,7 @@ def expected():
             'city_id': 1,
             'courier_number': 0,
             'fill_color': '#ff0000',
-            'fill_opacity': 0.6,
+            'fill_opacity': 0.3,
             'id': 1,
             'partner_id': 1,
             'scope': [],
@@ -47,7 +47,7 @@ def expected():
             'city_id': 1,
             'courier_number': 0,
             'fill_color': '#ff0000',
-            'fill_opacity': 0.6,
+            'fill_opacity': 0.3,
             'id': 2,
             'partner_id': 1,
             'scope': [],
@@ -60,7 +60,7 @@ def expected():
             'city_id': 1,
             'courier_number': 0,
             'fill_color': '#ff0000',
-            'fill_opacity': 0.6,
+            'fill_opacity': 0.3,
             'id': 3,
             'partner_id': 1,
             'scope': [],
@@ -73,7 +73,7 @@ def expected():
             'city_id': 1,
             'courier_number': 0,
             'fill_color': '#ff0000',
-            'fill_opacity': 0.6,
+            'fill_opacity': 0.3,
             'id': 4,
             'partner_id': 1,
             'scope': [],
@@ -184,11 +184,11 @@ def groups_users_insert_script() -> str:
 
 def areas_insert_script() -> str:
     return """
-    INSERT INTO public.area (id, slug, partner_id, city_id, scope)
+    INSERT INTO public.area (id, slug, partner_id, city_id, scope, fill_color, fill_opacity, stroke_color, stroke_opacity)
     VALUES
-      (1, 'slug_1', 1, 1, '[]'),
-      (2, 'slug_2', 1, 1, '[]'),
-      (3, 'slug_3', 1, 1, '[]'),
-      (4, 'slug_4', 1, 1, '[]')
+      (1, 'slug_1', 1, 1, '[]', '#ff0000', 0.3, '#ff0000', 1),
+      (2, 'slug_2', 1, 1, '[]', '#ff0000', 0.3, '#ff0000', 1),
+      (3, 'slug_3', 1, 1, '[]', '#ff0000', 0.3, '#ff0000', 1),
+      (4, 'slug_4', 1, 1, '[]', '#ff0000', 0.3, '#ff0000', 1)
     ;
     """

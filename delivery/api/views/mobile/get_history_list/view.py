@@ -2,6 +2,7 @@ import typing
 from collections import defaultdict
 
 from fastapi_pagination.ext.tortoise import paginate
+from tortoise.expressions import Q
 
 from api import models, enums, schemas
 from api.schemas import pagination
@@ -103,7 +104,10 @@ async def get_history_list(
         raise ValueError('pagination_params is required')
 
     params = filter_params.dict(exclude_unset=True, exclude_none=True) if filter_params else {}
-    qs = models.History.filter(**params).order_by('-created_at')
+
+    qs = models.History.filter(
+        Q(**params) & (Q(action_type__isnull=True) | ~Q(action_type=enums.ActionType.SAVE_COURIER_GEOLOCATION.value))
+    ).order_by('-created_at')
 
     result = await paginate(qs, params=pagination_params)
     await __serialize_initiator_info(result.items)

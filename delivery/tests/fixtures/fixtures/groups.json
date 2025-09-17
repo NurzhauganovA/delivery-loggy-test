@@ -1,0 +1,54 @@
+[
+  {
+    "slug": "courier",
+    "name": "Курьер"
+  },
+  {
+    "slug": "manager",
+    "name": "Менеджер партнера"
+  },
+  {
+    "slug": "branch_manager",
+    "name": "Менеджер филиала"
+  },
+  {
+    "slug": "dispatcher",
+    "name": "Диспетчер"
+  },
+  {
+    "slug": "owner",
+    "name": "Владелец"
+  },
+  {
+    "slug": "service_manager",
+    "name": "Менеджер"
+  },
+  {
+    "slug": "partner_branch_manager",
+    "name": "Менеджер филиала партнера"
+  },
+  {
+    "slug": "sorter",
+    "name": "Сортировщик"
+  },
+  {
+    "slug": "supervisor",
+    "name": "Супервайзер"
+  },
+  {
+    "slug": "logist",
+    "name": "Логист"
+  },
+  {
+    "slug": "call_center_manager",
+    "name": "Менеджер колл-центра"
+  },
+  {
+    "slug": "general_call_center_manager",
+    "name": "Менеджер колл-центра (расширенный)"
+  },
+  {
+    "slug": "support",
+    "name": "Поддержка"
+  }
+]

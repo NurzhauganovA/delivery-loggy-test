@@ -3,7 +3,7 @@ import pytest
 
 from delivery.tests.conftest import CUR_DIR
 
-from delivery.utils.area import polygon
+from api.utils.area import polygon
 
 
 FIXTURES_PATH = f'{CUR_DIR}/unit/utils/area/fixtures/'

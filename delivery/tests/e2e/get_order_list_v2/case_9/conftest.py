@@ -29,130 +29,133 @@ def profile_data() -> dict[str, str]:
 @pytest.fixture
 def expected() -> dict:
     return {
-    "items": [
-        {
-            "id": 1,
-            "type": "planned",
-            "delivery_datetime": "2024-02-20T23:59:00+00:00",
-            "delivery_status": {
-                "status": "is_delivered",
-                "datetime": None,
-                "comment": None,
-                "reason": None,
-            },
-            "receiver_iin": "860824302113",
-            "receiver_name": "МАТАШЕВ АКБАР МУСЛИМЖАНОВИЧ",
-            "receiver_phone_number": "+77781254616",
-            "comment": "",
-            "created_by": "integration",
-            "idn": None,
-            "initial_delivery_datetime": None,
-            "created_at": "2024-02-08T06:11:17.160374+00:00",
-            "courier": {
-                "id": 1,
-                "user": {
-                    "id": 2,
-                    "phone_number": "+77777777771",
-                    "first_name": "Курьер 1",
-                    "middle_name": "Курьерович 1",
-                    "last_name": "Курьеров 1",
+        "current_page": 1,
+        "items": [
+            {
+                "area": {"id": 1, "slug": "Весь город Алматы"},
+                "city": {"id": 1, "name": "Almaty", "timezone": "Asia/Aqtau"},
+                "comment": "",
+                "courier": {
+                    "id": 1,
+                    "user": {
+                        "first_name": "Курьер 1",
+                        "id": 2,
+                        "last_name": "Курьеров 1",
+                        "middle_name": "Курьерович 1",
+                        "phone_number": "+77777777771",
+                    },
                 },
-            },
-            "city": {"id": 1, "name": "Almaty", "timezone": "Asia/Aqtau"},
-            "area": {"id": 1, "slug": "Весь город Алматы"},
-            "partner": {
-                "id": 3,
-                "name": 'Партнер 2',
-                "article": "ОB",
-                "courier_partner_id": 1,
-            },
-            "shipment_point": None,
-            "delivery_point": {
-                "id": 1,
-                "latitude": 43.165452,
-                "longitude": 76.874013,
-                "address": "Казахстан, Алматы, Алматы, Микрорайон Каргалы, д.25",
-            },
-            "item": {"name": "Базовая кредитная карта", "has_postcontrol": False},
-            "deliverygraph_step_count": 7,
-            "current_status_position": 7,
-            "current_status": {
-                "id": 7,
-                "name": None,
-                "icon": "order_delivevred",
-                "slug": "dostavleno",
-            },
-            "manager": None,
-            "product": {
-                "id": 1,
-                "type": "card",
-                "attributes": {"pan": "5269********1234", "pan_suffix": "1234"},
-            },
-        },
-        {
-            "id": 2,
-            "type": "planned",
-            "delivery_datetime": "2023-12-08T23:59:00+00:00",
-            "delivery_status": {
-                "status": "is_delivered",
-                "datetime": None,
-                "comment": None,
-                "reason": None,
-            },
-            "receiver_iin": "910725401501",
-            "receiver_name": "КУЛЬЖАНОВА ФАРИЗА ОНТАЛАПОВНА",
-            "receiver_phone_number": "+77782593678",
-            "comment": "",
-            "created_by": "integration",
-            "idn": None,
-            "initial_delivery_datetime": None,
-            "created_at": "2023-11-30T09:26:47.637552+00:00",
-            "courier": {
-                "id": 1,
-                "user": {
-                    "id": 2,
-                    "phone_number": "+77777777771",
-                    "first_name": "Курьер 1",
-                    "middle_name": "Курьерович 1",
-                    "last_name": "Курьеров 1",
+                "created_at": "2024-02-08T06:11:17.160374+00:00",
+                "created_by": "integration",
+                "current_status": {
+                    "icon": "order_delivevred",
+                    "id": 7,
+                    "name": None,
+                    "slug": "dostavleno",
                 },
-            },
-            "city": {"id": 1, "name": "Almaty", "timezone": "Asia/Aqtau"},
-            "area": {"id": 1, "slug": "Весь город Алматы"},
-            "partner": {
-                "id": 3,
-                "name": 'Партнер 2',
-                "article": "ОB",
-                "courier_partner_id": 1,
-            },
-            "shipment_point": None,
-            "delivery_point": {
+                "current_status_position": 7,
+                "delivery_datetime": "2024-02-20T23:59:00+00:00",
+                "delivery_point": {
+                    "address": "Казахстан, Алматы, Алматы, " "Микрорайон Каргалы, д.25",
+                    "id": 1,
+                    "latitude": 43.165452,
+                    "longitude": 76.874013,
+                },
+                "delivery_status": {
+                    "comment": None,
+                    "datetime": None,
+                    "reason": None,
+                    "status": "is_delivered",
+                },
+                "deliverygraph_step_count": 7,
                 "id": 1,
-                "latitude": 43.165452,
-                "longitude": 76.874013,
-                "address": "Казахстан, Алматы, Алматы, Микрорайон Каргалы, д.25",
+                "idn": None,
+                "initial_delivery_datetime": None,
+                "item": {"has_postcontrol": False, "name": "Базовая кредитная карта"},
+                "manager": None,
+                "partner": {
+                    "article": "ОB",
+                    "courier_partner_id": 1,
+                    "id": 3,
+                    "name": "Партнер 2",
+                },
+                "product": {
+                    "attributes": {"pan": "5269********1234", "pan_suffix": "1234"},
+                    "id": 1,
+                    "name": None,
+                    "type": "card",
+                },
+                "receiver_iin": "860824302113",
+                "receiver_name": "МАТАШЕВ АКБАР МУСЛИМЖАНОВИЧ",
+                "receiver_phone_number": "+77781254616",
+                "shipment_point": None,
+                "type": "planned",
             },
-            "item": {"name": "Базовая кредитная карта", "has_postcontrol": False},
-            "deliverygraph_step_count": 7,
-            "current_status_position": 7,
-            "current_status": {
-                "id": 7,
-                "name": None,
-                "icon": "order_delivevred",
-                "slug": "dostavleno",
-            },
-            "manager": None,
-            "product": {
+            {
+                "area": {"id": 1, "slug": "Весь город Алматы"},
+                "city": {"id": 1, "name": "Almaty", "timezone": "Asia/Aqtau"},
+                "comment": "",
+                "courier": {
+                    "id": 1,
+                    "user": {
+                        "first_name": "Курьер 1",
+                        "id": 2,
+                        "last_name": "Курьеров 1",
+                        "middle_name": "Курьерович 1",
+                        "phone_number": "+77777777771",
+                    },
+                },
+                "created_at": "2023-11-30T09:26:47.637552+00:00",
+                "created_by": "integration",
+                "current_status": {
+                    "icon": "order_delivevred",
+                    "id": 7,
+                    "name": None,
+                    "slug": "dostavleno",
+                },
+                "current_status_position": 7,
+                "delivery_datetime": "2023-12-08T23:59:00+00:00",
+                "delivery_point": {
+                    "address": "Казахстан, Алматы, Алматы, " "Микрорайон Каргалы, д.25",
+                    "id": 1,
+                    "latitude": 43.165452,
+                    "longitude": 76.874013,
+                },
+                "delivery_status": {
+                    "comment": None,
+                    "datetime": None,
+                    "reason": None,
+                    "status": "is_delivered",
+                },
+                "deliverygraph_step_count": 7,
                 "id": 2,
-                "type": "card",
-                "attributes": {"pan": "5269********1234", "pan_suffix": "1234"},
+                "idn": None,
+                "initial_delivery_datetime": None,
+                "item": {"has_postcontrol": False, "name": "Базовая кредитная карта"},
+                "manager": None,
+                "partner": {
+                    "article": "ОB",
+                    "courier_partner_id": 1,
+                    "id": 3,
+                    "name": "Партнер 2",
+                },
+                "product": {
+                    "attributes": {"pan": "5269********1234", "pan_suffix": "1234"},
+                    "id": 2,
+                    "name": None,
+                    "type": "card",
+                },
+                "receiver_iin": "910725401501",
+                "receiver_name": "КУЛЬЖАНОВА ФАРИЗА ОНТАЛАПОВНА",
+                "receiver_phone_number": "+77782593678",
+                "shipment_point": None,
+                "type": "planned",
             },
-        },
-    ],
-    "current_page": 1,
-    "total_pages": 1,
-    "total": 2,
-}
+        ],
+        "total": 2,
+        "total_pages": 1,
+    }
+
 
 
 
@@ -240,8 +243,12 @@ def item_city_insert_script() -> str:
 
 def delivery_graphs_insert_script() -> str:
     return """
-        INSERT INTO public.deliverygraph (id, graph, partner_id, name, slug, types, graph_courier, name_en, name_zh, name_ru, name_kk) 
-        VALUES (1, '[{"id": 1, "icon": "order_new", "name": "Новая заявка", "slug": "novaia-zaiavka", "position": 1, "button_name": null}, {"id": 2, "icon": "courier_appointed", "name": "Курьер назначен", "slug": "kurer-naznachen", "position": 2, "button_name": "Принять в работу"}, {"id": 3, "icon": "courier_accepted", "name": "Принято курьером в работу", "slug": "priniato-kurerom-v-rabotu", "position": 3, "button_name": "К точке доставки"}, {"id": 4, "icon": "otw_delivery_point", "name": "В пути к точке доставки", "slug": "v-puti-k-tochke-dostavki", "position": 4, "button_name": "На точке доставки"}, {"id": 5, "icon": "on_delivery_point", "name": "На точке доставки", "slug": "na-tochke-dostavki", "position": 5, "button_name": "Контакт с получателем"}, {"id": 6, "icon": "at_client", "name": "Контакт с получателем", "slug": "kontakt-s-poluchatelem", "position": 6, "button_name": "Посылка передана"}, {"id": 7, "icon": "order_delivered", "name": "Доставлено", "slug": "dostavleno", "position": 7, "button_name": null}]', null, 'Базовый', null, '{urgent,operative,planned}', '[{"id": 1, "icon": "order_new", "name": "Новая заявка", "slug": "novaia-zaiavka", "position": 1, "button_name": null}, {"id": 2, "icon": "courier_appointed", "name": "Курьер назначен", "slug": "kurer-naznachen", "position": 2, "button_name": "Принять в работу"}, {"id": 3, "icon": "courier_accepted", "name": "Принято курьером в работу", "slug": "priniato-kurerom-v-rabotu", "position": 3, "button_name": "К точке доставки"}, {"id": 4, "icon": "otw_delivery_point", "name": "В пути к точке доставки", "slug": "v-puti-k-tochke-dostavki", "position": 4, "button_name": "На точке доставки"}, {"id": 5, "icon": "on_delivery_point", "name": "На точке доставки", "slug": "na-tochke-dostavki", "position": 5, "button_name": "Контакт с получателем"}, {"id": 6, "icon": "at_client", "name": "Контакт с получателем", "slug": "kontakt-s-poluchatelem", "position": 6, "button_name": "Посылка передана"}, {"id": 7, "icon": "order_delivered", "name": "Доставлено", "slug": "dostavleno", "position": 7, "button_name": null}]', null, null, null, null);
+           INSERT INTO public.deliverygraph (id, graph, partner_id, name_ru, slug, types, graph_courier, name_en, name_zh, name_kk)
+           VALUES (1,
+                   '[{"id": 1, "icon": "order_new", "name": "Новая заявка", "slug": "novaia-zaiavka", "position": 1, "button_name": null}, {"id": 2, "icon": "courier_appointed", "name": "Курьер назначен", "slug": "kurer-naznachen", "position": 2, "button_name": "Принять в работу"}, {"id": 3, "icon": "courier_accepted", "name": "Принято курьером в работу", "slug": "priniato-kurerom-v-rabotu", "position": 3, "button_name": "К точке доставки"}, {"id": 4, "icon": "otw_delivery_point", "name": "В пути к точке доставки", "slug": "v-puti-k-tochke-dostavki", "position": 4, "button_name": "На точке доставки"}, {"id": 5, "icon": "on_delivery_point", "name": "На точке доставки", "slug": "na-tochke-dostavki", "position": 5, "button_name": "Контакт с получателем"}, {"id": 6, "icon": "at_client", "name": "Контакт с получателем", "slug": "kontakt-s-poluchatelem", "position": 6, "button_name": "Посылка передана"}, {"id": 7, "icon": "order_delivered", "name": "Доставлено", "slug": "dostavleno", "position": 7, "button_name": null}]',
+                   null, 'Базовый', null, '{urgent,operative,planned}',
+                   '[{"id": 1, "icon": "order_new", "name": "Новая заявка", "slug": "novaia-zaiavka", "position": 1, "button_name": null}, {"id": 2, "icon": "courier_appointed", "name": "Курьер назначен", "slug": "kurer-naznachen", "position": 2, "button_name": "Принять в работу"}, {"id": 3, "icon": "courier_accepted", "name": "Принято курьером в работу", "slug": "priniato-kurerom-v-rabotu", "position": 3, "button_name": "К точке доставки"}, {"id": 4, "icon": "otw_delivery_point", "name": "В пути к точке доставки", "slug": "v-puti-k-tochke-dostavki", "position": 4, "button_name": "На точке доставки"}, {"id": 5, "icon": "on_delivery_point", "name": "На точке доставки", "slug": "na-tochke-dostavki", "position": 5, "button_name": "Контакт с получателем"}, {"id": 6, "icon": "at_client", "name": "Контакт с получателем", "slug": "kontakt-s-poluchatelem", "position": 6, "button_name": "Посылка передана"}, {"id": 7, "icon": "order_delivered", "name": "Доставлено", "slug": "dostavleno", "position": 7, "button_name": null}]',
+                   null, null, null); 
     """
 
 

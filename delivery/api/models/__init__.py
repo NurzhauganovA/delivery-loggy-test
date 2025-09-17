@@ -140,6 +140,7 @@ from .order import order_get_couriers_current_executable_orders  # noqa: F401
 from .order import order_get_current_status  # noqa: F401
 from .order import order_get_list  # noqa: F401
 from .order import order_get_list_v2  # noqa: F401
+from .order import order_get_list_mobile  # noqa: F401
 from .order import order_get_v1  # noqa: F401
 from .order import order_get_v2  # noqa: F401
 from .order import order_import_from_excel  # noqa: F401
@@ -152,7 +153,7 @@ from .order import order_pan_v2  # noqa: F401
 from .order import order_report  # noqa: F401
 from .order import order_reschedule  # noqa: F401
 from .order import order_restore  # noqa: F401
-from .order import order_cancel  # noqa: F401
+from .order import order_accept_cancel  # noqa: F401
 from .order import order_request_cancellation  # noqa: F401
 from .order import order_expel_courier  # noqa: F401
 from .order import order_postpone  # noqa: F401

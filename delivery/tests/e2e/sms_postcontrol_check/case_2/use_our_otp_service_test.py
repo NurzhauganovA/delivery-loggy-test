@@ -38,6 +38,5 @@ async def test_use_our_otp_service(
         }
     )
     assert response.status_code == 200
-    print(response.json())
 
     assert not mock_partner_otp_send.called

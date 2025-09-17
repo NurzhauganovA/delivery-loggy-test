@@ -5,7 +5,8 @@
     "send": true,
     "item_id": 1,
     "document_code": "USER_PHOTO",
-    "parent_config_id": null
+    "parent_config_id": null,
+    "type": "post_control"
   },
   {
     "id": 2,
@@ -13,7 +14,8 @@
     "send": true,
     "item_id": 1,
     "document_code": "USER_PHOTO",
-    "parent_config_id": null
+    "parent_config_id": null,
+    "type": "post_control"
   },
   {
     "id": 3,
@@ -21,7 +23,8 @@
     "send": false,
     "item_id": 1,
     "document_code": null,
-    "parent_config_id": null
+    "parent_config_id": null,
+    "type": "canceled"
   },
   {
     "id": 4,
@@ -29,7 +32,8 @@
     "send": false,
     "item_id": 1,
     "document_code": null,
-    "parent_config_id": 3
+    "parent_config_id": 3,
+    "type": "canceled"
   },
   {
     "id": 5,
@@ -37,6 +41,7 @@
     "send": false,
     "item_id": 1,
     "document_code": null,
-    "parent_config_id": 3
+    "parent_config_id": 3,
+    "type": "canceled"
   }
 ]

@@ -30,83 +30,6 @@ def profile_data() -> dict[str, str]:
 
 
 @pytest.fixture
-def expected():
-    return [
-        {
-            'id': 5,
-            'inner_params': [
-                {
-                    'document_code': None,
-                    'id': 6,
-                    'name': 'фото '
-                            '1',
-                    'postcontrol_documents': [
-                        {
-                            'comment': None,
-                            'id': 1,
-                            'image': '/media/postcontrols/00000000-0000-0000-0000-000000000000.png',
-                            'resolution': 'pending'
-                        }
-                    ],
-                    'send': False
-                },
-                {
-                    'document_code': None,
-                    'id': 7,
-                    'name': 'фото '
-                            '2',
-                    'postcontrol_documents': [
-                        {
-                            'comment': None,
-                            'id': 2,
-                            'image': '/media/postcontrols/00000000-0000-0000-0000-000000000001.png',
-                            'resolution': 'pending'
-                        }
-                    ],
-                    'send': False
-                },
-                {
-                    'document_code': None,
-                    'id': 8,
-                    'name': 'фото '
-                            '3',
-                    'postcontrol_documents': [
-                        {
-                            'comment': None,
-                            'id': 3,
-                            'image': '/media/postcontrols/00000000-0000-0000-0000-000000000002.png',
-                            'resolution': 'pending'
-                        }
-                    ],
-                    'send': False},
-                {
-                    'document_code': None,
-                    'id': 9,
-                    'name': 'фото '
-                            '4',
-                    'postcontrol_documents': [
-                        {
-                            'comment': None,
-                            'id': 4,
-                            'image': '/media/postcontrols/00000000-0000-0000-0000-000000000003.png',
-                            'resolution': 'pending'
-                        }
-                    ],
-                    'send': False},
-                {
-                    'document_code': None,
-                    'id': 10,
-                    'name': 'фото '
-                            '5',
-                    'postcontrol_documents': [],
-                    'send': False}],
-            'name': 'Фотографии для отмены',
-            'postcontrol_documents': []
-        }
-    ]
-
-
-@pytest.fixture
 def pre_start_sql_script() -> str:
     """Важен порядок скриптов, так как есть зависимость от внешних ключей у таблиц"""
     scripts = [
@@ -372,6 +295,82 @@ def orders_insert_script() -> str:
                     "set_photo_urls": "https://example-partner.kz/api/loggy/callbacks/set-photo/1234?token=1234"
                 }',
                 true, null, 2, 1
+            ),
+            (
+                3, 'planned', '2025-04-14T12:00:00+00:00', '2025-04-14T12:00:00+00:00',
+                '{
+                    "status": "requested_to_cancel",
+                    "datetime": null,
+                    "comment": "эта заяка висит уже 3 месяца",
+                    "reason": "возврат по истечению срока"
+                }',
+                 'МАТАШЕВ АКБАР МУСЛИМЖАНОВИЧ', '860824302113', '+77781254616',
+                1, 1, 3, 'q3gegseff',
+                false, 'integration', 1,
+                '{
+                    "set_otp": "https://example-partner.kz/api/loggy/callbacks/set-otp/1234?token=1234",
+                    "set_pan": "https://example-partner.kz/api/loggy/callbacks/set-pan/1234?token=1234",
+                    "set_status": "https://example-partner.kz/api/loggy/callbacks/set-status/1234?token=1234",
+                    "set_photo_urls": "https://example-partner.kz/api/loggy/callbacks/set-photo/1234?token=1234"
+                }',
+                true, null, 1, 1
+            ),
+            (
+                4, 'planned', '2025-04-14T12:00:00+00:00', '2025-04-14T12:00:00+00:00',
+                '{
+                    "status": "requested_to_cancel",
+                    "datetime": null,
+                    "comment": "эта заяка висит уже 3 месяца",
+                    "reason": "возврат по истечению срока"
+                }',
+                 'МАТАШЕВ АКБАР МУСЛИМЖАНОВИЧ', '860824302113', '+77781254616',
+                1, 1, 3, 'asrgwrgwa',
+                false, 'integration', 1,
+                '{
+                    "set_otp": "https://example-partner.kz/api/loggy/callbacks/set-otp/1234?token=1234",
+                    "set_pan": "https://example-partner.kz/api/loggy/callbacks/set-pan/1234?token=1234",
+                    "set_status": "https://example-partner.kz/api/loggy/callbacks/set-status/1234?token=1234",
+                    "set_photo_urls": "https://example-partner.kz/api/loggy/callbacks/set-photo/1234?token=1234"
+                }',
+                true, null, 1, 1
+            ),
+            (
+                5, 'planned', '2025-04-14T12:00:00+00:00', '2025-04-14T12:00:00+00:00',
+                '{
+                    "status": null,
+                    "datetime": null,
+                    "comment": "эта заявка висит уже 3 месяца",
+                    "reason": "возврат по истечению срока"
+                }',
+                 'МАТАШЕВ АКБАР МУСЛИМЖАНОВИЧ', '860824302113', '+77781254616',
+                1, 1, 3, 'ergagsdfgs',
+                false, 'integration', 1,
+                '{
+                    "set_otp": "https://example-partner.kz/api/loggy/callbacks/set-otp/1234?token=1234",
+                    "set_pan": "https://example-partner.kz/api/loggy/callbacks/set-pan/1234?token=1234",
+                    "set_status": "https://example-partner.kz/api/loggy/callbacks/set-status/1234?token=1234",
+                    "set_photo_urls": "https://example-partner.kz/api/loggy/callbacks/set-photo/1234?token=1234"
+                }',
+                true, null, 1, 1
+            ),
+            (
+                6, 'planned', '2025-04-14T12:00:00+00:00', '2025-04-14T12:00:00+00:00',
+                '{
+                    "status": "requested_to_cancel",
+                    "datetime": null,
+                    "comment": "For testing purpose only",
+                    "reason": "For testing purpose only"
+                }',
+                 'МАТАШЕВ АКБАР МУСЛИМЖАНОВИЧ', '860824302113', '+77781254616',
+                1, 1, 3, 'rgalrkgagadg',
+                false, 'integration', 1,
+                '{
+                    "set_otp": "https://example-partner.kz/api/loggy/callbacks/set-otp/1234?token=1234",
+                    "set_pan": "https://example-partner.kz/api/loggy/callbacks/set-pan/1234?token=1234",
+                    "set_status": "https://example-partner.kz/api/loggy/callbacks/set-status/1234?token=1234",
+                    "set_photo_urls": "https://example-partner.kz/api/loggy/callbacks/set-photo/1234?token=1234"
+                }',
+                true, null, 1, 1
             )
            ;
            """
@@ -382,7 +381,15 @@ def order_statuses_insert_script() -> str:
     INSERT INTO "public"."order.statuses" ("id", "status_id", "order_id", "created_at")
     VALUES
      (1, 1, 1, '2025-04-14T12:00:00+00:00'),
-     (2, 2, 1, '2025-04-14T12:00:01+00:00')
+     (2, 2, 1, '2025-04-14T12:00:01+00:00'),
+     
+     (3, 1, 3, '2025-04-14T12:00:02+00:00'),
+     
+     (4, 1, 4, '2025-04-14T12:00:02+00:00'),
+     
+     (5, 1, 5, '2025-04-14T12:00:02+00:00'),
+     
+     (6, 1, 6, '2025-04-14T12:00:02+00:00')
      ;
      
     """
@@ -393,6 +400,8 @@ def order_postcontrol_insert_script() -> str:
     INSERT INTO "public"."order.postcontrols"
       ("id", "order_id", "config_id", "image", "type", "resolution")
     VALUES
-      (1, 1, 5, 'cancel 1.png', 'canceled', 'pending')
+      (1, 3, 6, 'cancel 1.png', 'canceled', 'accepted'),
+      (2, 4, 6, 'cancel 1.png', 'canceled', 'accepted'),
+      (3, 5, 6, 'cancel 1.png', 'canceled', 'pending')
       ;
     """

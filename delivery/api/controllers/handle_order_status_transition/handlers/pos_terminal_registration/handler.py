@@ -78,19 +78,12 @@ class POSTerminalRegistrationHandler(OrderStatusTransitionHandlerProtocol):
                 f'not allowed start registration, current registration_status: {current_registration_status}')
 
         # Получим локальное время у заявки
-        order_time = await order_obj.localtime
+        # order_time = await order_obj.localtime
 
-        # В order_statuses запишем лишь единожды статус и обновим current_status
-        order_status, created = await models.OrderStatuses.get_or_create(
-            order_id=order_obj.id,
-            status_id=status.id,
-            defaults={
-                'created_at': order_time,
-            }
-        )
-        if created:
-            order_obj.current_status = status
-            await order_obj.save()
+        # В order_statuses запишем лишь единожды статус
+        # current_order_status = await models.OrderStatuses.filter(order_id=order_obj.id, status_id=status.id)
+        # if not current_order_status:
+        #     await models.OrderStatuses.update_or_create(order_id=order_obj.id, status_id=status.id, created_at=order_time)
 
 
     async def __handle_first_registration(

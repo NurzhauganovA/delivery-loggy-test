@@ -255,7 +255,6 @@ class Order(Model):
     postcontrol_set: fields.ReverseRelation['models.PostControl']
     order_chain_stages_set: fields.ReverseRelation['OrderChainStage']
     otp_set: fields.ReverseRelation['models.SMSPostControl']
-    pan_set: fields.ReverseRelation['models.PAN']
     product: fields.OneToOneRelation['models.Product']
     courier_id: int
     deliverygraph_id: int
@@ -589,7 +588,7 @@ async def order_statuses_get_count(order_default_args, order_group_default_args,
     result[sts.NEW] = await orders.filter(delivery_status__filter={'status__isnull': True}).count()
     result[d_sts.BEING_FINALIZED] = await orders.filter(
         delivery_status__filter={
-            'status__in': [d_sts.BEING_FINALIZED.value, d_sts.BEING_FINALIZED_ON_CANCEL.value],
+            'status__in': (d_sts.BEING_FINALIZED.value, d_sts.BEING_FINALIZED_ON_CANCEL.value),
         },
     ).count()
     if profile_type == ProfileType.COURIER:
@@ -653,6 +652,38 @@ async def order_get_list(pagination_params, default_filter_args, filter_args, pr
                     'reason': None,
                     'comment': None,
                 }
+
+    return paginated_result
+
+
+async def order_get_list_mobile(pagination_params, default_filter_args, filter_args):
+    has_ready_for_shipment = f"order__deliverygraph.graph @? '$.slug[*] ? (@ == \"{StatusSlug.READY_FOR_SHIPMENT}\")'"
+
+    instance_qs = Order.all_objects.annotate(
+        has_ready_for_shipment=RawSQL(has_ready_for_shipment),
+    ).filter(
+        *default_filter_args,
+        deliverygraph__id__isnull=False,  # needed to join deliverygraph table only.
+    ).filter(*filter_args).order_by('-created_at').distinct()
+    qs = instance_qs.prefetch_related(
+        Prefetch('status_set', OrderStatuses.all().prefetch_related('status'),
+                 'statuses'),
+        Prefetch('address_set', OrderAddress.all().prefetch_related('place'),
+                 'addresses'),
+        Prefetch(
+            'order_chain_stages_set', OrderChainStage.all(), 'order_chain_stages',
+        ),
+    ).select_related('area', 'city', 'courier__user', 'item', 'deliverygraph', 'partner', 'product')
+    paginated_result = await paginate(qs, params=pagination_params)
+    for order_item in getattr(paginated_result, 'items'):
+        await order_fill_old_addresses_field(order_item)
+        if order_item.current_status_id == int(OrderStatus.ENDED.value):
+            order_item.delivery_status = {
+                'status': OrderDeliveryStatus.IS_DELIVERED.value,
+                'datetime': None,
+                'reason': None,
+                'comment': None,
+            }
 
     return paginated_result
 
@@ -1115,11 +1146,12 @@ async def get_default_values(create: dict) -> dict:
         item_obj = await models.Item.get(id=create['item_id'])
     except DoesNotExist:
         raise DoesNotExist(f'Item with given ID: {create["item_id"]}')
-    if item_obj.has_postcontrol and not create.get('receiver_iin'):
-        raise OrderReceiverIINNotProvided(
-            'You trying to create order using a product with post_control '
-            "status but don't provide receiver_iin",
-        )
+    if create.get('product_type') != enums.ProductType.SEP_UNEMBOSSED.value:
+        if item_obj.has_postcontrol and not create.get('receiver_iin'):
+            raise OrderReceiverIINNotProvided(
+                'You trying to create order using a product with post_control '
+                "status but don't provide receiver_iin",
+            )
 
     deliverygraph_obj = await item_obj.deliverygraph_set.filter(
         types__contains=create['type'].value,
@@ -1393,17 +1425,16 @@ async def order_expel_courier(order_id: int, current_user: schemas.UserCurrent, 
     await order_obj.save()
 
 
-async def order_cancel(
+async def order_accept_cancel(
     order_obj: Order,
-    reason: str,
     user: UserCurrent,
-    comment: str | None = None,
 ):
+    order_obj.delivery_datetime = None
     delivery_status = {
         'status': OrderDeliveryStatus.CANCELLED.value,
-        'reason': reason,
+        'reason': order_obj.delivery_status['reason'],
         'datetime': None,
-        'comment': comment,
+        'comment': order_obj.delivery_status['comment'],
     }
     order_obj.delivery_status = delivery_status
     await order_obj.save()
@@ -1871,8 +1902,8 @@ async def order_restore(
         history_created_at = order_time
         await OrderStatuses.create(order=order_obj, status=new_status, created_at=order_time)
         order_obj.current_status = new_status
-        deleted_pans = await order_obj.pan_set.all().values_list('pan', flat=True)
-        await order_obj.pan_set.all().delete()
+        product = await models.Product.get_or_none(order_id=order_id)
+        await product.delete()
         await models.SMSPostControl.filter(order_id=order_id).delete()
         await order_obj.save()
 
@@ -1886,7 +1917,7 @@ async def order_restore(
                 request_method=RequestMethods.PATCH,
                 action_data={
                     'delivery_status': {'status': 'restored'},
-                    'deleted_pans': deleted_pans,
+                    'deleted_product': product.attributes,
                 },
                 created_at=history_created_at,
             )
@@ -1912,6 +1943,16 @@ async def order_courier_assign(default_filters: list, order_id: int, courier_id:
     if not order_obj.allow_courier_assign:
         raise exceptions.HTTPBadRequestException(f'It is not allowed to assign a courier to the order')
     order_obj.courier_id = courier_id
+
+    if order_obj.delivery_status.get('status') == enums.OrderDeliveryStatus.ADDRESS_CHANGED:
+        order_obj.current_status_id = 2
+        order_obj.delivery_status = {
+            'status': None,
+            'datetime': None,
+            'comment': None,
+            'reason': None,
+        }
+
     async with in_transaction('default'):
         await order_obj.save()
         assigned_status = await models.Status.get(
@@ -2184,7 +2225,7 @@ async def order_update_status(
             if product is not None:
                 pan = product.attributes.get('pan')
                 if pan is not None:
-                    data = {'pan_card': pan.pan}
+                    data = {'pan_card': pan}
                     conn = redis_module.get_connection()
                     await conn.publish(
                         channel='send-to-celery',
@@ -2586,6 +2627,11 @@ async def get_order_for_order_sms_postcontrol_check(
         order_id: int,
 ):
     order_qs = Order.get(id=order_id).prefetch_related(
+        Prefetch('status_set', OrderStatuses.all().prefetch_related('status'),
+                 'statuses'),
+        Prefetch('address_set', OrderAddress.all().prefetch_related('place'),
+                 'addresses'),
+        Prefetch('postcontrol_set', models.PostControl.all(), 'postcontrols'),
         Prefetch('item__postcontrol_config_set', models.PostControlConfig.filter(
             parent_config_id__isnull=True,
             type=PostControlType.POST_CONTROL.value,
@@ -2605,30 +2651,6 @@ async def get_order_for_order_sms_postcontrol_check(
                 'postcontrol_documents',
             ),
         ), 'postcontrol_configs'),
-        Prefetch('item__postcontrol_config_set', models.PostControlConfig.filter(
-            parent_config_id__isnull=True,
-            type=PostControlType.CANCELED.value,
-        ).prefetch_related(
-            Prefetch('inner_param_set', models.PostControlConfig.filter(
-                type=PostControlType.CANCELED.value,
-            ).prefetch_related(
-                Prefetch(
-                    'postcontrol_document_set',
-                    models.PostControl.filter(order_id=order_id),
-                    'postcontrol_documents',
-                ),
-            ), 'inner_params'),
-            Prefetch(
-                'postcontrol_document_set',
-                models.PostControl.filter(order_id=order_id),
-                'postcontrol_documents',
-            ),
-        ), 'postcontrol_cancellation_configs'),
-        Prefetch('status_set', OrderStatuses.all().prefetch_related('status'),
-                 'statuses'),
-        Prefetch('address_set', OrderAddress.all().prefetch_related('place'),
-                 'addresses'),
-        Prefetch('postcontrol_set', models.PostControl.all(), 'postcontrols'),
     ).select_related('area', 'city', 'courier__user', 'item', 'deliverygraph', 'partner', 'product')
 
     return schemas.OrderGetV1.from_orm(await order_qs)
@@ -3220,11 +3242,18 @@ async def external_order_create_v2(
                 f"{partner_id} and item_id {order_dict.get('item_id')}"
                 f", not found"
             )
-        if item_obj.has_postcontrol and not order_dict.get('receiver_iin'):
-            raise OrderReceiverIINNotProvided(
-                'You trying to create order using a product with post_control '
-                "status but don't provide receiver_iin",
-            )
+        if order.product_type == enums.ProductType.SEP_UNEMBOSSED:
+            client_code = product_payload.client_code
+            if not client_code:
+                raise ValueError(
+                    'Payload client_code required for sep_unembossed product type'
+                )
+        else:
+            if item_obj.has_postcontrol and not order_dict.get('receiver_iin'):
+                raise OrderReceiverIINNotProvided(
+                    'You trying to create order using a product with post_control '
+                    "status but don't provide receiver_iin",
+                )
         has_preparation = f"graph @? '$.slug[*] ? (@ == \"{StatusSlug.PACKED}\")'"
         deliverygraph = await item_obj.deliverygraph_set.filter(
             types__contains=order.type.value
@@ -3252,34 +3281,41 @@ async def external_order_create_v2(
         # TODO: Сейчас параллельно тут доработки по двум продуктам, ЗП проект и Пос терминалы, + SEP неименные в будущем
         # TODO: Поэтому пока без рефакторинга, чтобы не было конфликтов
 
-        if order.product_type == enums.ProductType.GROUP_OF_CARDS and product_payload:
-            await models.Product.create(
-                order_id=order_created.id,
-                type=order.product_type,
-                attributes=product_payload.json(),
-                name=order.product_name,
+        if product_payload:
+            if order.product_type == enums.ProductType.GROUP_OF_CARDS:
+                await models.Product.create(
+                    order_id=order_created.id,
+                    type=order.product_type,
+                    attributes=product_payload.json(),
+                    name=order.product_name,
+                )
+
+            if order.product_type == enums.ProductType.CARD:
+                pan = Pan(value=product_payload.pan)
+                await models.Product.create(
+                    order_id=order_created.id,
+                    type='card',
+                    name=order.product_name,
+                    attributes={
+                        "pan": pan.get_masked(),
+                        "pan_suffix": pan.get_suffix(),
+                    },
+                    pan_suffix=pan.get_suffix(),
+                )
+
+            if order.product_type == enums.ProductType.POS_TERMINAL:
+                await models.Product.create(
+                    order_id=order_created.id,
+                    type='pos_terminal',
+                    attributes=product_payload.json()
             )
 
-        if order.product_type == enums.ProductType.CARD and product_payload:
-            pan = Pan(value=product_payload.pan)
-            await models.Product.create(
-                order_id=order_created.id,
-                type='card',
-                name=order.product_name,
-                attributes={
-                    "pan": pan.get_masked(),
-                    "pan_suffix": pan.get_suffix(),
-                },
-                pan_suffix=pan.get_suffix(),
-            )
-
-        if order.product_type == enums.ProductType.POS_TERMINAL and product_payload:
-            await models.Product.create(
-                order_id=order_created.id,
-                type='pos_terminal',
-                attributes=product_payload.json()
-            )
-
+            if order.product_type == enums.ProductType.SEP_UNEMBOSSED:
+                await models.Product.create(
+                    order_id=order_created.id,
+                    type=enums.ProductType.SEP_UNEMBOSSED.value,
+                    attributes=product_payload.json()
+                )
 
         await order_update_status(order_created, OrderStatus.NEW)
         if city_name and not order.type == OrderType.PICKUP:
@@ -3360,11 +3396,12 @@ async def external_order_create(
                 f"{partner_id} and item_id {order_dict.get('item_id')}"
                 f", not found"
             )
-        if item_obj.has_postcontrol and not order_dict.get('receiver_iin'):
-            raise OrderReceiverIINNotProvided(
-                'You trying to create order using a product with post_control '
-                "status but don't provide receiver_iin",
-            )
+        if order.product_type != enums.ProductType.SEP_UNEMBOSSED:
+            if item_obj.has_postcontrol and not order_dict.get('receiver_iin'):
+                raise OrderReceiverIINNotProvided(
+                    'You trying to create order using a product with post_control '
+                    "status but don't provide receiver_iin",
+                )
         has_preparation = f"graph @? '$.slug[*] ? (@ == \"{StatusSlug.PACKED}\")'"
         deliverygraph = await item_obj.deliverygraph_set.filter(
             types__contains=order.type.value
@@ -3444,23 +3481,36 @@ async def external_order_create(
 
 
 async def order_pan(order_id: int, pan_schema: schemas.OrderPAN, default_filter_args):
+    pan = Pan(value=pan_schema.pan)
+
+    # Проверим есть ли уже созданный продукт
+    current_product = await models.Product.get_or_none(order_id=order_id)
+
+    # Если есть, то редактируем текущий продукт
+    if current_product:
+        current_product.attributes['pan'] = pan.value
+        current_product.attributes['pan_suffix'] = pan.get_suffix()
+        current_product.attributes['input_type'] = pan_schema.input_type
+        current_product.pan_suffix = pan.get_suffix()
+        await current_product.save()
+
+    # Иначе, создадим новый продукт
+    else:
+        await models.Product.create(
+            order_id=order_id,
+            type='card',
+            attributes={
+                'pan': pan.value,
+                'pan_suffix': pan.get_suffix(),
+                'input_type': pan_schema.input_type,
+            },
+            pan_suffix=pan.get_suffix(),
+        )
+
     order_obj = await Order.filter(
         *default_filter_args,
     ).distinct().get(id=order_id).select_related('city', 'deliverygraph')
 
-    order_time = await order_obj.localtime
-    pan = Pan(value=pan_schema.pan)
-    await models.Product.create(
-        order_id=order_id,
-        type='card',
-        attributes={
-            'pan': pan.value,
-            'pan_suffix': pan.get_suffix(),
-            'input_type': pan_schema.input_type,
-        },
-        pan_suffix=pan.get_suffix(),
-    )
-    order_obj = await Order.select_for_update().get(id=order_id)
     next_status_obj = await get_next_status_from_status(order_obj, StatusSlug.SCAN_CARD.value)
     if next_status_obj:
         try:
@@ -3487,23 +3537,36 @@ async def order_pan(order_id: int, pan_schema: schemas.OrderPAN, default_filter_
 
 
 async def order_pan_v2(order_id: int, pan_schema: schemas.OrderPAN, default_filter_args):
+    pan = Pan(value=pan_schema.pan)
+
+    # Проверим есть ли уже созданный продукт
+    current_product = await models.Product.get_or_none(order_id=order_id)
+
+    # Если есть, то редактируем текущий продукт
+    if current_product:
+        current_product.attributes['pan'] = pan.value
+        current_product.attributes['pan_suffix'] = pan.get_suffix()
+        current_product.attributes['input_type'] = pan_schema.input_type
+        current_product.pan_suffix = pan.get_suffix()
+        await current_product.save()
+
+    # Иначе, создадим новый продукт
+    else:
+        await models.Product.create(
+            order_id=order_id,
+            type='card',
+            attributes={
+                'pan': pan.value,
+                'pan_suffix': pan.get_suffix(),
+                'input_type': pan_schema.input_type,
+            },
+            pan_suffix=pan.get_suffix(),
+        )
+
     order_obj = await Order.filter(
         *default_filter_args,
     ).distinct().get(id=order_id).select_related('city', 'deliverygraph')
 
-    order_time = await order_obj.localtime
-    pan = Pan(value=pan_schema.pan)
-    await models.Product.create(
-        order_id=order_id,
-        type='card',
-        attributes={
-            'pan': pan.value,
-            'pan_suffix': pan.get_suffix(),
-            'input_type': pan_schema.input_type,
-        },
-        pan_suffix=pan.get_suffix(),
-    )
-    order_obj = await Order.select_for_update().get(id=order_id)
     next_status_obj = await get_next_status_from_status(order_obj, StatusSlug.SCAN_CARD.value)
     if next_status_obj:
         try:
@@ -3582,7 +3645,7 @@ async def check_if_order_can_get_status(
             if not await order_obj.otp_set.filter(accepted_at__isnull=False).exists():
                 errors.append(('status_id', previous_step))
         case StatusSlug.PHOTO_CAPTURING:
-            if not await order_obj.pan_set.all().exists() or not (await order_obj.product).type == ProductType.CARD.value:
+            if not (await order_obj.product).type == ProductType.CARD.value:
                 errors.append(('status_id', previous_step))
         case StatusSlug.POST_CONTROL:
             if not await order_obj.postcontrol_set.all().exists():

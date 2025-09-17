@@ -122,6 +122,7 @@ class SMSPostControl(Model):
         ordering = ('-created_at',)
 
 
+# TODO: Больше не используется, вместо этого используем Product
 class PAN(Model):
     pan = fields.CharField(max_length=20)
     input_type = fields.CharEnumField(
@@ -237,9 +238,11 @@ async def postcontrol_make_resolution(resolutions, default_filter_args, user: sc
             status = enums.OrderDeliveryStatus.BEING_FINALIZED_ON_CANCEL.value
         else:
             status = enums.OrderDeliveryStatus.BEING_FINALIZED.value
+
+        current_delivery_reson = order_obj.delivery_status.get('reason')
         order_obj.delivery_status = {
             'status': status,
-            'reason': None,
+            'reason': current_delivery_reson,
             'datetime': None,
             'comment': None,
         }
@@ -286,12 +289,7 @@ async def postcontrol_make_resolution(resolutions, default_filter_args, user: sc
             order_id=order_obj.id,
         )
         if all(p.resolution == PostControlResolution.ACCEPTED.value for p in cancellation_postcontrol_objects):
-            await models.order_cancel(
-                order_obj=order_obj,
-                reason=order_obj.delivery_status['reason'],
-                user=user,
-                comment=order_obj.delivery_status['comment'],
-            )
+            await models.order_accept_cancel(order_obj=order_obj, user=user)
             return postcontrols
 
     # В случае одобрения всех документов послед-контроля помечаем заявку как "доставлено"

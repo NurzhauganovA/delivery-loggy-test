@@ -1,0 +1,16 @@
+[
+  {
+    "id": 2,
+    "name_ru": "Россия",
+    "name_en": "Russia",
+    "name_zh": null,
+    "name_kk": "Ресей"
+  },
+  {
+    "id": 1,
+    "name_ru": "Казахстан",
+    "name_en": "Kazakhstan",
+    "name_zh": null,
+    "name_kk": "Казахстан"
+  }
+]

@@ -74,7 +74,6 @@
             }
         ],
         "partner_id": 1,
-        "name": "Test",
         "slug": "test",
         "types": "{urgent,planned}",
         "graph_courier": [

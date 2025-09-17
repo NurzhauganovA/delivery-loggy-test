@@ -3,6 +3,7 @@ import pytest
 from api.clients.pos_terminal_otp import PosTerminalOTPClient
 
 
+@pytest.mark.skip(reason="Интеграционный тест")
 @pytest.mark.asyncio
 async def test_send_otp(client: PosTerminalOTPClient):
     """Отправка ОТП"""
@@ -13,6 +14,7 @@ async def test_send_otp(client: PosTerminalOTPClient):
     assert response.status_code == 200
 
 
+@pytest.mark.skip(reason="Интеграционный тест")
 @pytest.mark.asyncio
 async def test_send_and_verify_otp(client: PosTerminalOTPClient):
     """Отправка и проверка ОТП"""
@@ -31,6 +33,8 @@ async def test_send_and_verify_otp(client: PosTerminalOTPClient):
     assert response.status_code == 200
     assert response.json() == 'SUCCESS'
 
+
+@pytest.mark.skip(reason="Интеграционный тест")
 @pytest.mark.asyncio
 async def test_verify_otp_with_no_sending_otp(client: PosTerminalOTPClient):
     """Проверка ОТП без отправки"""
@@ -44,6 +48,7 @@ async def test_verify_otp_with_no_sending_otp(client: PosTerminalOTPClient):
     assert response.json() == 'NOT_FOUND'
 
 
+@pytest.mark.skip(reason="Интеграционный тест")
 @pytest.mark.asyncio
 async def test_verify_otp_with_invalid_otp(client: PosTerminalOTPClient):
     """Отправка и проверка ОТП, но ОТП код неверный"""

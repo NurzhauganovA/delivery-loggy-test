@@ -62,6 +62,7 @@ from .order import order_address_update  # noqa: F401
 from .order import order_address_update_v2  # noqa: F401
 from .order import order_biometry_verify  # noqa: F401
 from .order import order_cancel  # noqa: F401
+from .order import order_accept_cancel  # noqa: F401
 from .order import order_postpone  # noqa: F401
 from .order import order_noncall  # noqa: F401
 from .order import order_resume  # noqa: F401
@@ -79,7 +80,7 @@ from .order import order_get_count  # noqa: F401
 from .order import order_get_list  # noqa: F401
 from .order import order_get_v2  # noqa: F401
 from .order import order_get_list_v2  # noqa: F401
-from .order import order_get_list_courier  # noqa: F401
+from .order import order_get_list_mobile  # noqa: F401
 from .order import order_import_from_excel  # noqa: F401
 from .order import order_import_get_sample  # noqa: F401
 from .order import order_import_history  # noqa: F401

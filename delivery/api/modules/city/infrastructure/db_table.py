@@ -34,7 +34,6 @@ class City(Model):
 
     class Meta:
         table = 'city'
-        unique_together = ('name', 'country')
 
     @property
     def name(self):

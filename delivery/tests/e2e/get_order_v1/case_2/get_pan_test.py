@@ -31,6 +31,7 @@ async def test_get_pan(
     response_data = response.json()
     assert response_data.get('product') == {
         'id': 1,
+        'name': None,
         'type': 'card',
         'attributes': {
             'pan': '5269********3427',

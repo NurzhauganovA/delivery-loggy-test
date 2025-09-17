@@ -1,6 +1,8 @@
 import loguru
 
-from api import auth, schemas, PydanticException
+from api import auth, schemas
+from api.exceptions import PydanticException
+
 from .infrastructure.db_table import OrderGroupStatus
 from .schemas import OrderGroupCreateSchema, OrderGroupUpdate, OrdersIn
 from api.enums import ProfileType

@@ -18,18 +18,15 @@ from api.utils.area import polygon
 class UpdateOrderDeliveryPoint:
 
     allowed_roles = (
+        enums.ProfileType.SERVICE_MANAGER,
         enums.ProfileType.COURIER,
         enums.ProfileType.SUPERVISOR,
     )
     delivery_status = {
-        'status': enums.OrderDeliveryStatus.ADDRESS_CHANGED.value,
+        'status': enums.OrderDeliveryStatusQuery.ADDRESS_CHANGED.value,
         'datetime': None,
         'reason': None,
         'comment': None,
-    }
-    schemas = {
-        enums.ProfileType.COURIER: schemas.Courier,
-        enums.ProfileType.SUPERVISOR: schemas.Supervisor,
     }
     role_available_statuses = {
         enums.ProfileType.COURIER: (
@@ -41,28 +38,28 @@ class UpdateOrderDeliveryPoint:
             enums.StatusSlug.ACCEPTED_BY_COURIER.value,
             enums.StatusSlug.READY_TO_SEND.value,
             enums.StatusSlug.ACCEPTED_BY_COURIER_SERVICE.value,
-        )
+        ),
+        enums.ProfileType.SERVICE_MANAGER: (
+            enums.StatusSlug.COURIER_ASSIGNED.value,
+            enums.StatusSlug.ACCEPTED_BY_COURIER.value,
+            enums.StatusSlug.READY_TO_SEND.value,
+            enums.StatusSlug.ACCEPTED_BY_COURIER_SERVICE.value,
+        ),
     }
 
-    async def __data_valid(self, user_role: str, data: dict) -> bool:
+    async def __data_valid(self, data: dict) -> bool:
         """
         Проверка тела запроса на валидность
-        В зависимости от курьера и супервайзера
 
         Args:
-            user_role: роль пользователя
             data: данные полученные при запросе
 
         Returns:
             Статус проверки
         """
 
-        check_role_schema = self.schemas.get(user_role)
-        if not check_role_schema:
-            return False
-
         try:
-            check_role_schema(**data)
+            schemas.ValidDeliveryPoint(**data)
             return True
         except ValidationError:
             return False
@@ -85,7 +82,7 @@ class UpdateOrderDeliveryPoint:
             Статус проверки
         """
 
-        if user_role == enums.ProfileType.SUPERVISOR:
+        if user_role in (enums.ProfileType.SUPERVISOR, enums.ProfileType.SERVICE_MANAGER):
             return True
         if not area:
             return True
@@ -167,7 +164,7 @@ class UpdateOrderDeliveryPoint:
         if user_role not in self.allowed_roles:
             raise exceptions.RoleUnavailable('allowed only for couriers and supervisor')
 
-        if not await self.__data_valid(user_role, data):
+        if not await self.__data_valid(data):
             raise exceptions.InvalidBody('invalid body')
 
         try:
@@ -198,15 +195,26 @@ class UpdateOrderDeliveryPoint:
         delivery_point = await order_obj.delivery_point.first()
 
         update_dict = {
-            'id': delivery_point.id,
-            'address': delivery_point.address,
+            'change_type': enums.OrderDeliveryStatusQuery.ADDRESS_CHANGED.value,
+            'change_reson': enums.OrderDeliveryStatusQuery.ADDRESS_CHANGED.value,
+            'comment': comment,
+            'delivery_point': {
+                'address': address,
+                'latitude': lat,
+                'longitude': lon,
+            },
+            'old_delivery_point': {
+                'id': delivery_point.id,
+                'address': delivery_point.address,
+            }
         }
 
         delivery_point.latitude = lat
         delivery_point.longitude = lon
         delivery_point.address = address
 
-        area = await order_obj.area.first()
+        area = await order_obj.area.first() if order_obj.area else None
+
         if await self.__need_update_courier(user_role, area, lat, lon):
             order_obj.courier_id = None
             order_obj.delivery_status = self.delivery_status

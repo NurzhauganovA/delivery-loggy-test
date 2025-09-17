@@ -13,8 +13,8 @@ from api.adapters.freedom_bank_otp import (
 @pytest.fixture
 def client() -> FreedomBankOTPProtocol:
     class MockClient(FreedomBankOTPProtocol):
-        async def send(self, request_id: str, phone_number: str) -> Response:
-            if phone_number == "77000000001" and request_id:
+        async def send(self, request_id: str) -> Response:
+            if request_id == "BFF000400":
                 return Response(
                     status_code=400,
                     json={
@@ -25,7 +25,7 @@ def client() -> FreedomBankOTPProtocol:
                     },
                     request=Request("POST", "https://example.com/test"),
                 )
-            elif phone_number == "77000000002" and request_id:
+            elif request_id == "BFF000500":
                 request = Request("POST", "https://example.com/test")
                 response = Response(
                     status_code=500,
@@ -44,7 +44,7 @@ def client() -> FreedomBankOTPProtocol:
                     request=Request("POST", "https://example.com/test"),
                 )
 
-        async def verify(self, request_id: str, phone_number: str, otp_code: str) -> Response:
+        async def verify(self, request_id: str, otp_code: str) -> Response:
             if otp_code == "1111":
                 return Response(
                     status_code=200,

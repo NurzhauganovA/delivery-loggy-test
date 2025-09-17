@@ -1,0 +1,38 @@
+[
+    {
+        "id": 1,
+        "image": "postcontrols/453cd1b1-1379-4723-ad47-bac2560394fd.jpg",
+        "resolution": "accepted",
+        "comment": null,
+        "order_id": 1,
+        "type": "post_control",
+        "config_id": 1
+    },
+    {
+        "id": 2,
+        "image": "postcontrols/240ec173-8c4b-4f2a-8953-e6dd997ba8c4.jpg",
+        "resolution": "accepted",
+        "comment": null,
+        "order_id": 1,
+        "type": "post_control",
+        "config_id": 2
+    },
+    {
+        "id": 3,
+        "image": "postcontrols/240ec173-8c4b-4f2a-8953-e6dd997ba8c4.jpg",
+        "resolution": "accepted",
+        "comment": null,
+        "order_id": 1,
+        "type": "post_control",
+        "config_id": 4
+    },
+    {
+        "id": 4,
+        "image": "postcontrols/240ec173-8c4b-4f2a-8953-e6dd997ba8c4.jpg",
+        "resolution": "accepted",
+        "comment": null,
+        "order_id": 1,
+        "type": "post_control",
+        "config_id": 5
+    }
+]

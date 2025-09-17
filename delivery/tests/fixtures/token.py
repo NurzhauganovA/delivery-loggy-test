@@ -19,6 +19,7 @@ async def get_access_token_v1():
             }
         )
         data = response.json()
+        print("data:", data)
         return data['access_token']
 
     return wrapper

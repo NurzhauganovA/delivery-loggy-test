@@ -343,6 +343,26 @@ async def order_cancel(
 
 
 @router.put(
+    '/order/{order_id}/accept-cancel',
+    summary='Cancel',
+    status_code=200,
+)
+async def order_accept_cancel(
+    order_id: int = fastapi.Depends(dependencies.order_check_for_accept_cancel),
+    user: schemas.UserCurrent = fastapi.Security(
+        auth.get_current_user,
+        scopes=['o:u'],
+    ),
+    default_filter_args: list = fastapi.Security(dependencies.OrderDefaultFilter()),
+):
+    await controllers.order_accept_cancel(
+        order_id=order_id,
+        user=user,
+        default_filter_args=default_filter_args,
+    )
+
+
+@router.put(
     '/order/{order_id}/postpone',
     summary='Postpone',
     status_code=200,
@@ -596,23 +616,22 @@ async def order_revise(
 @router.get(
     '/order/list/my/mobile',
     summary='Get list of orders for mobile app',
-    response_model=schemas.Page[schemas.OrderGet],
+    response_model=schemas.Page[schemas.OrderListMobile],
     response_description='List of orders',
 )
 async def order_get_list_my_mobile(
     pagination_params: schemas.Params = fastapi.Depends(schemas.Params),
     filter_args: list = fastapi.Depends(dependencies.order_get_filter_args),
-    user: schemas.UserCurrent = fastapi.Security(
+    _: schemas.UserCurrent = fastapi.Security(
         auth.get_current_user,
         scopes=['o:l'],
     ),
     default_filter_args: list = fastapi.Security(dependencies.OrderDefaultFilter()),
 ):
-    result = await controllers.order_get_list_courier(
-        pagination_params,
+    result = await controllers.order_get_list_mobile(
+        pagination_params=pagination_params,
         default_filter_args=default_filter_args,
         filter_args=filter_args,
-        profile_type=user.profile['profile_type'],
     )
     return JSONResponse(jsonable_encoder(result))
 

@@ -1,0 +1,1422 @@
+[
+  {
+    "groups_id": "service_manager",
+    "permission_id": "a:c"
+  },
+  {
+    "groups_id": "service_manager",
+    "permission_id": "a:d"
+  },
+  {
+    "groups_id": "service_manager",
+    "permission_id": "a:g"
+  },
+  {
+    "groups_id": "service_manager",
+    "permission_id": "a:l"
+  },
+  {
+    "groups_id": "service_manager",
+    "permission_id": "a:u"
+  },
+  {
+    "groups_id": "service_manager",
+    "permission_id": "c:g"
+  },
+  {
+    "groups_id": "service_manager",
+    "permission_id": "c:l"
+  },
+  {
+    "groups_id": "service_manager",
+    "permission_id": "cu:c"
+  },
+  {
+    "groups_id": "service_manager",
+    "permission_id": "cu:d"
+  },
+  {
+    "groups_id": "service_manager",
+    "permission_id": "cu:g"
+  },
+  {
+    "groups_id": "service_manager",
+    "permission_id": "cu:l"
+  },
+  {
+    "groups_id": "service_manager",
+    "permission_id": "cu:u"
+  },
+  {
+    "groups_id": "service_manager",
+    "permission_id": "dg:c"
+  },
+  {
+    "groups_id": "service_manager",
+    "permission_id": "dg:dl"
+  },
+  {
+    "groups_id": "service_manager",
+    "permission_id": "dg:g"
+  },
+  {
+    "groups_id": "service_manager",
+    "permission_id": "dg:l"
+  },
+  {
+    "groups_id": "service_manager",
+    "permission_id": "i:c"
+  },
+  {
+    "groups_id": "service_manager",
+    "permission_id": "i:d"
+  },
+  {
+    "groups_id": "service_manager",
+    "permission_id": "i:g"
+  },
+  {
+    "groups_id": "service_manager",
+    "permission_id": "i:l"
+  },
+  {
+    "groups_id": "service_manager",
+    "permission_id": "i:md"
+  },
+  {
+    "groups_id": "service_manager",
+    "permission_id": "i:u"
+  },
+  {
+    "groups_id": "service_manager",
+    "permission_id": "o:c"
+  },
+  {
+    "groups_id": "service_manager",
+    "permission_id": "o:d"
+  },
+  {
+    "groups_id": "service_manager",
+    "permission_id": "o:g"
+  },
+  {
+    "groups_id": "service_manager",
+    "permission_id": "o:l"
+  },
+  {
+    "groups_id": "service_manager",
+    "permission_id": "o:mc"
+  },
+  {
+    "groups_id": "service_manager",
+    "permission_id": "o:sa"
+  },
+  {
+    "groups_id": "service_manager",
+    "permission_id": "o:u"
+  },
+  {
+    "groups_id": "service_manager",
+    "permission_id": "o:r"
+  },
+  {
+    "groups_id": "service_manager",
+    "permission_id": "o:dist"
+  },
+  {
+    "groups_id": "service_manager",
+    "permission_id": "oc:c"
+  },
+  {
+    "groups_id": "service_manager",
+    "permission_id": "oci:c"
+  },
+  {
+    "groups_id": "service_manager",
+    "permission_id": "p:c"
+  },
+  {
+    "groups_id": "service_manager",
+    "permission_id": "pc:u"
+  },
+  {
+    "groups_id": "service_manager",
+    "permission_id": "p:d"
+  },
+  {
+    "groups_id": "service_manager",
+    "permission_id": "pf:c"
+  },
+  {
+    "groups_id": "service_manager",
+    "permission_id": "pf:d"
+  },
+  {
+    "groups_id": "service_manager",
+    "permission_id": "pf:l"
+  },
+  {
+    "groups_id": "service_manager",
+    "permission_id": "pf:u"
+  },
+  {
+    "groups_id": "service_manager",
+    "permission_id": "p:g"
+  },
+  {
+    "groups_id": "service_manager",
+    "permission_id": "p:l"
+  },
+  {
+    "groups_id": "service_manager",
+    "permission_id": "p:u"
+  },
+  {
+    "groups_id": "service_manager",
+    "permission_id": "sp:c"
+  },
+  {
+    "groups_id": "service_manager",
+    "permission_id": "sp:d"
+  },
+  {
+    "groups_id": "service_manager",
+    "permission_id": "sp:g"
+  },
+  {
+    "groups_id": "service_manager",
+    "permission_id": "sp:l"
+  },
+  {
+    "groups_id": "service_manager",
+    "permission_id": "sp:u"
+  },
+  {
+    "groups_id": "service_manager",
+    "permission_id": "fr:c"
+  },
+  {
+    "groups_id": "service_manager",
+    "permission_id": "fr:u"
+  },
+  {
+    "groups_id": "service_manager",
+    "permission_id": "fr:d"
+  },
+  {
+    "groups_id": "service_manager",
+    "permission_id": "f:cm"
+  },
+  {
+    "groups_id": "service_manager",
+    "permission_id": "f:l"
+  },
+  {
+    "groups_id": "service_manager",
+    "permission_id": "f:g"
+  },
+  {
+    "groups_id": "service_manager",
+    "permission_id": "f:u"
+  },
+  {
+    "groups_id": "service_manager",
+    "permission_id": "ca:c"
+  },
+  {
+    "groups_id": "service_manager",
+    "permission_id": "ca:l"
+  },
+  {
+    "groups_id": "service_manager",
+    "permission_id": "ca:g"
+  },
+  {
+    "groups_id": "service_manager",
+    "permission_id": "o:cs"
+  },
+  {
+    "groups_id": "service_manager",
+    "permission_id": "og:c"
+  },
+  {
+    "groups_id": "service_manager",
+    "permission_id": "og:l"
+  },
+  {
+    "groups_id": "service_manager",
+    "permission_id": "og:u"
+  },
+  {
+    "groups_id": "service_manager",
+    "permission_id": "og:d"
+  },
+  {
+    "groups_id": "service_manager",
+    "permission_id": "ogo:c"
+  },
+  {
+    "groups_id": "service_manager",
+    "permission_id": "ogo:d"
+  },
+  {
+    "groups_id": "service_manager",
+    "permission_id": "ogs:s"
+  },
+  {
+    "groups_id": "service_manager",
+    "permission_id": "s:g"
+  },
+  {
+    "groups_id": "service_manager",
+    "permission_id": "o:p"
+  },
+  {
+    "groups_id": "partner_branch_manager",
+    "permission_id": "c:l"
+  },
+  {
+    "groups_id": "partner_branch_manager",
+    "permission_id": "i:l"
+  },
+  {
+    "groups_id": "partner_branch_manager",
+    "permission_id": "o:c"
+  },
+  {
+    "groups_id": "partner_branch_manager",
+    "permission_id": "o:g"
+  },
+  {
+    "groups_id": "partner_branch_manager",
+    "permission_id": "o:l"
+  },
+  {
+    "groups_id": "partner_branch_manager",
+    "permission_id": "pc:u"
+  },
+  {
+    "groups_id": "partner_branch_manager",
+    "permission_id": "o:p"
+  },
+  {
+    "groups_id": "courier",
+    "permission_id": "i:g"
+  },
+  {
+    "groups_id": "courier",
+    "permission_id": "i:l"
+  },
+  {
+    "groups_id": "courier",
+    "permission_id": "o:g"
+  },
+  {
+    "groups_id": "courier",
+    "permission_id": "o:l"
+  },
+  {
+    "groups_id": "courier",
+    "permission_id": "o:sa"
+  },
+  {
+    "groups_id": "courier",
+    "permission_id": "o:sms"
+  },
+  {
+    "groups_id": "courier",
+    "permission_id": "o:u"
+  },
+  {
+    "groups_id": "courier",
+    "permission_id": "o:cc"
+  },
+  {
+    "groups_id": "courier",
+    "permission_id": "oc:c"
+  },
+  {
+    "groups_id": "courier",
+    "permission_id": "oci:c"
+  },
+  {
+    "groups_id": "courier",
+    "permission_id": "pc:u"
+  },
+  {
+    "groups_id": "courier",
+    "permission_id": "pf:ew"
+  },
+  {
+    "groups_id": "courier",
+    "permission_id": "pf:sw"
+  },
+  {
+    "groups_id": "courier",
+    "permission_id": "gp:p"
+  },
+  {
+    "groups_id": "courier",
+    "permission_id": "og:l"
+  },
+  {
+    "groups_id": "courier",
+    "permission_id": "og:u"
+  },
+  {
+    "groups_id": "courier",
+    "permission_id": "op:g"
+  },
+  {
+    "groups_id": "dispatcher",
+    "permission_id": "a:l"
+  },
+  {
+    "groups_id": "dispatcher",
+    "permission_id": "c:l"
+  },
+  {
+    "groups_id": "dispatcher",
+    "permission_id": "i:g"
+  },
+  {
+    "groups_id": "dispatcher",
+    "permission_id": "i:l"
+  },
+  {
+    "groups_id": "dispatcher",
+    "permission_id": "o:c"
+  },
+  {
+    "groups_id": "dispatcher",
+    "permission_id": "o:e"
+  },
+  {
+    "groups_id": "dispatcher",
+    "permission_id": "o:g"
+  },
+  {
+    "groups_id": "dispatcher",
+    "permission_id": "o:l"
+  },
+  {
+    "groups_id": "dispatcher",
+    "permission_id": "o:mc"
+  },
+  {
+    "groups_id": "dispatcher",
+    "permission_id": "o:u"
+  },
+  {
+    "groups_id": "dispatcher",
+    "permission_id": "pc:u"
+  },
+  {
+    "groups_id": "dispatcher",
+    "permission_id": "p:g"
+  },
+  {
+    "groups_id": "dispatcher",
+    "permission_id": "p:l"
+  },
+  {
+    "groups_id": "owner",
+    "permission_id": "dg:c"
+  },
+  {
+    "groups_id": "owner",
+    "permission_id": "dg:dl"
+  },
+  {
+    "groups_id": "owner",
+    "permission_id": "dg:g"
+  },
+  {
+    "groups_id": "owner",
+    "permission_id": "dg:l"
+  },
+  {
+    "groups_id": "owner",
+    "permission_id": "o:e"
+  },
+  {
+    "groups_id": "owner",
+    "permission_id": "o:sa"
+  },
+  {
+    "groups_id": "owner",
+    "permission_id": "f:l"
+  },
+  {
+    "groups_id": "owner",
+    "permission_id": "f:g"
+  },
+  {
+    "groups_id": "owner",
+    "permission_id": "f:u"
+  },
+  {
+    "groups_id": "branch_manager",
+    "permission_id": "a:c"
+  },
+  {
+    "groups_id": "branch_manager",
+    "permission_id": "a:d"
+  },
+  {
+    "groups_id": "branch_manager",
+    "permission_id": "a:g"
+  },
+  {
+    "groups_id": "branch_manager",
+    "permission_id": "a:l"
+  },
+  {
+    "groups_id": "branch_manager",
+    "permission_id": "a:u"
+  },
+  {
+    "groups_id": "branch_manager",
+    "permission_id": "c:g"
+  },
+  {
+    "groups_id": "branch_manager",
+    "permission_id": "c:l"
+  },
+  {
+    "groups_id": "branch_manager",
+    "permission_id": "i:c"
+  },
+  {
+    "groups_id": "branch_manager",
+    "permission_id": "i:d"
+  },
+  {
+    "groups_id": "branch_manager",
+    "permission_id": "i:g"
+  },
+  {
+    "groups_id": "branch_manager",
+    "permission_id": "i:l"
+  },
+  {
+    "groups_id": "branch_manager",
+    "permission_id": "i:u"
+  },
+  {
+    "groups_id": "branch_manager",
+    "permission_id": "o:c"
+  },
+  {
+    "groups_id": "branch_manager",
+    "permission_id": "o:g"
+  },
+  {
+    "groups_id": "branch_manager",
+    "permission_id": "o:l"
+  },
+  {
+    "groups_id": "branch_manager",
+    "permission_id": "o:u"
+  },
+  {
+    "groups_id": "branch_manager",
+    "permission_id": "o:r"
+  },
+  {
+    "groups_id": "branch_manager",
+    "permission_id": "pc:u"
+  },
+  {
+    "groups_id": "branch_manager",
+    "permission_id": "pf:c"
+  },
+  {
+    "groups_id": "branch_manager",
+    "permission_id": "pf:u"
+  },
+  {
+    "groups_id": "branch_manager",
+    "permission_id": "p:g"
+  },
+  {
+    "groups_id": "branch_manager",
+    "permission_id": "p:l"
+  },
+  {
+    "groups_id": "branch_manager",
+    "permission_id": "sp:c"
+  },
+  {
+    "groups_id": "branch_manager",
+    "permission_id": "sp:u"
+  },
+  {
+    "groups_id": "branch_manager",
+    "permission_id": "f:l"
+  },
+  {
+    "groups_id": "branch_manager",
+    "permission_id": "f:g"
+  },
+  {
+    "groups_id": "manager",
+    "permission_id": "c:l"
+  },
+  {
+    "groups_id": "manager",
+    "permission_id": "i:g"
+  },
+  {
+    "groups_id": "manager",
+    "permission_id": "i:l"
+  },
+  {
+    "groups_id": "manager",
+    "permission_id": "o:c"
+  },
+  {
+    "groups_id": "manager",
+    "permission_id": "o:e"
+  },
+  {
+    "groups_id": "manager",
+    "permission_id": "o:g"
+  },
+  {
+    "groups_id": "manager",
+    "permission_id": "o:l"
+  },
+  {
+    "groups_id": "manager",
+    "permission_id": "o:mc"
+  },
+  {
+    "groups_id": "manager",
+    "permission_id": "o:u"
+  },
+  {
+    "groups_id": "manager",
+    "permission_id": "o:r"
+  },
+  {
+    "groups_id": "manager",
+    "permission_id": "pc:u"
+  },
+  {
+    "groups_id": "manager",
+    "permission_id": "p:g"
+  },
+  {
+    "groups_id": "manager",
+    "permission_id": "p:l"
+  },
+  {
+    "groups_id": "manager",
+    "permission_id": "f:cm"
+  },
+  {
+    "groups_id": "manager",
+    "permission_id": "og:l"
+  },
+  {
+    "groups_id": "manager",
+    "permission_id": "o:p"
+  },
+  {
+    "groups_id": "courier",
+    "permission_id": "ogs:s"
+  },
+  {
+    "groups_id": "courier",
+    "permission_id": "s:g"
+  },
+  {
+    "groups_id": "courier",
+    "permission_id": "o:lc"
+  },
+  {
+    "groups_id": "courier",
+    "permission_id": "o:p"
+  },
+  {
+    "groups_id": "sorter",
+    "permission_id": "i:l"
+  },
+  {
+    "groups_id": "sorter",
+    "permission_id": "o:c"
+  },
+  {
+    "groups_id": "sorter",
+    "permission_id": "o:g"
+  },
+  {
+    "groups_id": "sorter",
+    "permission_id": "o:l"
+  },
+  {
+    "groups_id": "sorter",
+    "permission_id": "o:u"
+  },
+  {
+    "groups_id": "sorter",
+    "permission_id": "o:r"
+  },
+  {
+    "groups_id": "sorter",
+    "permission_id": "p:g"
+  },
+  {
+    "groups_id": "sorter",
+    "permission_id": "p:l"
+  },
+  {
+    "groups_id": "sorter",
+    "permission_id": "o:cs"
+  },
+  {
+    "groups_id": "sorter",
+    "permission_id": "og:c"
+  },
+  {
+    "groups_id": "sorter",
+    "permission_id": "og:l"
+  },
+  {
+    "groups_id": "sorter",
+    "permission_id": "og:u"
+  },
+  {
+    "groups_id": "sorter",
+    "permission_id": "og:d"
+  },
+  {
+    "groups_id": "sorter",
+    "permission_id": "ogo:c"
+  },
+  {
+    "groups_id": "sorter",
+    "permission_id": "ogo:d"
+  },
+  {
+    "groups_id": "sorter",
+    "permission_id": "ogs:s"
+  },
+  {
+    "groups_id": "supervisor",
+    "permission_id": "a:c"
+  },
+  {
+    "groups_id": "supervisor",
+    "permission_id": "a:d"
+  },
+  {
+    "groups_id": "supervisor",
+    "permission_id": "a:g"
+  },
+  {
+    "groups_id": "supervisor",
+    "permission_id": "a:l"
+  },
+  {
+    "groups_id": "supervisor",
+    "permission_id": "a:u"
+  },
+  {
+    "groups_id": "supervisor",
+    "permission_id": "c:g"
+  },
+  {
+    "groups_id": "supervisor",
+    "permission_id": "c:l"
+  },
+  {
+    "groups_id": "supervisor",
+    "permission_id": "cu:c"
+  },
+  {
+    "groups_id": "supervisor",
+    "permission_id": "cu:d"
+  },
+  {
+    "groups_id": "supervisor",
+    "permission_id": "cu:g"
+  },
+  {
+    "groups_id": "supervisor",
+    "permission_id": "cu:l"
+  },
+  {
+    "groups_id": "supervisor",
+    "permission_id": "cu:u"
+  },
+  {
+    "groups_id": "supervisor",
+    "permission_id": "dg:c"
+  },
+  {
+    "groups_id": "supervisor",
+    "permission_id": "dg:dl"
+  },
+  {
+    "groups_id": "supervisor",
+    "permission_id": "dg:g"
+  },
+  {
+    "groups_id": "supervisor",
+    "permission_id": "dg:l"
+  },
+  {
+    "groups_id": "supervisor",
+    "permission_id": "i:c"
+  },
+  {
+    "groups_id": "supervisor",
+    "permission_id": "i:d"
+  },
+  {
+    "groups_id": "supervisor",
+    "permission_id": "i:g"
+  },
+  {
+    "groups_id": "supervisor",
+    "permission_id": "i:l"
+  },
+  {
+    "groups_id": "supervisor",
+    "permission_id": "i:md"
+  },
+  {
+    "groups_id": "supervisor",
+    "permission_id": "i:u"
+  },
+  {
+    "groups_id": "supervisor",
+    "permission_id": "o:c"
+  },
+  {
+    "groups_id": "supervisor",
+    "permission_id": "o:d"
+  },
+  {
+    "groups_id": "supervisor",
+    "permission_id": "o:g"
+  },
+  {
+    "groups_id": "supervisor",
+    "permission_id": "o:l"
+  },
+  {
+    "groups_id": "supervisor",
+    "permission_id": "o:mc"
+  },
+  {
+    "groups_id": "supervisor",
+    "permission_id": "o:sa"
+  },
+  {
+    "groups_id": "supervisor",
+    "permission_id": "o:u"
+  },
+  {
+    "groups_id": "supervisor",
+    "permission_id": "o:r"
+  },
+  {
+    "groups_id": "supervisor",
+    "permission_id": "o:dist"
+  },
+  {
+    "groups_id": "supervisor",
+    "permission_id": "oc:c"
+  },
+  {
+    "groups_id": "supervisor",
+    "permission_id": "oci:c"
+  },
+  {
+    "groups_id": "supervisor",
+    "permission_id": "p:c"
+  },
+  {
+    "groups_id": "supervisor",
+    "permission_id": "pc:u"
+  },
+  {
+    "groups_id": "supervisor",
+    "permission_id": "p:d"
+  },
+  {
+    "groups_id": "supervisor",
+    "permission_id": "pf:c"
+  },
+  {
+    "groups_id": "supervisor",
+    "permission_id": "pf:d"
+  },
+  {
+    "groups_id": "supervisor",
+    "permission_id": "pf:l"
+  },
+  {
+    "groups_id": "supervisor",
+    "permission_id": "pf:u"
+  },
+  {
+    "groups_id": "supervisor",
+    "permission_id": "p:g"
+  },
+  {
+    "groups_id": "supervisor",
+    "permission_id": "p:l"
+  },
+  {
+    "groups_id": "supervisor",
+    "permission_id": "p:u"
+  },
+  {
+    "groups_id": "supervisor",
+    "permission_id": "sp:c"
+  },
+  {
+    "groups_id": "supervisor",
+    "permission_id": "sp:d"
+  },
+  {
+    "groups_id": "supervisor",
+    "permission_id": "sp:g"
+  },
+  {
+    "groups_id": "supervisor",
+    "permission_id": "sp:l"
+  },
+  {
+    "groups_id": "supervisor",
+    "permission_id": "sp:u"
+  },
+  {
+    "groups_id": "supervisor",
+    "permission_id": "fr:c"
+  },
+  {
+    "groups_id": "supervisor",
+    "permission_id": "fr:u"
+  },
+  {
+    "groups_id": "supervisor",
+    "permission_id": "fr:d"
+  },
+  {
+    "groups_id": "supervisor",
+    "permission_id": "f:cm"
+  },
+  {
+    "groups_id": "supervisor",
+    "permission_id": "f:l"
+  },
+  {
+    "groups_id": "supervisor",
+    "permission_id": "f:g"
+  },
+  {
+    "groups_id": "supervisor",
+    "permission_id": "f:u"
+  },
+  {
+    "groups_id": "supervisor",
+    "permission_id": "ca:c"
+  },
+  {
+    "groups_id": "supervisor",
+    "permission_id": "ca:l"
+  },
+  {
+    "groups_id": "supervisor",
+    "permission_id": "ca:g"
+  },
+  {
+    "groups_id": "supervisor",
+    "permission_id": "o:cs"
+  },
+  {
+    "groups_id": "supervisor",
+    "permission_id": "og:c"
+  },
+  {
+    "groups_id": "supervisor",
+    "permission_id": "og:l"
+  },
+  {
+    "groups_id": "supervisor",
+    "permission_id": "og:u"
+  },
+  {
+    "groups_id": "supervisor",
+    "permission_id": "og:d"
+  },
+  {
+    "groups_id": "supervisor",
+    "permission_id": "ogo:c"
+  },
+  {
+    "groups_id": "supervisor",
+    "permission_id": "ogo:d"
+  },
+  {
+    "groups_id": "supervisor",
+    "permission_id": "ogs:s"
+  },
+  {
+    "groups_id": "supervisor",
+    "permission_id": "s:g"
+  },
+  {
+    "groups_id": "supervisor",
+    "permission_id": "o:p"
+  },
+  {
+    "groups_id": "logist",
+    "permission_id": "a:g"
+  },
+  {
+    "groups_id": "logist",
+    "permission_id": "a:l"
+  },
+  {
+    "groups_id": "logist",
+    "permission_id": "c:g"
+  },
+  {
+    "groups_id": "logist",
+    "permission_id": "c:l"
+  },
+  {
+    "groups_id": "logist",
+    "permission_id": "cu:c"
+  },
+  {
+    "groups_id": "logist",
+    "permission_id": "cu:d"
+  },
+  {
+    "groups_id": "logist",
+    "permission_id": "cu:g"
+  },
+  {
+    "groups_id": "logist",
+    "permission_id": "cu:l"
+  },
+  {
+    "groups_id": "logist",
+    "permission_id": "cu:u"
+  },
+  {
+    "groups_id": "logist",
+    "permission_id": "dg:dl"
+  },
+  {
+    "groups_id": "logist",
+    "permission_id": "dg:g"
+  },
+  {
+    "groups_id": "logist",
+    "permission_id": "dg:l"
+  },
+  {
+    "groups_id": "logist",
+    "permission_id": "i:g"
+  },
+  {
+    "groups_id": "logist",
+    "permission_id": "i:l"
+  },
+  {
+    "groups_id": "logist",
+    "permission_id": "o:g"
+  },
+  {
+    "groups_id": "logist",
+    "permission_id": "o:l"
+  },
+  {
+    "groups_id": "logist",
+    "permission_id": "o:mc"
+  },
+  {
+    "groups_id": "logist",
+    "permission_id": "o:sa"
+  },
+  {
+    "groups_id": "logist",
+    "permission_id": "o:u"
+  },
+  {
+    "groups_id": "logist",
+    "permission_id": "o:r"
+  },
+  {
+    "groups_id": "logist",
+    "permission_id": "pc:u"
+  },
+  {
+    "groups_id": "logist",
+    "permission_id": "pf:c"
+  },
+  {
+    "groups_id": "logist",
+    "permission_id": "pf:d"
+  },
+  {
+    "groups_id": "logist",
+    "permission_id": "pf:l"
+  },
+  {
+    "groups_id": "logist",
+    "permission_id": "pf:u"
+  },
+  {
+    "groups_id": "logist",
+    "permission_id": "p:g"
+  },
+  {
+    "groups_id": "logist",
+    "permission_id": "p:l"
+  },
+  {
+    "groups_id": "logist",
+    "permission_id": "p:u"
+  },
+  {
+    "groups_id": "logist",
+    "permission_id": "sp:c"
+  },
+  {
+    "groups_id": "logist",
+    "permission_id": "sp:d"
+  },
+  {
+    "groups_id": "logist",
+    "permission_id": "sp:g"
+  },
+  {
+    "groups_id": "logist",
+    "permission_id": "sp:l"
+  },
+  {
+    "groups_id": "logist",
+    "permission_id": "sp:u"
+  },
+  {
+    "groups_id": "logist",
+    "permission_id": "ca:l"
+  },
+  {
+    "groups_id": "logist",
+    "permission_id": "ca:g"
+  },
+  {
+    "groups_id": "logist",
+    "permission_id": "o:cs"
+  },
+  {
+    "groups_id": "logist",
+    "permission_id": "og:c"
+  },
+  {
+    "groups_id": "logist",
+    "permission_id": "og:l"
+  },
+  {
+    "groups_id": "logist",
+    "permission_id": "og:u"
+  },
+  {
+    "groups_id": "logist",
+    "permission_id": "og:d"
+  },
+  {
+    "groups_id": "logist",
+    "permission_id": "ogo:c"
+  },
+  {
+    "groups_id": "logist",
+    "permission_id": "ogo:d"
+  },
+  {
+    "groups_id": "logist",
+    "permission_id": "ogs:s"
+  },
+  {
+    "groups_id": "logist",
+    "permission_id": "s:g"
+  },
+  {
+    "groups_id": "logist",
+    "permission_id": "o:p"
+  },
+  {
+    "groups_id": "call_center_manager",
+    "permission_id": "a:g"
+  },
+  {
+    "groups_id": "call_center_manager",
+    "permission_id": "a:l"
+  },
+  {
+    "groups_id": "call_center_manager",
+    "permission_id": "c:g"
+  },
+  {
+    "groups_id": "call_center_manager",
+    "permission_id": "c:l"
+  },
+  {
+    "groups_id": "call_center_manager",
+    "permission_id": "cu:g"
+  },
+  {
+    "groups_id": "call_center_manager",
+    "permission_id": "cu:l"
+  },
+  {
+    "groups_id": "call_center_manager",
+    "permission_id": "dg:dl"
+  },
+  {
+    "groups_id": "call_center_manager",
+    "permission_id": "dg:g"
+  },
+  {
+    "groups_id": "call_center_manager",
+    "permission_id": "dg:l"
+  },
+  {
+    "groups_id": "call_center_manager",
+    "permission_id": "i:g"
+  },
+  {
+    "groups_id": "call_center_manager",
+    "permission_id": "i:l"
+  },
+  {
+    "groups_id": "call_center_manager",
+    "permission_id": "o:g"
+  },
+  {
+    "groups_id": "call_center_manager",
+    "permission_id": "o:l"
+  },
+  {
+    "groups_id": "call_center_manager",
+    "permission_id": "pf:l"
+  },
+  {
+    "groups_id": "call_center_manager",
+    "permission_id": "p:g"
+  },
+  {
+    "groups_id": "call_center_manager",
+    "permission_id": "p:l"
+  },
+  {
+    "groups_id": "call_center_manager",
+    "permission_id": "sp:g"
+  },
+  {
+    "groups_id": "call_center_manager",
+    "permission_id": "sp:l"
+  },
+  {
+    "groups_id": "call_center_manager",
+    "permission_id": "ca:l"
+  },
+  {
+    "groups_id": "call_center_manager",
+    "permission_id": "ca:g"
+  },
+  {
+    "groups_id": "call_center_manager",
+    "permission_id": "og:l"
+  },
+  {
+    "groups_id": "call_center_manager",
+    "permission_id": "s:g"
+  },
+  {
+    "groups_id": "general_call_center_manager",
+    "permission_id": "a:g"
+  },
+  {
+    "groups_id": "general_call_center_manager",
+    "permission_id": "a:l"
+  },
+  {
+    "groups_id": "general_call_center_manager",
+    "permission_id": "c:g"
+  },
+  {
+    "groups_id": "general_call_center_manager",
+    "permission_id": "c:l"
+  },
+  {
+    "groups_id": "general_call_center_manager",
+    "permission_id": "cu:g"
+  },
+  {
+    "groups_id": "general_call_center_manager",
+    "permission_id": "cu:l"
+  },
+  {
+    "groups_id": "general_call_center_manager",
+    "permission_id": "dg:dl"
+  },
+  {
+    "groups_id": "general_call_center_manager",
+    "permission_id": "dg:g"
+  },
+  {
+    "groups_id": "general_call_center_manager",
+    "permission_id": "dg:l"
+  },
+  {
+    "groups_id": "general_call_center_manager",
+    "permission_id": "i:g"
+  },
+  {
+    "groups_id": "general_call_center_manager",
+    "permission_id": "i:l"
+  },
+  {
+    "groups_id": "general_call_center_manager",
+    "permission_id": "o:g"
+  },
+  {
+    "groups_id": "general_call_center_manager",
+    "permission_id": "o:l"
+  },
+  {
+    "groups_id": "general_call_center_manager",
+    "permission_id": "pf:l"
+  },
+  {
+    "groups_id": "general_call_center_manager",
+    "permission_id": "p:g"
+  },
+  {
+    "groups_id": "general_call_center_manager",
+    "permission_id": "p:l"
+  },
+  {
+    "groups_id": "general_call_center_manager",
+    "permission_id": "sp:g"
+  },
+  {
+    "groups_id": "general_call_center_manager",
+    "permission_id": "sp:l"
+  },
+  {
+    "groups_id": "general_call_center_manager",
+    "permission_id": "ca:l"
+  },
+  {
+    "groups_id": "general_call_center_manager",
+    "permission_id": "ca:g"
+  },
+  {
+    "groups_id": "general_call_center_manager",
+    "permission_id": "og:l"
+  },
+  {
+    "groups_id": "general_call_center_manager",
+    "permission_id": "s:g"
+  },
+  {
+    "groups_id": "support",
+    "permission_id": "a:g"
+  },
+  {
+    "groups_id": "support",
+    "permission_id": "a:l"
+  },
+  {
+    "groups_id": "support",
+    "permission_id": "c:g"
+  },
+  {
+    "groups_id": "support",
+    "permission_id": "c:l"
+  },
+  {
+    "groups_id": "support",
+    "permission_id": "cu:g"
+  },
+  {
+    "groups_id": "support",
+    "permission_id": "cu:l"
+  },
+  {
+    "groups_id": "support",
+    "permission_id": "dg:dl"
+  },
+  {
+    "groups_id": "support",
+    "permission_id": "dg:g"
+  },
+  {
+    "groups_id": "support",
+    "permission_id": "dg:l"
+  },
+  {
+    "groups_id": "support",
+    "permission_id": "i:g"
+  },
+  {
+    "groups_id": "support",
+    "permission_id": "i:l"
+  },
+  {
+    "groups_id": "support",
+    "permission_id": "o:g"
+  },
+  {
+    "groups_id": "support",
+    "permission_id": "o:l"
+  },
+  {
+    "groups_id": "support",
+    "permission_id": "pf:l"
+  },
+  {
+    "groups_id": "support",
+    "permission_id": "p:g"
+  },
+  {
+    "groups_id": "support",
+    "permission_id": "p:l"
+  },
+  {
+    "groups_id": "support",
+    "permission_id": "sp:g"
+  },
+  {
+    "groups_id": "support",
+    "permission_id": "sp:l"
+  },
+  {
+    "groups_id": "support",
+    "permission_id": "ca:l"
+  },
+  {
+    "groups_id": "support",
+    "permission_id": "ca:g"
+  },
+  {
+    "groups_id": "support",
+    "permission_id": "og:l"
+  },
+  {
+    "groups_id": "support",
+    "permission_id": "s:g"
+  }
+]

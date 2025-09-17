@@ -27,9 +27,9 @@ class Monitoring(BaseSettings):
 class Postgres(BaseSettings):
     host: str = Field('127.0.0.1', env='POSTGRES_HOST')
     port: int = Field(5432, env='POSTGRES_PORT')
-    user: str = Field('delivery', env='POSTGRES_USER')
-    password: str = Field('delivery', env='POSTGRES_PASSWORD')
-    database: str = Field('delivery', env='POSTGRES_DB')
+    user: str = Field('myuser', env='POSTGRES_USER')
+    password: str = Field('mypassword', env='POSTGRES_PASSWORD')
+    database: str = Field('mydatabase', env='POSTGRES_DB')
     maxsize: int = 900
 
     @property

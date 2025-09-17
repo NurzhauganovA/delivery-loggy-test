@@ -1,0 +1,47 @@
+[
+    {
+        "id": 1,
+        "name": "Фотография последконтроля",
+        "send": true,
+        "item_id": 1,
+        "document_code": null,
+        "parent_config_id": null,
+        "type": "post_control"
+    },
+    {
+        "id": 2,
+        "name": "Фотография последконтроля 1",
+        "send": true,
+        "item_id": 1,
+        "document_code": null,
+        "parent_config_id": null,
+        "type": "post_control"
+    },
+    {
+        "id": 3,
+        "name": "Послед контроль отмены",
+        "send": false,
+        "item_id": 1,
+        "document_code": null,
+        "parent_config_id": null,
+        "type": "post_control"
+    },
+    {
+        "id": 4,
+        "name": "Послед контроль отмены - фотография 1",
+        "send": false,
+        "item_id": 1,
+        "document_code": null,
+        "parent_config_id": 3,
+        "type": "post_control"
+    },
+    {
+        "id": 5,
+        "name": "Послед контроль отмены - фотография 2",
+        "send": false,
+        "item_id": 1,
+        "document_code": null,
+        "parent_config_id": 3,
+        "type": "post_control"
+    }
+]

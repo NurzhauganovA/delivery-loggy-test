@@ -114,11 +114,12 @@ order_report_query = """
                 ord.manager                                               as manager,
                 c.name_%(locale)s                                         as city,
                 co.name_%(locale)s                                        as country,
-                coalesce(p.name_%(locale)s, p.name_en, p.name_ru, p.name) as partner,
+                coalesce(p.name_%(locale)s, p.name_en, p.name_ru) as partner,
                 i.name                                                    as "item",
                 a.slug                                                    as area,
                 CONCAT(us.first_name, ' ', us.last_name)                  as courier,
                 CASE
+                    WHEN ord.archived IS TRUE THEN 'Архивировано'
                     WHEN ord.delivery_status::text <> '{}'::text THEN
                         CASE ord.delivery_status ->> 'status'
                             WHEN 'cancelled' THEN 'Отменена'
@@ -127,6 +128,8 @@ order_report_query = """
                             WHEN 'rescheduled' THEN 'Перенос встречи'
                             WHEN 'noncall' THEN 'Недозвон'
                             WHEN 'is_delivered' THEN 'Доставлено'
+                            WHEN 'being_finalized' THEN 'На доработке'
+                            WHEN 'being_finalized_on_cancel' THEN 'На доработке'
                         ELSE ls.name_%(locale)s
                         END
                     ELSE

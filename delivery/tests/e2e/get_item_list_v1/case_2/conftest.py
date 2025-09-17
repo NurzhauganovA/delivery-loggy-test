@@ -54,7 +54,8 @@ def expected() -> list[dict[str, Any]]:
             'name': 'Базовая кредитная карта 1',
             'partner': {'id': 2, 'name': 'Партнер 1'},
             'partner_id': 2,
-            'postcontrol_configs': []
+            'postcontrol_configs': [],
+            'postcontrol_cancellation_configs': [],
         },
         {
             'accepted_delivery_statuses': None,
@@ -78,7 +79,8 @@ def expected() -> list[dict[str, Any]]:
             'name': 'Базовая кредитная карта 2',
             'partner': {'id': 2, 'name': 'Партнер 1'},
             'partner_id': 2,
-            'postcontrol_configs': []
+            'postcontrol_configs': [],
+            'postcontrol_cancellation_configs': [],
         },
     ]
 

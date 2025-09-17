@@ -3,6 +3,7 @@ from freezegun import freeze_time
 
 from tests.fixtures.client import client
 from tests.fixtures.database import db, run_pre_start_sql_script
+from tests.fixtures.images import img_png
 from tests.fixtures.token import get_access_token_v1
 
 

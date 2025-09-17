@@ -60,7 +60,6 @@
       }
     ],
     "partner_id": null,
-    "name": "Базовый",
     "slug": null,
     "types": "{urgent,operative,planned}",
     "graph_courier": [
@@ -123,7 +122,7 @@
     ],
     "name_en": null,
     "name_zh": null,
-    "name_ru": null,
+    "name_ru": "Базовый",
     "name_kk": null
   }
 ]
