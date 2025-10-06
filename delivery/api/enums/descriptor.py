@@ -22,19 +22,11 @@ class Descriptor(str, enum.Enum):
     def to_kwargs(
         cls,
         null: bool = False,
-        default: Descriptor | None = None,
+        default: typing.Optional[typing.Type[Descriptor]] = None,
     ) -> dict:
-        """
-        Used to pass as kwargs to CharEnumField of tortoise ORM.
-        """
         return {
             'enum_type': cls,
             'description': cls.describe(),
             'default': default,
             'null': null,
         }
-
-
-__all__ = (
-    'Descriptor',
-)

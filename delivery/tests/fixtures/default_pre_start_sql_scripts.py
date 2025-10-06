@@ -514,6 +514,7 @@ def statuses_insert_script() -> str:
         INSERT INTO public.status (id, icon, is_optional, after, partner_id, slug) VALUES (31, 'ready-to-send', true, '[]', null, 'vkliucheno-v-gruppu');
         INSERT INTO public.status (id, icon, is_optional, after, partner_id, slug) VALUES (32, 'at_client', true, '[]', null, 'na-sverke');
         INSERT INTO public.status (id, icon, is_optional, after, partner_id, slug) VALUES (30, 'packed', true, '[]', null, 'upakovano');
+        INSERT INTO public.status (id, icon, is_optional, after, partner_id, slug) VALUES (33, 'packed', true, '[]', null, 'transfer_to_cdek');
     """
 
 

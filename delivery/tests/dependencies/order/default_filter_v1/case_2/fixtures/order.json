@@ -1,0 +1,113 @@
+[
+    {
+        "id": 1,
+        "type": "planned",
+        "created_at": "2024-02-08 06:11:17.160374 +00:00",
+        "delivery_datetime": "2024-02-20 23:59:00.000000 +00:00",
+        "delivery_status": {
+            "status": "is_delivered"
+        },
+        "receiver_name": "МАТАШЕВ АКБАР МУСЛИМЖАНОВИЧ",
+        "receiver_iin": "860824302113",
+        "receiver_phone_number": "+77781254616",
+        "comment": null,
+        "city_id": 1,
+        "courier_id": 1,
+        "item_id": 1,
+        "partner_id": 1,
+        "partner_order_id": null,
+        "main_order_id": null,
+        "position": null,
+        "archived": false,
+        "created_by": "integration",
+        "deliverygraph_id": 1,
+        "callbacks": {
+            "set_otp": "https://business.bankffin.kz/api/loggy/callbacks/set-otp/3928b9e9-91a5-481c-88d2-9980a3f75f10?token=f0ce3fd77de24e0a9b07e7a02da2aa02",
+            "set_pan": null,
+            "set_status": "https://business.bankffin.kz/api/loggy/callbacks/set-status/3928b9e9-91a5-481c-88d2-9980a3f75f10?token=f0ce3fd77de24e0a9b07e7a02da2aa02"
+        },
+        "initial_delivery_datetime": null,
+        "order_group_id": null,
+        "revised": false,
+        "allow_courier_assign": true,
+        "actual_delivery_datetime": "2024-02-20 11:21:50.279633 +00:00",
+        "current_status_id": 7,
+        "shipment_point_id": null,
+        "delivery_point_id": 1,
+        "courier_service": "cdek"
+    },
+    {
+        "id": 2,
+        "type": "planned",
+        "created_at": "2024-02-08 06:11:17.160374 +00:00",
+        "delivery_datetime": "2024-02-20 23:59:00.000000 +00:00",
+        "delivery_status": {
+            "status": "is_delivered"
+        },
+        "receiver_name": "МАТАШЕВ АКБАР МУСЛИМЖАНОВИЧ",
+        "receiver_iin": "860824302113",
+        "receiver_phone_number": "+77781254616",
+        "comment": null,
+        "city_id": 1,
+        "courier_id": 1,
+        "item_id": 1,
+        "partner_id": 1,
+        "partner_order_id": null,
+        "main_order_id": null,
+        "position": null,
+        "archived": false,
+        "created_by": "integration",
+        "deliverygraph_id": 1,
+        "callbacks": {
+            "set_otp": "https://business.bankffin.kz/api/loggy/callbacks/set-otp/3928b9e9-91a5-481c-88d2-9980a3f75f10?token=f0ce3fd77de24e0a9b07e7a02da2aa02",
+            "set_pan": null,
+            "set_status": "https://business.bankffin.kz/api/loggy/callbacks/set-status/3928b9e9-91a5-481c-88d2-9980a3f75f10?token=f0ce3fd77de24e0a9b07e7a02da2aa02"
+        },
+        "initial_delivery_datetime": null,
+        "order_group_id": null,
+        "revised": false,
+        "allow_courier_assign": true,
+        "actual_delivery_datetime": "2024-02-20 11:21:50.279633 +00:00",
+        "current_status_id": 7,
+        "shipment_point_id": null,
+        "delivery_point_id": 1,
+        "courier_service": "cdek"
+    },
+    {
+        "id": 3,
+        "type": "planned",
+        "created_at": "2024-02-08 06:11:17.160374 +00:00",
+        "delivery_datetime": "2024-02-20 23:59:00.000000 +00:00",
+        "delivery_status": {
+            "status": "is_delivered"
+        },
+        "receiver_name": "МАТАШЕВ АКБАР МУСЛИМЖАНОВИЧ",
+        "receiver_iin": "860824302113",
+        "receiver_phone_number": "+77781254616",
+        "comment": null,
+        "city_id": 1,
+        "courier_id": 1,
+        "item_id": 1,
+        "partner_id": 1,
+        "partner_order_id": null,
+        "main_order_id": null,
+        "position": null,
+        "archived": false,
+        "created_by": "integration",
+        "deliverygraph_id": 1,
+        "callbacks": {
+            "set_otp": "https://business.bankffin.kz/api/loggy/callbacks/set-otp/3928b9e9-91a5-481c-88d2-9980a3f75f10?token=f0ce3fd77de24e0a9b07e7a02da2aa02",
+            "set_pan": null,
+            "set_status": "https://business.bankffin.kz/api/loggy/callbacks/set-status/3928b9e9-91a5-481c-88d2-9980a3f75f10?token=f0ce3fd77de24e0a9b07e7a02da2aa02"
+        },
+        "initial_delivery_datetime": null,
+        "order_group_id": null,
+        "revised": false,
+        "allow_courier_assign": true,
+        "actual_delivery_datetime": "2024-02-20 11:21:50.279633 +00:00",
+        "current_status_id": 7,
+        "shipment_point_id": null,
+        "delivery_point_id": 1,
+        "courier_service": "cdek"
+    }
+]

@@ -331,6 +331,8 @@ def expected() -> dict:
                 "user_role": {"name": "Курьер", "slug": "courier"},
             },
         ],
+        "courier_service": None,
+        "track_number": None,
     }
 
 

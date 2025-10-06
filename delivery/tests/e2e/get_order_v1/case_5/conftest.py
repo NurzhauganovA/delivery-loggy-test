@@ -111,7 +111,6 @@ def expected() -> dict:
                  'message_for_noncall': None,
                  'name': 'Базовая кредитная карта',
                  'postcontrol_configs': [],
-                 'postcontrol_cancellation_configs': [],
                  'upload_from_gallery': True},
         'item_id': 1,
         'last_otp': None,

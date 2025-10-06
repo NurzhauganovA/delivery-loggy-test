@@ -12,7 +12,6 @@ class ProductType(descriptor.Descriptor):
     CARD = 'card'
     POS_TERMINAL = 'pos_terminal'
     GROUP_OF_CARDS = 'group_of_cards'
-    SEP_UNEMBOSSED = 'sep_unembossed'
 
 
 class CreatedType(descriptor.Descriptor):
@@ -27,6 +26,7 @@ class OrderSearchType(descriptor.Descriptor):
     PHONE = 'phone'
     FULL_NAME = 'full_name'
     CARD_NUMBER = 'card_number'
+    TRACK_NUMBER = 'track_number'
 
 
 class OrderStatus(descriptor.Descriptor):
@@ -55,6 +55,7 @@ class OrderStatusCodes(descriptor.Descriptor):
     CARD_RETURNED_TO_BANK = 'card_returned_to_bank'
     POS_TERMINAL_REGISTRATION = 'pos_terminal_registration'
     SEND_OTP = 'send_otp'
+    TRANSFER_TO_CDEK = 'transfer_to_cdek'
 
 
 class StatusIcon(descriptor.Descriptor):
@@ -78,6 +79,7 @@ class StatusIcon(descriptor.Descriptor):
 
 class StatusSlug(descriptor.Descriptor):
     NEW = 'novaia-zaiavka'
+    TRANSFER_TO_CDEK = 'transfer_to_cdek'
     COURIER_ASSIGNED = 'kurer-naznachen'
     ACCEPTED_BY_COURIER = 'priniato-kurerom-v-rabotu'
     ON_THE_WAY = 'v-puti-k-tochke-dostavki'
@@ -108,17 +110,16 @@ class StatusSlug(descriptor.Descriptor):
 
 
 class OrderDeliveryStatus(descriptor.Descriptor):
+    TRANSFER_TO_CDEK = 'transfer_to_cdek'
     TO_CALL_POINT = 'on-the-way-to-call-point'
     POSTPONED = 'postponed'
     RESCHEDULED = 'rescheduled'
     NONCALL = 'noncall'
     CANCELLED = 'cancelled'
-    REQUESTED_TO_CANCEL = 'requested_to_cancel'
     CANCELED_AT_CLIENT = 'cancelled_at_client'
     BEING_FINALIZED = 'being_finalized'
     # Being finalized at courier service
     BEING_FINALIZED_AT_CS = 'being_finalized_at_cs'
-    BEING_FINALIZED_ON_CANCEL = 'being_finalized_on_cancel'
     VIDEO_CHECK_PASSED = 'video_check_passed'
     VIDEO_UNAVAILABLE = 'video_unavailable'
     VIDEO_PC = 'video_postcontrol'
@@ -130,7 +131,6 @@ class OrderDeliveryStatus(descriptor.Descriptor):
     SMS_FAILED = 'sms_failed'
     IS_DELIVERED = 'is_delivered'
     UNDER_REVIEW = 'under_review'
-    ADDRESS_CHANGED = 'address_changed'
 
     @classmethod
     def main_statuses(cls) -> list:
@@ -138,12 +138,12 @@ class OrderDeliveryStatus(descriptor.Descriptor):
 
 
 class OrderDeliveryStatusQuery(descriptor.Descriptor):
+    TRANSFER_TO_CDEK = 'transfer_to_cdek'
     ON_THE_WAY_TO_CALL_POINT = 'on-the-way-to-call-point'
     POSTPONED = 'postponed'
     RESCHEDULED = 'rescheduled'
     NONCALL = 'noncall'
     CANCELLED = 'cancelled'
-    REQUESTED_TO_CANCEL = 'requested_to_cancel'
     CANCELLED_AT_CLIENT = 'cancelled_at_client'
     POSTCONTROL = 'postcontrol'
     BEING_FINALIZED = 'being_finalized'
@@ -160,7 +160,6 @@ class OrderDeliveryStatusQuery(descriptor.Descriptor):
     SMS_UNAVAILABLE = 'sms_unavailable'
     SMS_FAILED = 'sms_failed'
     NULL = 'null'
-    ADDRESS_CHANGED = 'address_changed'
 
 
 class OrderSMS(descriptor.Descriptor):
@@ -206,6 +205,10 @@ class OrderChangeAddressReason(descriptor.Descriptor):
     CLIENT_CHANGED = 'client_changed'
 
 
+class CourierService(descriptor.Descriptor):
+    CDEK = 'cdek'
+
+
 __all__ = (
     'CreatedType',
     'OrderChangeAddressType',
@@ -222,4 +225,5 @@ __all__ = (
     'StatusSlug',
     'OrderStatusCodes',
     'ProductType',
+    'CourierService',
 )

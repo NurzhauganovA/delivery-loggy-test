@@ -1,4 +1,5 @@
 from typing import Optional, Dict
+from fastapi import Depends
 
 from tortoise.exceptions import DoesNotExist
 

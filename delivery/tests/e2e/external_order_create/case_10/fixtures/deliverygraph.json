@@ -1,240 +1,268 @@
 [
     {
         "id": 1,
-        "graph": [
-            {
-                "id": 1,
-                "icon": "order_new",
-                "name": "Новая заявка",
-                "slug": "novaia-zaiavka",
-                "position": 1,
-                "button_name": null
-            },
-            {
-                "id": 30,
-                "icon": "packed",
-                "name": "Упаковано",
-                "slug": "upakovano",
-                "position": 2,
-                "button_name": null
-            },
-            {
-                "id": 31,
-                "icon": "ready-to-send",
-                "name": "Включено в группу",
-                "slug": "vkliucheno-v-gruppu",
-                "position": 3,
-                "button_name": null
-            },
-            {
-                "id": 23,
-                "icon": "ready-to-send",
-                "name": "Готово к вывозу",
-                "slug": "gotovo-k-vyvozu",
-                "position": 4,
-                "button_name": null
-            },
-            {
-                "id": 32,
-                "icon": "at_revise",
-                "name": "На сверке",
-                "slug": "na-sverke",
-                "position": 6,
-                "button_name": null
-            },
-            {
-                "id": 28,
-                "icon": "courier_accepted",
-                "name": "Вывезено курьером",
-                "slug": "vyvezeno-kurerom",
-                "position": 7,
-                "button_name": null
-            },
-            {
-                "id": 29,
-                "icon": "at-the-call-point",
-                "name": "Принято курьерской службой",
-                "slug": "priniato-kurerskoi-sluzhboi",
-                "position": 8,
-                "button_name": null
-            },
-            {
-                "id": 2,
-                "icon": "courier_appointed",
-                "name": "Курьер назначен",
-                "slug": "kurer-naznachen",
-                "position": 9,
-                "button_name": "Принять в работу"
-            },
-            {
-                "id": 3,
-                "icon": "courier_accepted",
-                "name": "Принято курьером в работу",
-                "slug": "priniato-kurerom-v-rabotu",
-                "position": 10,
-                "button_name": "К точке вывоза"
-            },
-            {
-                "id": 25,
-                "icon": "at_client",
-                "name": "У клиента",
-                "slug": "u-klienta",
-                "position": 11,
-                "button_name": "Отправить SMS с кодом"
-            },
-            {
-                "id": 20,
-                "icon": "post_control",
-                "name": "Код отправлен",
-                "slug": "kod-otpravlen",
-                "position": 12,
-                "button_name": "Проверить код"
-            },
-            {
-                "id": 16,
-                "icon": "post_control",
-                "name": "Фотографирование",
-                "slug": "fotografirovanie",
-                "position": 13,
-                "button_name": "Отправить на последконтроль"
-            },
-            {
-                "id": 12,
-                "icon": "post_control",
-                "name": "Последконтроль",
-                "slug": "posledkontrol",
-                "position": 14,
-                "button_name": null
-            },
-            {
-                "id": 7,
-                "icon": "order_delivered",
-                "name": "Доставлено",
-                "slug": "dostavleno",
-                "position": 15,
-                "button_name": null
-            }
-        ],
         "partner_id": null,
         "name_ru": "Подготовка + otp + Последконтроль",
+        "name_en": "Preparation + otp + Final control",
+        "name_zh": null,
+        "name_kk": null,
         "slug": "Podgotovka + otp + Posledkontrol",
         "types": "{\"urgent\", \"operative\", \"planned\"}",
+        "graph": [
+              {
+                "id": 1,
+                "icon": "order_new",
+                "slug": "novaia-zaiavka",
+                "status": "new",
+                "name_en": "New order",
+                "name_ru": "Новая заявка",
+                "position": 1,
+                "button_name": null,
+                "transitions": [
+                  {
+                    "dest": "transfer_to_cdek",
+                    "source": "new",
+                    "trigger": "transfer_to_cdek"
+                  }
+                ]
+              },
+              {
+                "id": 37,
+                "icon": "transfer_to_cdek",
+                "slug": "peredano-v-cdek",
+                "status": "transfer_to_cdek",
+                "name_en": "Transferred to CDEK",
+                "name_ru": "Передано в СДЭК",
+                "position": 2,
+                "button_name": null,
+                "transitions": [
+                  {
+                    "dest": "send_otp",
+                    "source": "transfer_to_cdek",
+                    "trigger": "send_otp"
+                  }
+                ]
+              },
+              {
+                "id": 25,
+                "icon": "at_client",
+                "slug": "u-klienta",
+                "status": "send_otp",
+                "name_en": "Send OTP",
+                "name_ru": "Отправка OTP",
+                "position": 3,
+                "button_name": "Отправить SMS с кодом",
+                "transitions": [
+                  {
+                    "dest": "verify_otp",
+                    "source": "send_otp",
+                    "trigger": "verify_otp"
+                  }
+                ]
+              },
+              {
+                "id": 20,
+                "icon": "post_control",
+                "slug": "kod-otpravlen",
+                "status": "verify_otp",
+                "name_en": "OTP sent",
+                "name_ru": "Код отправлен",
+                "position": 4,
+                "button_name": "Проверить код",
+                "transitions": [
+                  {
+                    "dest": "scan_card",
+                    "source": "verify_otp",
+                    "trigger": "scan_card"
+                  }
+                ]
+              },
+              {
+                "id": 24,
+                "icon": "post_control",
+                "slug": "skanirovanie-karty",
+                "status": "scan_card",
+                "name_en": "Card scanning",
+                "name_ru": "Сканирование карты",
+                "position": 5,
+                "button_name": "Сканировать карту",
+                "transitions": [
+                  {
+                    "dest": "photo_capturing",
+                    "source": "scan_card",
+                    "trigger": "photo_capturing"
+                  }
+                ]
+              },
+              {
+                "id": 16,
+                "icon": "post_control",
+                "slug": "fotografirovanie",
+                "status": "photo_capturing",
+                "name_en": "Photo capturing",
+                "name_ru": "Фотографирование",
+                "position": 6,
+                "button_name": "Отправить",
+                "transitions": [
+                  {
+                    "dest": "delivered",
+                    "source": "photo_capturing",
+                    "trigger": "delivered"
+                  }
+                ]
+              },
+              {
+                "id": 7,
+                "icon": "order_delivered",
+                "slug": "dostavleno",
+                "status": "delivered",
+                "name_en": "Delivered",
+                "name_ru": "Доставлено",
+                "position": 7,
+                "button_name": null
+              }
+            ],
         "graph_courier": [
             {
                 "id": 1,
                 "icon": "order_new",
-                "name": "Новая заявка",
+                "name_ru": "Новая заявка",
+                "name_en": "New order",
                 "slug": "novaia-zaiavka",
+                "status": "novaia-zaiavka",
                 "position": 1,
                 "button_name": null
             },
             {
                 "id": 30,
                 "icon": "packed",
-                "name": "Упаковано",
+                "name_ru": "Упаковано",
+                "name_en": "Packed",
                 "slug": "upakovano",
+                "status": "upakovano",
                 "position": 2,
                 "button_name": null
             },
             {
                 "id": 31,
                 "icon": "ready-to-send",
-                "name": "Включено в группу",
+                "name_ru": "Включено в группу",
+                "name_en": "Grouped",
                 "slug": "vkliucheno-v-gruppu",
+                "status": "vkliucheno-v-gruppu",
                 "position": 3,
                 "button_name": null
             },
             {
                 "id": 23,
                 "icon": "ready-to-send",
-                "name": "Готово к вывозу",
+                "name_ru": "Готово к вывозу",
+                "name_en": "Ready for pickup",
                 "slug": "gotovo-k-vyvozu",
+                "status": "gotovo-k-vyvozu",
                 "position": 4,
                 "button_name": null
             },
             {
                 "id": 32,
                 "icon": "at_revise",
-                "name": "На сверке",
+                "name_ru": "На сверке",
+                "name_en": "Under revision",
                 "slug": "na-sverke",
+                "status": "na-sverke",
                 "position": 6,
                 "button_name": null
             },
             {
                 "id": 28,
                 "icon": "courier_accepted",
-                "name": "Вывезено курьером",
+                "name_ru": "Вывезено курьером",
+                "name_en": "Picked up by courier",
                 "slug": "vyvezeno-kurerom",
+                "status": "vyvezeno-kurerom",
                 "position": 7,
                 "button_name": null
             },
             {
                 "id": 29,
                 "icon": "at-the-call-point",
-                "name": "Принято курьерской службой",
+                "name_ru": "Принято курьерской службой",
+                "name_en": "Accepted by courier service",
                 "slug": "priniato-kurerskoi-sluzhboi",
+                "status": "priniato-kurerskoi-sluzhboi",
                 "position": 8,
                 "button_name": null
             },
             {
                 "id": 2,
                 "icon": "courier_appointed",
-                "name": "Курьер назначен",
+                "name_ru": "Курьер назначен",
+                "name_en": "Courier assigned",
                 "slug": "kurer-naznachen",
+                "status": "kurer-naznachen",
                 "position": 9,
                 "button_name": "Принять в работу"
             },
             {
                 "id": 3,
                 "icon": "courier_accepted",
-                "name": "Принято курьером в работу",
+                "name_ru": "Принято курьером в работу",
+                "name_en": "Accepted by courier",
                 "slug": "priniato-kurerom-v-rabotu",
+                "status": "priniato-kurerom-v-rabotu",
                 "position": 10,
                 "button_name": "К точке вывоза"
             },
             {
                 "id": 25,
                 "icon": "at_client",
-                "name": "У клиента",
+                "name_ru": "У клиента",
+                "name_en": "At client",
                 "slug": "u-klienta",
+                "status": "u-klienta",
                 "position": 11,
                 "button_name": "Отправить SMS с кодом"
             },
             {
                 "id": 20,
                 "icon": "post_control",
-                "name": "Код отправлен",
+                "name_ru": "Код отправлен",
+                "name_en": "Code sent",
                 "slug": "kod-otpravlen",
+                "status": "kod-otpravlen",
                 "position": 12,
                 "button_name": "Проверить код"
             },
             {
                 "id": 16,
                 "icon": "post_control",
-                "name": "Фотографирование",
+                "name_ru": "Фотографирование",
+                "name_en": "Photographing",
                 "slug": "fotografirovanie",
+                "status": "fotografirovanie",
                 "position": 13,
                 "button_name": "Отправить на последконтроль"
             },
             {
                 "id": 12,
                 "icon": "post_control",
-                "name": "Последконтроль",
+                "name_ru": "Последконтроль",
+                "name_en": "Final control",
                 "slug": "posledkontrol",
+                "status": "posledkontrol",
                 "position": 14,
                 "button_name": null
             },
             {
                 "id": 7,
                 "icon": "order_delivered",
-                "name": "Доставлено",
+                "name_ru": "Доставлено",
+                "name_en": "Delivered",
                 "slug": "dostavleno",
+                "status": "dostavleno",
                 "position": 15,
                 "button_name": null
             }
-        ],
-        "name_en": null,
-        "name_zh": null,
-        "name_kk": null
+        ]
     }
 ]

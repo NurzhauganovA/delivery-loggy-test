@@ -7,8 +7,11 @@ from .endpoints import (
     user,
     courier,
 )
-from api.v2 import crm
-from api.v2 import mobile
+from api.v2 import (
+    crm,
+    mobile,
+    webhooks,
+)
 
 
 api_router = fastapi.APIRouter(prefix='/v2')
@@ -19,3 +22,4 @@ api_router.include_router(comments.router, tags=['comments'])
 api_router.include_router(crm.router, tags=['crm'])
 api_router.include_router(mobile.router, tags=['mobile'])
 api_router.include_router(courier.router, tags=['courier'])
+api_router.include_router(webhooks.router, tags=['webhooks'])

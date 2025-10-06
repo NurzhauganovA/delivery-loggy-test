@@ -1,0 +1,18 @@
+[
+    {
+        "id": 1,
+        "phone_number": "+77777777777",
+        "first_name": "Служба 1",
+        "last_name": "Службавна 1",
+        "middle_name": "Службавна 1",
+        "iin": null,
+        "credentials": null,
+        "is_active": true,
+        "photo": null,
+        "personal_agreement": null,
+        "created_at": "2023-01-13 12:08:19.000000+00:00",
+        "is_superuser": false,
+        "email": "test_1@gmail.com",
+        "password": "$2b$12$KzP.BVjQGSu4O/D9XajUP.UikCQ4SWC47mr9XMDztCroWFiHmC2zy"
+    }
+]

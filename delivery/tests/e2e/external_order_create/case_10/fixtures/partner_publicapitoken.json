@@ -1,0 +1,9 @@
+[
+    {
+        "id": 1,
+        "token": "1111",
+        "created_at": "2025-05-02 10:06:29.716074 +00:00",
+        "is_expires": false,
+        "partner_id": 1
+    }
+]

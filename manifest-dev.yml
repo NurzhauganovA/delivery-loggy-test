@@ -23,7 +23,7 @@ appsTemplates:
     namespace: loggy-dev
     enabled: true
     chart: "projects/default-chart"
-    version: "1.9.3"
+    version: "1.0.0"
 
 apps:
   courier-service-api:

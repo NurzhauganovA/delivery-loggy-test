@@ -1,11 +1,11 @@
 [
     {
         "id": 1,
-        "name": "Алматы, Muratbaev Street, 182, Алмалинский район, Элитная сауна \"Status\"",
+        "name": "Test",
         "partner_id": 1,
-        "address": "Алматы, Muratbaev Street, 182, Алмалинский район, Элитная сауна \"Status\"",
-        "latitude": 43.24678280,
-        "longitude": 76.92004150,
+        "address": "Test",
+        "latitude": 12.34,
+        "longitude": 56.78,
         "city_id": 1
     }
 ]

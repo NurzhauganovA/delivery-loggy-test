@@ -62,7 +62,6 @@ def expected() -> dict:
         "receiver_iin": "012345050101",
         "receiver_name": "Нурсултан Кемелович",
         "receiver_phone_number": "+77071112233",
-        "client_code": None,
         "has_receiver_feedback": None,
         "comment": "sample comment",
         "area_id": None,

@@ -182,7 +182,6 @@ class ItemGet(Item, BaseOutSchema):
     category: Optional[dict]
     partner: PartnerGetForItem = None
     postcontrol_configs: List[PostControlConfigGet] = []
-    postcontrol_cancellation_configs: List[PostControlConfigGet] = []
     deliverygraphs: List[schemas.DeliveryGraphGet]
     cities: List[City]
     has_postcontrol: bool

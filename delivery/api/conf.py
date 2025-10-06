@@ -27,9 +27,9 @@ class Monitoring(BaseSettings):
 class Postgres(BaseSettings):
     host: str = Field('127.0.0.1', env='POSTGRES_HOST')
     port: int = Field(5432, env='POSTGRES_PORT')
-    user: str = Field('myuser', env='POSTGRES_USER')
-    password: str = Field('mypassword', env='POSTGRES_PASSWORD')
-    database: str = Field('mydatabase', env='POSTGRES_DB')
+    user: str = Field('delivery', env='POSTGRES_USER')
+    password: str = Field('delivery', env='POSTGRES_PASSWORD')
+    database: str = Field('delivery', env='POSTGRES_DB')
     maxsize: int = 900
 
     @property
@@ -233,7 +233,7 @@ class Tortoise(BaseSettings):
 class Media(BaseSettings):
     root: Path = Field(Path(__file__).resolve().parent.parent / 'media', env='MEDIA_ROOT')
     url: str = Field('/media', env='MEDIA_URL')
-    maximum_size_of_image: int = Field(20 * 1024 * 1024, env='MAXIMUM_SIZE_OF_IMAGE') # 20 Mega Bytes
+    maximum_size_of_image: int = Field(20 * 1024 * 1024, env='MAXIMUM_SIZE_OF_IMAGE')
 
 
 class Static(BaseSettings):
@@ -284,6 +284,13 @@ class POSTerminalSettings(BaseSettings):
     partner_id: int = Field(142, env='POS_TERMINAL_PARTNER_ID')
 
 
+class CDEKClientSettings(BaseSettings):
+    base_url: str = Field("https://api.cdek.ru/v2", env='CDEK_BASE_URL')
+    client_id: str = Field("wj9yCGKMfEDQMzMmtzBsiccJOYojcLjn", env='CDEK_CLIENT_ID')
+    client_secret: str = Field("cTcEw5CNnmILMeZMAYmShJmIcETlIS0y", env='CDEK_CLIENT_SECRET')
+    webhook_api_key: str = Field("", env='CDEK_WEBHOOK_API_KEY')
+
+
 class Settings(BaseSettings):
     firebase: Firebase = Firebase()
     token: Token = Token()
@@ -307,6 +314,7 @@ class Settings(BaseSettings):
     freedom_pos_terminal_registration: FreedomPOSTerminalRegistrationSettings = FreedomPOSTerminalRegistrationSettings()
     pos_terminal_otp: PosTerminalOTPClientSettings = PosTerminalOTPClientSettings()
     pos_terminal: POSTerminalSettings = POSTerminalSettings()
+    cdek: CDEKClientSettings = CDEKClientSettings()
 
     class Config:
         case_sensitive = False

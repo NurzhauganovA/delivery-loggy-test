@@ -11,7 +11,6 @@ class PostControlResolution(descriptor.Descriptor):
 
 class PostControlType(descriptor.Descriptor):
     POST_CONTROL = 'post_control'
-    CANCELED = 'canceled'
     CANCELED_AT_CLIENT = 'canceled_at_client'
 
 

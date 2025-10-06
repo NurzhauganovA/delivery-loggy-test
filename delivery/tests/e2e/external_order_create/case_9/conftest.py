@@ -29,10 +29,10 @@ def body() -> str:
             "latitude": 72.12332,
             "longitude": 41.232355,
             "partner_order_id": "223o486346082346074360349",
-
+            
             "product_type": "group_of_cards",
             "product_name": "Групповая доставка ЗП карт",
-
+            
             "payload": [
                 {
                   "id": 0,

@@ -5,20 +5,12 @@ from api.schemas.order_payload import (
     CardPayload,
     POSTerminalPayload,
     GroupOfCardsPayload,
-    ClientCodePayload,
 )
 
 
 def get_product_payload(
         product_type: str,
-        payload: Optional[
-            Union[
-                CardPayload,
-                POSTerminalPayload,
-                GroupOfCardsPayload,
-                ClientCodePayload,
-            ]
-        ],
+        payload: Optional[Union[CardPayload, POSTerminalPayload]],
 ):
     product_payload = None
 
@@ -30,8 +22,5 @@ def get_product_payload(
 
     if product_type == ProductType.GROUP_OF_CARDS:
         product_payload = GroupOfCardsPayload.parse_obj(payload)
-
-    if product_type == ProductType.SEP_UNEMBOSSED:
-        product_payload = ClientCodePayload.parse_obj(payload)
 
     return product_payload

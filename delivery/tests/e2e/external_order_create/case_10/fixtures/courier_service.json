@@ -1,0 +1,9 @@
+[
+    {
+        "id": 1,
+        "courier_service": "CDEK",
+        "warehouse_id": "12345",
+        "city_id": 4,
+        "partner_id": 1
+    }
+]

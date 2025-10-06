@@ -1,6 +1,7 @@
 import os
 
 import pytest
+from _pytest.fixtures import FixtureRequest
 
 from tests.fixtures.default_pre_start_sql_scripts import default_pre_start_sql_script
 from tests.utils import get_sql_script_from_fixtures
@@ -337,8 +338,9 @@ def expected() -> dict:
             },
         ],
         "type": "planned",
+        "courier_service": "cdek",
+        "track_number": "111111111",
     }
-
 
 
 @pytest.fixture
@@ -365,7 +367,24 @@ def fixtures()-> dict:
 
 
 @pytest.fixture
-def pre_start_sql_script(request, fixtures, default_pre_start_sql_script) -> str:
+def pre_start_sql_script(
+    request: FixtureRequest,
+    fixtures: dict,
+    default_pre_start_sql_script: str,
+) -> str:
+    """
+    Сборка всех SQL запросов из json
+    Склеивание с устаревшими запросами, для совместимости
+
+    Args:
+        request: глобальный объект Pytest
+        fixtures: список фикстур. Парсится из словаря выше
+        default_pre_start_sql_script: легаси sql запросы
+
+    Returns:
+        SQL запрос спарсенный из фикстур
+    """
+
     current_test_sql_scripts = get_sql_script_from_fixtures(
         current_dir=os.path.dirname(str(request.fspath)),
         fixtures=fixtures,

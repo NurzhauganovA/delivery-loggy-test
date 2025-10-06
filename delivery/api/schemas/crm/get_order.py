@@ -4,11 +4,24 @@ import typing
 from tortoise.contrib.pydantic import PydanticModel
 
 from api import enums
-from api.enums import OrderType
+from api.enums import (
+    OrderType,
+    CourierService,
+)
 from api.schemas.deliverygraph import DeliveryGraphGetV2
 from api.schemas.order import (
-    Courier, DeliveryStatus, Area, Partner, ShipmentPointGet, DeliveryPointGet, ItemV2, StatusGetV2, Product,
-    ItemGetV2, OrderStatusGetWithDatetime, City
+    Courier,
+    DeliveryStatus,
+    Area,
+    Partner,
+    ShipmentPointGet,
+    DeliveryPointGet,
+    ItemV2,
+    StatusGetV2,
+    Product,
+    ItemGetV2,
+    OrderStatusGetWithDatetime,
+    City,
 )
 
 
@@ -58,6 +71,8 @@ class GetOrderResponse(PydanticModel):
     current_status_position: int | None
     current_status: StatusGetV2 | None
     manager: str | None = None
+    courier_service: CourierService | None
+    track_number: str | None
     product: Product | None = None
 
     item: ItemGetV2

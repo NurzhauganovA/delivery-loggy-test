@@ -65,7 +65,6 @@ async def item_get(
     '/item',
     summary='Create item',
     response_model=schemas.ItemGet,
-    status_code=201,
 )
 async def item_create(
     payload: schemas.ItemCreate = fastapi.Depends(dependencies.item_validate_create_payload),

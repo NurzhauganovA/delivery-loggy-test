@@ -37,10 +37,7 @@ class PartnerSettingRepository(BaseRepository):
         )
         if not entity:
             try:
-                entity = await self._table.create(
-                    partner_id=partner_id,
-                    default_order_group_couriers={},
-                )
+                entity = await self._table.create(partner_id=partner_id)
                 await entity.fetch_related(
                     'partner',
                     'auto_item_for_order_group',
@@ -69,10 +66,7 @@ class PartnerSettingRepository(BaseRepository):
         )
         if not entity:
             try:
-                entity = await self._table.create(
-                    partner_id=partner_id,
-                    default_order_group_couriers={},
-                )
+                entity = await self._table.create(partner_id=partner_id)
             except IntegrityError as e:
                 raise self._integrity_error(
                     table=self._table.Meta.table,

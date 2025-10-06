@@ -6,15 +6,15 @@ import typing
 import uuid
 from datetime import datetime
 from pathlib import Path
+from tempfile import SpooledTemporaryFile
 
 import PIL.Image as Image
 from starlette.datastructures import UploadFile
 from tortoise import ConfigurationError
 from tortoise.fields import TextField
 
-from api.conf import conf
 from api.exceptions import HTTPBadRequestException
-from api.utils.file import File
+from ...conf import conf
 
 
 class FileValidationError(HTTPBadRequestException):
@@ -49,7 +49,7 @@ class FileField(TextField):
             return value.replace(conf.media.url + '/', '')
         elif isinstance(value, UploadFile):
             return self.save_file_from_fastapi(value)
-        elif isinstance(value, File):
+        elif isinstance(value, SpooledTemporaryFile):
             return self.save_file(value)
         elif isinstance(value, bytes):
             return self.save_file_from_base64(value)
@@ -61,7 +61,7 @@ class FileField(TextField):
             path = value
         elif isinstance(value, UploadFile):
             path = self.save_file_from_fastapi(value)
-        elif isinstance(value, File):
+        elif isinstance(value, SpooledTemporaryFile):
             path = self.save_file(value)
         elif isinstance(value, bytes):
             path = self.save_file_from_base64(value)
@@ -86,13 +86,13 @@ class FileField(TextField):
         self.validate_file(file_path)
         return f'{file_path}'
 
-    def save_file(self, file: File):
-        file_ext = file.ext
+    def save_file(self, file: SpooledTemporaryFile):
+        file_ext = file.name.split('.')[-1]
         file_name = f'{uuid.uuid4()}.{file_ext}'
         file_path = self.upload_to / file_name
 
         with open(conf.media.root / file_path, 'wb') as f:
-            f.write(file.bytes)
+            f.write(file.read())
         self.validate_file(file_path)
         return f'{file_path}'
 
@@ -105,4 +105,4 @@ class ImageField(FileField):
         if file_type not in self.ALLOWED_EXTENSIONS:
             os.remove(conf.media.root / file_path)
             raise FileValidationError(f'Invalid file type: {file_type}. '
-                                      f'Allowed types are: {", ".join(self.ALLOWED_EXTENSIONS)}')
+                                  f'Allowed types are: {", ".join(self.ALLOWED_EXTENSIONS)}')

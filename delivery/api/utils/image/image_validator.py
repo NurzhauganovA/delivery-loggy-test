@@ -3,7 +3,6 @@ import typing
 
 import fastapi
 
-from api.utils.file import File
 from api.utils.image.exceptions import ImageValidationError
 
 
@@ -38,12 +37,10 @@ class ImageValidator:
 
 
     @staticmethod
-    async def serialize_image(image: fastapi.UploadFile) -> File:
-        serialized_image = File(
-            bytes=await image.read(),
-            name=image.filename,
-        )
-        return serialized_image
+    async def serialize_image(image: fastapi.UploadFile) -> typing.BinaryIO:
+        # noinspection PyProtectedMember
+        image.file._file.name = image.filename
+        return image.file
 
     @staticmethod
     def __bytes_to_mega_bytes(num_bytes: int) -> str:

@@ -1,37 +1,36 @@
 import fastapi
 
-from .endpoints import(
-    area,
-    biometry,
-    country,
-    deliverygraph,
-    direction,
-    external_service_history,
-    feedback,
-    firebase,
-    group,
-    history,
-    item,
-    category,
-    monitoring,
-    order,
-    otp,
-    partner,
-    permission,
-    place,
-    postcontrol,
-    profile,
-    public_api_token,
-    register,
-    status,
-    token,
-    transport,
-    user,
-    verification,
-    ws_monitoring,
-    external,
-    statistics,
-)
+from .endpoints import area
+from .endpoints import biometry
+# from .endpoints import city
+from .endpoints import country
+from .endpoints import deliverygraph
+from .endpoints import direction
+from .endpoints import external_service_history
+from .endpoints import feedback
+from .endpoints import firebase
+from .endpoints import group
+from .endpoints import history
+from .endpoints import item
+from .endpoints import category
+from .endpoints import monitoring
+from .endpoints import order
+from .endpoints import otp
+from .endpoints import partner
+from .endpoints import permission
+from .endpoints import place
+from .endpoints import postcontrol
+from .endpoints import profile
+from .endpoints import public_api_token
+from .endpoints import register
+from .endpoints import status
+from .endpoints import token
+from .endpoints import transport
+from .endpoints import user
+from .endpoints import verification
+from .endpoints import ws_monitoring
+from .endpoints import external
+from .endpoints import statistics
 from ..modules.delivery_point import v1 as delivery_point
 from ..modules.call_request import routes as call_request
 from ..modules.city import v1 as city
@@ -40,7 +39,6 @@ from ..modules.monitoring import routes as monitoring_module
 from ..modules.order import routes as order_module
 from ..modules.partner_settings import routes as partner_setting
 from ..modules.order_chain import v1 as order_chain
-
 
 api_router = fastapi.APIRouter(prefix='/v1')
 api_router.include_router(city.router, tags=['city'])

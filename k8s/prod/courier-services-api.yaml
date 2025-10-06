@@ -62,6 +62,11 @@ env:
   FREEDOM_BANK_OTP_PASSWORD: "1TCsI/3QyTMhcr2aowtGB/ji+nBciIhf"
   FREEDOM_BANK_KZ_CALLBACKS_TOKEN: "Basic bG9nZ3k6MVRDc0kvM1F5VE1oY3IyYW93dEdCL2ppK25CY2lJaGY="
 
+  # CDEK
+  CDEK_BASE_URL: "https://api.cdek.ru/v2"
+  CDEK_CLIENT_ID: "wj9yCGKMfEDQMzMmtzBsiccJOYojcLjn"
+  CDEK_CLIENT_SECRET: "cTcEw5CNnmILMeZMAYmShJmIcETlIS0y"
+
 #secretEnv:
 #  - secretName: "courier-service"
 #    secretKeys: "password"
@@ -164,6 +169,14 @@ readinessProbe:
   periodSeconds: 5
   successThreshold: 1
   timeoutSeconds: 1
+
+resources:
+  limits:
+    cpu: 2
+    memory: 2Gi
+  requests:
+    cpu: 1
+    memory: 1.5Gi
 
 imagePullSecrets:
 - name: myregistrykey

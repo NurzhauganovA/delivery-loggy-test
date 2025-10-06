@@ -13,7 +13,6 @@ from starlette.responses import Response
 from starlette.websockets import WebSocket
 from tortoise.timezone import now
 
-from api import exceptions, models
 from api.common import schema_base
 from api.controllers.get_order_product import OrderProductNotFoundError
 from api.controllers.handle_order_status_transition.handlers import (
@@ -24,7 +23,7 @@ from api.dependencies.controllers.handle_order_status_transition.handlers import
     get_send_otp_handler,
     get_verify_otp_handler,
 )
-from ... import auth
+from ... import auth, exceptions
 from ... import controllers
 from ... import dependencies
 from ... import responses
@@ -248,8 +247,8 @@ async def order_create(
     status_code=200,
 )
 async def order_update(
-    order_id: int,
     update: schemas.OrderUpdate,
+    order_id: int = fastapi.Depends(dependencies.order_check_for_update),
     _: schemas.UserCurrent = fastapi.Security(
         auth.get_current_user,
         scopes=['o:u'],
@@ -272,8 +271,8 @@ async def order_update(
     status_code=200,
 )
 async def order_partial_update(
-    order_id: int,
     update: schema_base.partial(schemas.OrderUpdate),
+    order_id: int = fastapi.Depends(dependencies.order_check_for_update),
     _: schemas.UserCurrent = fastapi.Security(
         auth.get_current_user,
         scopes=['o:u'],
@@ -326,40 +325,13 @@ async def order_courier_assign(
 async def order_cancel(
     order_id: int = fastapi.Depends(dependencies.order_check_for_cancel),
     reason: str = fastapi.Body(embed=True),
-    comment: str | None = fastapi.Body(embed=True, default=None),
     user: schemas.UserCurrent = fastapi.Security(
         auth.get_current_user,
         scopes=['o:u'],
     ),
     default_filter_args: list = fastapi.Security(dependencies.OrderDefaultFilter()),
 ):
-    await controllers.order_cancel(
-        order_id=order_id,
-        reason=reason,
-        user=user,
-        default_filter_args=default_filter_args,
-        comment=comment,
-    )
-
-
-@router.put(
-    '/order/{order_id}/accept-cancel',
-    summary='Cancel',
-    status_code=200,
-)
-async def order_accept_cancel(
-    order_id: int = fastapi.Depends(dependencies.order_check_for_accept_cancel),
-    user: schemas.UserCurrent = fastapi.Security(
-        auth.get_current_user,
-        scopes=['o:u'],
-    ),
-    default_filter_args: list = fastapi.Security(dependencies.OrderDefaultFilter()),
-):
-    await controllers.order_accept_cancel(
-        order_id=order_id,
-        user=user,
-        default_filter_args=default_filter_args,
-    )
+    await controllers.order_cancel(order_id, reason=reason, user=user, default_filter_args=default_filter_args)
 
 
 @router.put(
@@ -390,7 +362,7 @@ async def order_postpone(
     status_code=200,
 )
 async def order_finalize_at_cs(
-    order_id: int,
+    order_id: int = fastapi.Depends(dependencies.order_check_for_update),
     comment: str | None = fastapi.Body(None, embed=True),
     user: schemas.UserCurrent = fastapi.Security(
         auth.get_current_user,
@@ -448,7 +420,7 @@ async def order_resume(
     status_code=200,
 )
 async def order_cancel_at_client(
-    order_id: int,
+    order_id: int = fastapi.Depends(dependencies.order_check_for_update),
     reason: str = fastapi.Body(),
     image: fastapi.UploadFile = fastapi.Depends(dependencies.order_validate_image_for_cancel_at_client),
     current_user: schemas.UserCurrent = fastapi.Security(
@@ -472,8 +444,8 @@ async def order_cancel_at_client(
     status_code=200,
 )
 async def order_reschedule(
-    order_id: int,
     update: schemas.OrderReschedule,
+    order_id: int = fastapi.Depends(dependencies.order_check_for_update),
     current_user: schemas.UserCurrent = fastapi.Security(
         auth.get_current_user,
         scopes=['o:cc'],
@@ -489,8 +461,8 @@ async def order_reschedule(
     response_description='Restore order',
 )
 async def order_restore(
-    order_id: int,
     update: schema_base.partial(schemas.OrderRestore),
+    order_id: int = fastapi.Depends(dependencies.order_check_for_update),
     current_user: schemas.UserCurrent = fastapi.Security(
         auth.get_current_user,
         scopes=['o:u'],
@@ -519,7 +491,7 @@ async def order_restore(
     responses=responses.generate_responses([responses.APIResponseNotFound]),
 )
 async def order_get_current_status(
-    order_id: int,
+    order_id: int = fastapi.Depends(dependencies.order_check_for_update),
     _: schemas.UserCurrent = fastapi.Security(
         auth.get_current_user,
         scopes=['o:g']
@@ -560,8 +532,8 @@ async def order_get_import_history(
     response_model=schemas.OrderStatusGet,
 )
 async def order_update_status(
-    order_id: int,
     status_id: int,
+    order_id: int = fastapi.Depends(dependencies.order_check_for_update),
     _: schemas.UserCurrent = fastapi.Security(
         auth.get_current_user,
     ),
@@ -586,8 +558,8 @@ async def order_update_status(
     status_code=200,
 )
 async def order_revise(
-    order_id: int,
     revised: Annotated[bool, fastapi.Body(embed=True)],
+    order_id: int = fastapi.Depends(dependencies.order_check_for_update),
     _: schemas.UserCurrent = fastapi.Security(auth.get_current_user),
     default_filter_args: list = fastapi.Security(dependencies.order_revise_default_filters),
 ):
@@ -687,7 +659,7 @@ async def order_import_from_excel(
     summary='Send sms to receiver',
 )
 async def sms_postcontrol(
-    order_id: int,
+    order_id: int = fastapi.Depends(dependencies.order_check_for_update),
     at_client_point: schemas.Coordinates | None = fastapi.Body(None),
     default_filter_args: list = fastapi.Security(dependencies.OrderDefaultFilter()),
     send_otp_handler: SendOTPHandler = Depends(get_send_otp_handler)
@@ -706,8 +678,8 @@ async def sms_postcontrol(
     response_model=schemas.OrderGetV1,
 )
 async def sms_postcontrol_check(
-    order_id: int,
     body: schemas.OrderSmsCode,
+    order_id: int = fastapi.Depends(dependencies.order_check_for_update),
     default_filter_args: list = fastapi.Security(dependencies.OrderDefaultFilter()),
     verify_otp_handler: VerifyOTPHandler = Depends(get_verify_otp_handler)
 ):
@@ -818,8 +790,8 @@ async def distribution_selective_orders(
     ),
 )
 async def order_address_update(
-    order_id: int,
     update: schemas.OrderAddressChange,
+    order_id: int = fastapi.Depends(dependencies.order_check_for_update),
     current_user: schemas.UserCurrent = fastapi.Security(
         auth.get_current_user,
     ),
@@ -847,7 +819,7 @@ async def order_address_update(
     response_model=schemas.OrderGetV1
 )
 async def order_pan(
-    order_id: int,
+    order_id: int = fastapi.Depends(dependencies.order_check_for_update),
     pan: schemas.OrderPAN = fastapi.Depends(dependencies.order_validate_pan),
     _: schemas.UserCurrent = Security(
         auth.get_current_user,
@@ -875,8 +847,8 @@ async def order_pan(
     responses=responses.make_error_responses(include=[400, 401, 403, 404, 500])
 )
 async def get_order_product(
-    order_id: int,
     product_id: int,
+    order_id: int = fastapi.Depends(dependencies.order_check_for_update),
     default_filter_args: list = fastapi.Security(dependencies.OrderDefaultFilter()),
     _: schemas.UserCurrent = fastapi.Security(
         auth.get_current_user,

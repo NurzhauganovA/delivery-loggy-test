@@ -9,18 +9,10 @@ from loguru import logger
 from tortoise.exceptions import DoesNotExist
 
 from ...auth import get_current_user
-from api import controllers, schemas, dependencies, auth, exceptions
+from api import controllers, schemas, dependencies, auth, PydanticException, exceptions
 from api.domain.order import DeliveryGraphValidationError, BaseOrderDomainError
 from api.dependencies.controllers import get_handle_order_status_transition_controller
 from api.controllers.handle_order_status_transition import OrderStatusTransitionController
-
-from api.controllers.update_order_delivery_point.controller import UpdateOrderDeliveryPoint
-from api.controllers.update_order_delivery_point.exceptions import(
-    BaseUpdateOrderDeliveryPointError,
-)
-
-from ...schemas import OrderCreateV2
-from ...schemas import UserCurrent
 from api.controllers.handle_order_status_transition.exceptions import BaseOrderStatusTransitionHandlerError
 
 
@@ -46,7 +38,7 @@ async def order_create_v2(
     """Create order. """
     # TODO: handle it beautifully
     if distribute_now and not order.delivery_point:
-        raise exceptions.PydanticException(errors=('distribute_now', 'Can not distribute pickup orders'))
+        raise PydanticException(errors=('distribute_now', 'Can not distribute pickup orders'))
     created_order_id = await controllers.order_create_v2(
         order,
         user=user,
@@ -109,8 +101,8 @@ async def order_get_v2(
     response_description='Order address updated order',
 )
 async def order_address_update_v2(
-    order_id: int,
     update: schemas.OrderAddressChangeV2,
+    order_id: int = fastapi.Depends(dependencies.order_check_for_update),
     current_user: schemas.UserCurrent = fastapi.Security(
         auth.get_current_user,
     ),
@@ -130,7 +122,7 @@ async def order_address_update_v2(
     response_model=schemas.OrderGetV2,
 )
 async def order_pan_v2(
-    order_id: int,
+    order_id: int = fastapi.Depends(dependencies.order_check_for_update),
     pan: schemas.OrderPAN = fastapi.Depends(dependencies.order_validate_pan),
     _: schemas.UserCurrent = Security(
         auth.get_current_user,
@@ -156,8 +148,8 @@ async def order_pan_v2(
     summary='Transition order to next status',
 )
 async def transition_order_status(
-    order_id: int,
     status_id: int,
+    order_id: int = fastapi.Depends(dependencies.order_check_for_update),
     body: Optional[dict] = Body(default=dict()),
     current_user: schemas.UserCurrent = fastapi.Security(
         auth.get_current_user,
@@ -185,42 +177,6 @@ async def transition_order_status(
 
     except DeliveryGraphValidationError as e:
         raise exceptions.HTTPBadRequestException("support only new version of delivery graph") from e
-
-    except BaseOrderDomainError as e:
-        raise exceptions.HTTPBadRequestException(e) from e
-
-    except DoesNotExist as e:
-        raise exceptions.HTTPBadRequestException(e) from e
-
-
-@router.patch(
-    '/order/{order_id}/delivery_point',
-    summary='Update delivery point',
-    description='Update delivery point from courier or supervisor',
-)
-async def update_delivery_point(
-    order_id: int,
-    body: schemas.OrderUpdateDeliveryPoint,
-    current_user: schemas.UserCurrent = fastapi.Security(
-        auth.get_current_user,
-        scopes=['o:u'],
-    ),
-    default_filter_args: list = fastapi.Security(dependencies.OrderDefaultFilter()),
-    controller: UpdateOrderDeliveryPoint = Depends(),
-) -> fastapi.responses.Response:
-
-    try:
-        await controller.init(
-            user_id=current_user.id,
-            order_id=order_id,
-            user_role=current_user.profile['profile_type'],
-            data=body.dict(),
-            default_filter_args=default_filter_args,
-        )
-        return fastapi.responses.Response(status_code=200)
-
-    except BaseUpdateOrderDeliveryPointError as e:
-        raise exceptions.HTTPBadRequestException(e) from e
 
     except BaseOrderDomainError as e:
         raise exceptions.HTTPBadRequestException(e) from e

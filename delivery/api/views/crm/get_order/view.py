@@ -3,7 +3,6 @@ from tortoise.expressions import Subquery, RawSQL
 from tortoise.query_utils import Prefetch
 
 from api import models, enums
-from api.enums import PostControlType
 from api.schemas.crm import GetOrderResponse
 
 
@@ -38,11 +37,8 @@ async def get_order(
                  'statuses'),
         Prefetch('item__postcontrol_config_set', models.PostControlConfig.filter(
             parent_config_id__isnull=True,
-            type=PostControlType.POST_CONTROL.value,
         ).prefetch_related(
-            Prefetch('inner_param_set', models.PostControlConfig.filter(
-                type=PostControlType.POST_CONTROL.value
-            ).prefetch_related(
+            Prefetch('inner_param_set', models.PostControlConfig.all().prefetch_related(
                 Prefetch(
                     'postcontrol_document_set',
                     models.PostControl.filter(order_id=order_id),
@@ -55,25 +51,6 @@ async def get_order(
                 'postcontrol_documents',
             ),
         ), 'postcontrol_configs'),
-        Prefetch('item__postcontrol_config_set', models.PostControlConfig.filter(
-            parent_config_id__isnull=True,
-            type=PostControlType.CANCELED.value,
-        ).prefetch_related(
-            Prefetch('inner_param_set', models.PostControlConfig.filter(
-                type=PostControlType.CANCELED.value,
-            ).prefetch_related(
-                Prefetch(
-                    'postcontrol_document_set',
-                    models.PostControl.filter(order_id=order_id),
-                    'postcontrol_documents',
-                ),
-            ), 'inner_params'),
-            Prefetch(
-                'postcontrol_document_set',
-                models.PostControl.filter(order_id=order_id),
-                'postcontrol_documents',
-            ),
-        ), 'postcontrol_cancellation_configs'),
 
         # Запрашиваем комментарии с изображениями и ролью пользователя
         Prefetch(

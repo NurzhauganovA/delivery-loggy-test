@@ -83,3 +83,44 @@ def get_sql_script_from_fixtures(current_dir: str, fixtures: dict) -> str:
         scripts.append(insert_query)
 
     return " ".join(scripts)
+
+
+def get_case_json(path: str, case: str) -> dict:
+    """
+    Загрузка кейса для теста по пути
+
+    Args:
+        path: путь до кеса
+        case: наименование кейса
+
+    Returns:
+        Кейс в формате json
+    """
+
+    path = f'{CUR_DIR}/{path}/{case}.json'
+    with open(path) as file:
+        data = json.load(file)
+    return data
+
+
+def get_sql_script_from_fixtures_list(current_dir: str, fixtures: list) -> str:
+    """
+    Получение SQL скрипта, который загрузит все фикстуры в бд
+
+    Args:
+        current_dir: путь, где запускается тест
+        fixtures: словарь, где ключ - название таблицы, значение - название файла фикстуры
+
+    Returns:
+        SQL скрипт
+    """
+    scripts = []
+    for fixture_name in fixtures:
+        fixture_data = __read_fixture(
+            path=f'{current_dir}/fixtures',
+            name=fixture_name,
+        )
+        insert_query = create_insert(f'public."{fixture_name}"', fixture_data)
+        scripts.append(insert_query)
+
+    return " ".join(scripts)

@@ -241,6 +241,8 @@ def expected():
             },
         ],
         "type": "planned",
+        "courier_service": None,
+        "track_number": None,
     }
 
 

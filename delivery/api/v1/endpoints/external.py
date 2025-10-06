@@ -12,7 +12,13 @@ from ...dependencies.order import external_order_default_filter_args
 from ...modules.shipment_point.actions import ShipmentPointActions
 from ...modules.shipment_point.dependecies import shipment_point_default_filter_args_external
 from ...modules.shipment_point.schemas import PartnerShipmentPointFilter
-from api.controllers.external_order_create import external_order_create, get_external_order
+from api.controllers.external_order_create import(
+    external_order_create,
+    get_external_order,
+)
+from api.dependencies.controllers import get_handle_order_status_transition_controller
+from api.controllers.handle_order_status_transition import OrderStatusTransitionHandlers
+
 
 router = fastapi.APIRouter()
 
@@ -70,11 +76,13 @@ async def shipment_point_get_list_external(
 )
 async def external_order_create_external(
     order: schemas.ExternalOrderCreate,
-    api_key: str
+    api_key: str,
+    handler: OrderStatusTransitionHandlers = fastapi.Depends(get_handle_order_status_transition_controller),
 ):
     order_id = await external_order_create(
         order=order,
-        api_key=api_key
+        api_key=api_key,
+        handler=handler,
     )
     order = await get_external_order(
         order_id=order_id

@@ -1,0 +1,14 @@
+[
+    {
+        "id": 1,
+        "request_method": "POST",
+        "model_type": "item",
+        "initiator_id": 1,
+        "initiator_role": null,
+        "model_id": 1,
+        "action_data": {
+            "created_by": "service"
+        },
+        "created_at": "2022-09-08 06:29:30.703752+00"
+    }
+]

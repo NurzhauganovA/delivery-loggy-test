@@ -8,27 +8,30 @@ from tests.fixtures.default_pre_start_sql_scripts import (
 
 
 @pytest.fixture
-def body():
-    return {
-        "city": "Алматы",
-        "comment": "sample comment",
-        "delivery_datetime": "2025-03-13T12:22:00.350Z",
-        "item_id": 1,
-        "shipment_point_id": 1,
-        "receiver_name": "Нурсултан Кемелович",
-        "receiver_phone_number": "+77071112233",
-        "receiver_iin": "012345050101",
-        "type": "planned",
-        "callbacks": {
-            "set_otp": "https://bankffin.kz/api/set-opt?orderId=1234",
-            "set_pan": "https://bankffin.kz/api/set-pan?orderId=1234",
-            "set_photo_urls": "https://bankffin.kz/api/set-photo?orderId=1234"
-        },
-        "address": "Алматы, Жибек Жолы 135",
-        "latitude": 72.12332,
-        "longitude": 41.232355,
-        "partner_order_id": "223o486346082346074360349"
-    }
+def body() -> str:
+    json = """
+        {
+            "city": "Алматы",
+            "comment": "sample comment",
+            "delivery_datetime": "2025-03-13T12:22:00.350Z",
+            "item_id": 1,
+            "shipment_point_id": 1,
+            "receiver_name": "Нурсултан Кемелович",
+            "receiver_phone_number": "+77071112233",
+            "receiver_iin": "012345050101",
+            "type": "planned",
+            "callbacks": {
+                "set_otp": "https://bankffin.kz/api/set-opt?orderId=1234",
+                "set_pan": "https://bankffin.kz/api/set-pan?orderId=1234",
+                "set_photo_urls": "https://bankffin.kz/api/set-photo?orderId=1234"
+            },
+            "address": "Алматы, Жибек Жолы 135",
+            "latitude": 72.12332,
+            "longitude": 41.232355,
+            "partner_order_id": "223o486346082346074360349"
+        }
+    """
+    return json
 
 
 @pytest.fixture
@@ -56,7 +59,6 @@ def expected() -> dict:
         "receiver_iin": "012345050101",
         "receiver_name": "Нурсултан Кемелович",
         "receiver_phone_number": "+77071112233",
-        "client_code": None,
         "has_receiver_feedback": None,
         "comment": "sample comment",
         "area_id": None,
@@ -108,7 +110,6 @@ def expected() -> dict:
             "message_for_noncall": None,
             "upload_from_gallery": True,
             "postcontrol_configs": [],
-            'postcontrol_cancellation_configs': [],
             "accepted_delivery_statuses": None,
         },
         "deliverygraph": {
@@ -249,6 +250,7 @@ def expected() -> dict:
     }
 
 
+
 @pytest.fixture
 def pre_start_sql_script() -> str:
     """Важен порядок скриптов, так как есть зависимость от внешних ключей у таблиц"""
@@ -266,7 +268,6 @@ def pre_start_sql_script() -> str:
     ]
 
     return " ".join(scripts)
-
 
 def partners_insert_script() -> str:
     return """
