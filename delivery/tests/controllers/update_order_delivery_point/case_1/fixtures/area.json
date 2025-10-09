@@ -1,0 +1,53 @@
+[
+  {
+    "id": 1,
+    "slug": "Весь город Алматы",
+    "scope": [
+      {
+        "latitude": 76.9571686,
+        "longitude": 43.3116679
+      },
+      {
+        "latitude": 76.9976807,
+        "longitude": 43.2956948
+      },
+      {
+        "latitude": 77.0660019,
+        "longitude": 43.2386988
+      },
+      {
+        "latitude": 76.9963074,
+        "longitude": 43.1956664
+      },
+      {
+        "latitude": 76.953392,
+        "longitude": 43.1723757
+      },
+      {
+        "latitude": 76.8898773,
+        "longitude": 43.1818593
+      },
+      {
+        "latitude": 76.8304825,
+        "longitude": 43.2431453
+      },
+      {
+        "latitude": 76.8308258,
+        "longitude": 43.2946913
+      },
+      {
+        "latitude": 76.8964005,
+        "longitude": 43.3063678
+      }
+    ],
+    "city_id": 1,
+    "partner_id": 1,
+    "fill_opacity": 0.3,
+    "stroke_color": "#56DB40",
+    "stroke_opacity": 1,
+    "fill_color": "#FF931E",
+    "updated_at": "2022-12-19 09:46:50.672242 +00:00",
+    "archived": false,
+    "created_at": "2022-12-19 09:46:14.752459 +00:00"
+  }
+]

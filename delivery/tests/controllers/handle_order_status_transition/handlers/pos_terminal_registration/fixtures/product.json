@@ -1,0 +1,60 @@
+[
+    {
+        "type": "pos_terminal",
+        "attributes": {
+            "model": null,
+            "mcc_code": "GGG1",
+            "oked_code": "QWERTY123",
+            "store_name": "MyMart",
+            "branch_name": "Основной MyMart",
+            "merchant_id": "1",
+            "terminal_id": "1",
+            "company_name": "ТОО Рога и Копыта",
+            "serial_number": null,
+            "is_installment_enabled": false
+        },
+        "order_id": 1
+    },
+    {
+        "type": "pos_terminal",
+        "attributes": {
+            "model": "SUNMI",
+            "mcc_code": "GGG1",
+            "oked_code": "QWERTY123",
+            "store_name": "MyMart",
+            "branch_name": "Основной MyMart",
+            "merchant_id": "1",
+            "terminal_id": "1",
+            "company_name": "ТОО Рога и Копыта",
+            "serial_number": "11111111222222",
+            "is_installment_enabled": false,
+            "inventory_number": "123456789",
+            "sum": 10000.1
+        },
+        "order_id": 2
+    },
+    {
+        "type": "card",
+        "attributes": {
+            "pan": "1111********2222"
+        },
+        "order_id": 4
+    },
+    {
+        "type": "pos_terminal",
+        "attributes": {
+            "model": "SUNMI",
+            "mcc_code": "GGG1",
+            "oked_code": "QWERTY123",
+            "store_name": "MyMart",
+            "branch_name": "Основной MyMart",
+            "merchant_id": "1",
+            "terminal_id": "1",
+            "company_name": "ТОО Рога и Копыта",
+            "serial_number": "11111111222222",
+            "is_installment_enabled": false,
+            "registration_status": "COMPLETED"
+        },
+        "order_id": 3
+    }
+]

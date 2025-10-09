@@ -1,0 +1,98 @@
+[
+    {
+        "id": 1,
+        "icon": "test",
+        "is_optional": true,
+        "after": [],
+        "partner_id": null,
+        "slug": "novaia-zaiavka",
+        "name_en": "Test",
+        "name_ru": "Test",
+        "name_kk": "Test",
+        "code": null
+    },
+    {
+        "id": 2,
+        "icon": "test",
+        "is_optional": true,
+        "after": [],
+        "partner_id": null,
+        "slug": "gotovo-k-otpravke",
+        "name_en": "Test",
+        "name_ru": "Test",
+        "name_kk": "Test",
+        "code": null
+    },
+    {
+        "id": 3,
+        "icon": "test",
+        "is_optional": true,
+        "after": [],
+        "partner_id": null,
+        "slug": "kurer-naznachen",
+        "name_en": "Kurier naznachen",
+        "name_ru": "Kurier naznachen",
+        "name_kk": "Kurier naznachen",
+        "code": null
+    },
+    {
+        "id": 4,
+        "icon": "test",
+        "is_optional": true,
+        "after": [],
+        "partner_id": null,
+        "slug": "priniato-kurerom-v-rabotu",
+        "name_en": "Prinyato Kyrerom V Raboty",
+        "name_ru": "Prinyato Kyrerom V Raboty",
+        "name_kk": "Prinyato Kyrerom V Raboty",
+        "code": null
+    },
+    {
+        "id": 5,
+        "icon": "test",
+        "is_optional": true,
+        "after": [],
+        "partner_id": null,
+        "slug": "order_delivevred",
+        "name_en": "Test",
+        "name_ru": "Test",
+        "name_kk": "Test",
+        "code": null
+    },
+    {
+        "id": 6,
+        "icon": "test",
+        "is_optional": true,
+        "after": [],
+        "partner_id": null,
+        "slug": "kod-otpravlen",
+        "name_en": "Test",
+        "name_ru": "Test",
+        "name_kk": "Test",
+        "code": null
+    },
+    {
+        "id": 7,
+        "icon": "test",
+        "is_optional": true,
+        "after": [],
+        "partner_id": null,
+        "slug": "zaversheno",
+        "name_en": "Test",
+        "name_ru": "Test",
+        "name_kk": "Test",
+        "code": null
+    },
+    {
+        "id": 8,
+        "icon": "test",
+        "is_optional": true,
+        "after": [],
+        "partner_id": null,
+        "slug": "address-changed",
+        "name_en": "Test",
+        "name_ru": "Test",
+        "name_kk": "Test",
+        "code": null
+    }
+]

@@ -8,5 +8,6 @@ class DeliveryPoint(pydantic.BaseModel):
 
 
 class ValidDeliveryPoint(pydantic.BaseModel):
+    city_id: pydantic.conint(ge=1) | None
     delivery_point: DeliveryPoint
     comment: str

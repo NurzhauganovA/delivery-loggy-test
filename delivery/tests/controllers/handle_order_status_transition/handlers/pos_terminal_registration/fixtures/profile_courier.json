@@ -1,0 +1,24 @@
+[
+    {
+        "id": 1,
+        "at_work": false,
+        "experience_years": null,
+        "experience_months": null,
+        "start_work_hour": null,
+        "end_work_hour": null,
+        "schedule": "{monday}",
+        "created_at": "2023-05-12 07:23:44.928687 +00:00",
+        "is_identified": true,
+        "is_biometry_verificated": false,
+        "iban": null,
+        "item_type": null,
+        "transport_type": "car",
+        "city_id": 1,
+        "user_id": 2,
+        "state": null,
+        "partner_id": 1,
+        "status": "accepted",
+        "category_id": null,
+        "register_with_biometry": false
+    }
+]

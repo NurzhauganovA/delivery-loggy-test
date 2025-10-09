@@ -1,0 +1,25 @@
+{
+    "request": {
+        "user_id": 1,
+        "order_id": 1,
+        "user_role": "courier",
+        "data": {
+            "delivery_point": {
+                "latitude": 76.9571686,
+                "longitude": 43.3116679,
+                "address": "Улица Соседа Дом Логопеда 12"
+            },
+            "comment": "Пора что-то менять в своей жизни, я поменял адрес доставки"
+        }
+    },
+    "expected": {
+        "comment": "Пора что-то менять в своей жизни, я поменял адрес доставки",
+        "delivery_point": {
+            "latitude": 76.9571686,
+            "longitude": 43.3116679,
+            "address": "Улица Соседа Дом Логопеда 12"
+        },
+        "current_status": "kurer-naznachen",
+        "delivery_status": "on-the-way-to-call-point"
+    }
+}

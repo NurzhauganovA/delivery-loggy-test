@@ -1,0 +1,240 @@
+[
+  {
+    "id": 1,
+    "graph": [
+      {
+        "button_name": null,
+        "icon": "order_new",
+        "id": 1,
+        "name_en": "New order",
+        "name_ru": "Новая заявка",
+        "position": 1,
+        "slug": "novaia-zaiavka",
+        "status": "new",
+        "transitions": [
+          {
+            "dest": "transfer_to_cdek",
+            "source": "new",
+            "trigger": "transfer_to_cdek"
+          }
+        ]
+      },
+      {
+        "button_name": null,
+        "icon": "transfer_to_cdek",
+        "id": 37,
+        "name_en": "Transferred to CDEK",
+        "name_ru": "Передано в СДЭК",
+        "position": 2,
+        "slug": "peredano-v-cdek",
+        "status": "transfer_to_cdek",
+        "transitions": [
+          {
+            "dest": "send_otp",
+            "source": "transfer_to_cdek",
+            "trigger": "send_otp"
+          }
+        ]
+      },
+      {
+        "button_name": "Отправить SMS с кодом",
+        "icon": "at_client",
+        "id": 25,
+        "name_en": "Send OTP",
+        "name_ru": "Отправка OTP",
+        "position": 3,
+        "slug": "u-klienta",
+        "status": "send_otp",
+        "transitions": [
+          {
+            "dest": "verify_otp",
+            "source": "send_otp",
+            "trigger": "verify_otp"
+          }
+        ]
+      },
+      {
+        "button_name": "Проверить код",
+        "icon": "post_control",
+        "id": 20,
+        "name_en": "OTP sent",
+        "name_ru": "Код отправлен",
+        "position": 4,
+        "slug": "kod-otpravlen",
+        "status": "verify_otp",
+        "transitions": [
+          {
+            "dest": "scan_card",
+            "source": "verify_otp",
+            "trigger": "scan_card"
+          }
+        ]
+      },
+      {
+        "button_name": "Сканировать карту",
+        "icon": "post_control",
+        "id": 24,
+        "name_en": "Card scanning",
+        "name_ru": "Сканирование карты",
+        "position": 5,
+        "slug": "skanirovanie-karty",
+        "status": "scan_card",
+        "transitions": [
+          {
+            "dest": "photo_capturing",
+            "source": "scan_card",
+            "trigger": "photo_capturing"
+          }
+        ]
+      },
+      {
+        "button_name": "Отправить",
+        "icon": "post_control",
+        "id": 16,
+        "name_en": "Photo capturing",
+        "name_ru": "Фотографирование",
+        "position": 6,
+        "slug": "fotografirovanie",
+        "status": "photo_capturing",
+        "transitions": [
+          {
+            "dest": "delivered",
+            "source": "photo_capturing",
+            "trigger": "delivered"
+          }
+        ]
+      },
+      {
+        "button_name": null,
+        "icon": "order_delivered",
+        "id": 7,
+        "name_en": "Delivered",
+        "name_ru": "Доставлено",
+        "position": 7,
+        "slug": "dostavleno",
+        "status": "delivered_by_cdek"
+      }
+    ],
+    "partner_id": null,
+    "slug": null,
+    "types": "{urgent,operative,planned}",
+    "graph_courier": [
+      {
+        "button_name": null,
+        "icon": "order_new",
+        "id": 1,
+        "name_en": "New order",
+        "name_ru": "Новая заявка",
+        "position": 1,
+        "slug": "novaia-zaiavka",
+        "status": "new",
+        "transitions": [
+          {
+            "dest": "transfer_to_cdek",
+            "source": "new",
+            "trigger": "transfer_to_cdek"
+          }
+        ]
+      },
+      {
+        "button_name": null,
+        "icon": "transfer_to_cdek",
+        "id": 37,
+        "name_en": "Transferred to CDEK",
+        "name_ru": "Передано в СДЭК",
+        "position": 2,
+        "slug": "peredano-v-cdek",
+        "status": "transfer_to_cdek",
+        "transitions": [
+          {
+            "dest": "send_otp",
+            "source": "transfer_to_cdek",
+            "trigger": "send_otp"
+          }
+        ]
+      },
+      {
+        "button_name": "Отправить SMS с кодом",
+        "icon": "at_client",
+        "id": 25,
+        "name_en": "Send OTP",
+        "name_ru": "Отправка OTP",
+        "position": 3,
+        "slug": "u-klienta",
+        "status": "send_otp",
+        "transitions": [
+          {
+            "dest": "verify_otp",
+            "source": "send_otp",
+            "trigger": "verify_otp"
+          }
+        ]
+      },
+      {
+        "button_name": "Проверить код",
+        "icon": "post_control",
+        "id": 20,
+        "name_en": "OTP sent",
+        "name_ru": "Код отправлен",
+        "position": 4,
+        "slug": "kod-otpravlen",
+        "status": "verify_otp",
+        "transitions": [
+          {
+            "dest": "scan_card",
+            "source": "verify_otp",
+            "trigger": "scan_card"
+          }
+        ]
+      },
+      {
+        "button_name": "Сканировать карту",
+        "icon": "post_control",
+        "id": 24,
+        "name_en": "Card scanning",
+        "name_ru": "Сканирование карты",
+        "position": 5,
+        "slug": "skanirovanie-karty",
+        "status": "scan_card",
+        "transitions": [
+          {
+            "dest": "photo_capturing",
+            "source": "scan_card",
+            "trigger": "photo_capturing"
+          }
+        ]
+      },
+      {
+        "button_name": "Отправить",
+        "icon": "post_control",
+        "id": 16,
+        "name_en": "Photo capturing",
+        "name_ru": "Фотографирование",
+        "position": 6,
+        "slug": "fotografirovanie",
+        "status": "photo_capturing",
+        "transitions": [
+          {
+            "dest": "delivered",
+            "source": "photo_capturing",
+            "trigger": "delivered"
+          }
+        ]
+      },
+      {
+        "button_name": null,
+        "icon": "order_delivered",
+        "id": 7,
+        "name_en": "Delivered",
+        "name_ru": "Доставлено",
+        "position": 7,
+        "slug": "dostavleno",
+        "status": "delivered_by_cdek"
+      }
+    ],
+    "name_en": null,
+    "name_zh": null,
+    "name_ru": "Базовый",
+    "name_kk": null
+  }
+]

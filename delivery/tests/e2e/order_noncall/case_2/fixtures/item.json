@@ -1,0 +1,19 @@
+[
+    {
+        "id": 1,
+        "name": "Базовая кредитная карта",
+        "item_type": "document",
+        "delivery_time": "00:00",
+        "delivery_type": "{planned}",
+        "category_id": null,
+        "partner_id": null,
+        "is_delivery_point_exists": true,
+        "has_postcontrol": false,
+        "accepted_delivery_statuses": null,
+        "distribute": false,
+        "message_for_noncall": null,
+        "courier_appointed_sms_on": false,
+        "courier_appointed_sms": null,
+        "days_to_delivery": null
+    }
+]

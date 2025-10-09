@@ -1,0 +1,36 @@
+[
+  {
+    "id": 1,
+    "created_at": "2024-02-08 06:11:17.160374 +00:00",
+    "order_id": 1,
+    "type": "card",
+    "name": "Какая то карта",
+    "attributes": {
+      "pan": "1234********1234",
+      "pan_suffix": "1234"
+    },
+    "pan_suffix": "1234"
+  },
+  {
+    "id": 2,
+    "created_at": "2024-02-08 06:11:17.160374 +00:00",
+    "order_id": 2,
+    "type": "pos_terminal",
+    "name": "Какой то пос терминал",
+    "attributes": {
+      "pan": "4003********2771",
+      "mcc_code": "7299",
+      "oked_code": "96090",
+      "oked_text": "Предоставление прочих индивидуальных услуг, не включенных в другие группировки",
+      "store_name": "Mariam",
+      "branch_name": "500000",
+      "merchant_id": "70007031",
+      "terminal_id": "55000031",
+      "company_name": "Mariam",
+      "request_number_ref": "OVERDRAFT25-03927",
+      "is_installment_limit": false,
+      "is_installment_enabled": false
+    },
+    "pan_suffix": null
+  }
+]

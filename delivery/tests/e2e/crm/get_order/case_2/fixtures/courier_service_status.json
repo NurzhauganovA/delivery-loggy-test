@@ -1,0 +1,20 @@
+[
+  {
+    "id": 1,
+    "order_id": 1,
+    "status": "CREATED",
+    "created_at": "2024-02-08 09:00:00 +00:00"
+  },
+  {
+    "id": 2,
+    "order_id": 1,
+    "status": "REMOVED",
+    "created_at": "2024-02-08 09:01:00 +00:00"
+  },
+  {
+    "id": 3,
+    "order_id": 1,
+    "status": "RECEIVED_AT_SHIPMENT_WAREHOUSE",
+    "created_at": "2024-02-08 09:02:00 +00:00"
+  }
+]

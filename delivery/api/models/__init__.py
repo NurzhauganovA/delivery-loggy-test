@@ -188,6 +188,10 @@ from .order import(
     order_statuses_get_count,
     order_status_bulk_update,
 )
+from .comment import (
+    Comment,
+    CommentImage,
+)
 from .partner import(
     Partner,
     PanValidationMask,

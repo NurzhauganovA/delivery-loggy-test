@@ -146,6 +146,11 @@ class StatusGet(Status):
     slug: StrictStr
 
 
+class SubStatusGet(PydanticModel):
+    name: str
+    created_at: datetime.datetime
+
+
 class StatusGetV2(BaseOutSchema, PydanticModel):
     id: int
     name: str | None
@@ -436,6 +441,7 @@ class OrderInternal(Order):
 class OrderStatusGetWithDatetime(BaseOutSchema, PydanticModel):
     status: StatusGet
     created_at: datetime.datetime
+    sub_statuses: Optional[List[SubStatusGet]]
 
     class Config:
         orm_mode = True

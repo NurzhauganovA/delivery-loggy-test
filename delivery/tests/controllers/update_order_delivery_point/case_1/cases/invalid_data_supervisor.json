@@ -1,0 +1,14 @@
+{
+    "request": {
+        "user_id": 1,
+        "order_id": 1,
+        "user_role": "courier",
+        "data": {
+            "delivery_point": {
+                "latitude": 76.89,
+                "longitude": 43.235
+            }
+        }
+    },
+    "expected": "invalid body" 
+}

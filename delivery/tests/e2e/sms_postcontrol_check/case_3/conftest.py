@@ -99,23 +99,23 @@ def expected() -> dict:
 
 
 @pytest.fixture
-def fixtures()-> dict:
+def fixtures() -> dict:
     return {
         'public."user"': 'user',
-        'public."groups_user"': 'groups_user',
         'public."partner"': 'partner',
-        'public."area"': 'area',
         'public."profile_service_manager"': 'profile_service_manager',
-        'public."profile_courier"': 'profile_courier',
-        'public."profile_courier_area': 'profile_courier_area',
+        'public."groups_user"': 'groups_user',
         'public."item"': 'item',
         'public."item_city"': 'item_city',
         'public."deliverygraph"': 'deliverygraph',
         'public."delivery_point"': 'delivery_point',
+        'public."area"': 'area',
+        'public."profile_courier"': 'profile_courier',
+        'public."profile_courier_area"': 'profile_courier_area',
         'public."order"': 'order',
         'public."order_sms_postcontrols"': 'order_sms_postcontrols',
         'public."postcontrol_configs"': 'postcontrol_configs',
-        'public."order.postcontrols"': 'order_postcontrols'
+        'public."order.postcontrols"': 'order.postcontrols'
     }
 
 

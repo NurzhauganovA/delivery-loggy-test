@@ -1,9 +1,11 @@
-from tortoise.exceptions import DoesNotExist
 from tortoise.expressions import Subquery, RawSQL
 from tortoise.query_utils import Prefetch
 
 from api import models, enums
+from api.enums import PostControlType
 from api.schemas.crm import GetOrderResponse
+from api.schemas.order import SubStatusGet
+from api.views.crm.get_order.cdek_status_mapping import get_cdek_status_name
 
 
 async def get_order(
@@ -33,12 +35,20 @@ async def get_order(
     statuses_args = []
 
     qs = instance_qs.prefetch_related(
+        Prefetch(
+            'courier_service_statuses',
+            queryset=models.CourierServiceStatus.all().order_by('created_at'),
+            to_attr='cdek_statuses'
+        ),
         Prefetch('status_set', models.OrderStatuses.filter(*statuses_args).prefetch_related('status'),
                  'statuses'),
         Prefetch('item__postcontrol_config_set', models.PostControlConfig.filter(
             parent_config_id__isnull=True,
+            type=PostControlType.POST_CONTROL.value,
         ).prefetch_related(
-            Prefetch('inner_param_set', models.PostControlConfig.all().prefetch_related(
+            Prefetch('inner_param_set', models.PostControlConfig.filter(
+                type=PostControlType.POST_CONTROL.value
+            ).prefetch_related(
                 Prefetch(
                     'postcontrol_document_set',
                     models.PostControl.filter(order_id=order_id),
@@ -51,6 +61,25 @@ async def get_order(
                 'postcontrol_documents',
             ),
         ), 'postcontrol_configs'),
+        Prefetch('item__postcontrol_config_set', models.PostControlConfig.filter(
+            parent_config_id__isnull=True,
+            type=PostControlType.CANCELED.value,
+        ).prefetch_related(
+            Prefetch('inner_param_set', models.PostControlConfig.filter(
+                type=PostControlType.CANCELED.value,
+            ).prefetch_related(
+                Prefetch(
+                    'postcontrol_document_set',
+                    models.PostControl.filter(order_id=order_id),
+                    'postcontrol_documents',
+                ),
+            ), 'inner_params'),
+            Prefetch(
+                'postcontrol_document_set',
+                models.PostControl.filter(order_id=order_id),
+                'postcontrol_documents',
+            ),
+        ), 'postcontrol_cancellation_configs'),
 
         # Запрашиваем комментарии с изображениями и ролью пользователя
         Prefetch(
@@ -67,10 +96,7 @@ async def get_order(
         'partner', 'current_status', 'shipment_point', 'delivery_point', 'product'
     )
 
-    try:
-        order_obj = await qs
-    except DoesNotExist:
-        raise DoesNotExist(f'Order with provided ID: {order_id} was not found')
+    order_obj = await qs
 
     # Проставляем значение в поле courier_assigned_at
     order_obj.courier_assigned_at = None
@@ -81,5 +107,19 @@ async def get_order(
 
 
     response = GetOrderResponse.from_orm(order_obj)
+
+    cdek_sub_statuses_list = [
+        SubStatusGet(
+            name=get_cdek_status_name(css.status),
+            created_at=css.created_at,
+        )
+        for css in getattr(order_obj, 'cdek_statuses', [])
+    ]
+
+    for status in response.statuses:
+        if status.status.slug == enums.StatusSlug.TRANSFER_TO_CDEK:
+            status.sub_statuses = cdek_sub_statuses_list
+        elif not status.sub_statuses:
+            del status.sub_statuses
 
     return response

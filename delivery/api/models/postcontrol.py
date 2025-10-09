@@ -54,6 +54,9 @@ class PostControlConfig(Model):
     name = fields.CharField(max_length=255)
     send = fields.BooleanField(default=False)
     document_code = fields.CharField(max_length=255, null=True)
+    type = fields.CharEnumField(
+        **enums.PostControlType.to_kwargs(default=enums.PostControlType.POST_CONTROL),
+    )
     item: fields.ForeignKeyRelation['models.Item'] = fields.ForeignKeyField(
         'versions.Item',
         'postcontrol_config_set',

@@ -1,22 +1,18 @@
 from pydantic import ValidationError
-
-from tortoise.transactions import in_transaction
 from tortoise.exceptions import DoesNotExist
+from tortoise.transactions import in_transaction
 
-from api import models
 from api import enums
-
-from api.schemas.history import HistoryCreate
-from api.controllers.update_order_delivery_point import(
+from api import models
+from api.controllers.update_order_delivery_point import (
     schemas,
     exceptions,
 )
-
 from api.utils.area import polygon
+from api.schemas.history import HistoryCreate
 
 
 class UpdateOrderDeliveryPoint:
-
     allowed_roles = (
         enums.ProfileType.SERVICE_MANAGER,
         enums.ProfileType.COURIER,
@@ -66,7 +62,7 @@ class UpdateOrderDeliveryPoint:
 
     async def __need_update_courier(
             self, user_role: str, area: models.Area, lat: float, lon: float
-        ) -> bool:
+    ) -> bool:
         """
         Проверка на требование обновление курьера:
             Роль на супервизора
@@ -75,7 +71,7 @@ class UpdateOrderDeliveryPoint:
 
         Args:
             user_role: роль пользователя в системе
-            order_obj: объект заказа из таблицы
+            area: текущая зона доставки заявки
             lat: долгота
             lon: широта
         Returns:
@@ -84,6 +80,7 @@ class UpdateOrderDeliveryPoint:
 
         if user_role in (enums.ProfileType.SUPERVISOR, enums.ProfileType.SERVICE_MANAGER):
             return True
+
         if not area:
             return True
 
@@ -134,12 +131,12 @@ class UpdateOrderDeliveryPoint:
         return status
 
     async def init(
-            self, user_id: int,
-            order_id: int,
-            user_role: str,
-            data: dict,
-            default_filter_args: list = [],
-        ) -> None:
+        self, user_id: int,
+        order_id: int,
+        user_role: str,
+        data: dict,
+        default_filter_args: list = None,
+    ) -> None:
         """
         Инициализация обновления точки доставки заказа
 
@@ -154,12 +151,15 @@ class UpdateOrderDeliveryPoint:
                     "longitude": 12.345678,
                     "address": "Улица Карабаса, Дом Барабаса 7"
                 },
+                "city_id": 1,
                 "comment": "Полнейшее отсутствие желания ехать к этому неадеквату"
             }
             default_filter_args: стандартные аргументы фильтрации по ролям
         Returns:
             None
         """
+        if default_filter_args is None:
+            default_filter_args = []
 
         if user_role not in self.allowed_roles:
             raise exceptions.RoleUnavailable('allowed only for couriers and supervisor')
@@ -170,9 +170,8 @@ class UpdateOrderDeliveryPoint:
         try:
             order_obj = await models.Order.filter(*default_filter_args).get(
                 id=order_id
-            ).prefetch_related(
-                'area'
-            ).prefetch_related(
+            ).select_related(
+                'area',
                 'delivery_point'
             ).prefetch_related('status_set')
         except DoesNotExist:
@@ -192,7 +191,7 @@ class UpdateOrderDeliveryPoint:
         lon = delivery_point['longitude']
         address = delivery_point['address']
 
-        delivery_point = await order_obj.delivery_point.first()
+        delivery_point = order_obj.delivery_point
 
         update_dict = {
             'change_type': enums.OrderDeliveryStatusQuery.ADDRESS_CHANGED.value,
@@ -206,19 +205,27 @@ class UpdateOrderDeliveryPoint:
             'old_delivery_point': {
                 'id': delivery_point.id,
                 'address': delivery_point.address,
-            }
+            },
         }
+        city_id = data.get('city_id')
+        if city_id:
+            update_dict['city_id'] = city_id
+            update_dict['old_city_id'] = order_obj.city_id
 
         delivery_point.latitude = lat
         delivery_point.longitude = lon
         delivery_point.address = address
 
-        area = await order_obj.area.first() if order_obj.area else None
+        # Determine new area for delivery point
+        area = order_obj.area
 
         if await self.__need_update_courier(user_role, area, lat, lon):
             order_obj.courier_id = None
             order_obj.delivery_status = self.delivery_status
             order_obj.current_status = await self.__restore_order_statuses(order_obj)
+
+        if city_id:
+            order_obj.city_id = city_id
 
         async with in_transaction():
             await delivery_point.save()

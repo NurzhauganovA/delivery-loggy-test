@@ -8,8 +8,8 @@ from tests.fixtures.database import db, run_pre_start_sql_script
 from tests.fixtures.token import get_access_token_v1
 
 
-@freeze_time("2025-09-17T19:00:00+00:00")
 @pytest.mark.asyncio
+@freeze_time("2025-04-14T12:00:00Z")
 @patch(
     target='api.adapters.freedom_bank_otp.adapter.FreedomBankOTPAdapter.verify',
     new_callable=AsyncMock,

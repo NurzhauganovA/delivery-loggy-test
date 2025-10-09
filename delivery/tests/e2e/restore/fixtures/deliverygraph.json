@@ -1,0 +1,304 @@
+[
+  {
+    "id": 1,
+    "graph": [
+      {
+        "id": 1,
+        "icon": "order_new",
+        "slug": "novaia-zaiavka",
+        "name_en": "New order",
+        "name_ru": "Новая заявка",
+        "position": 1,
+        "button_name": null
+      },
+      {
+        "id": 2,
+        "icon": "courier_appointed",
+        "slug": "kurer-naznachen",
+        "name_en": "Courier appointed",
+        "name_ru": "Курьер назначен",
+        "position": 2,
+        "button_name": "Принять в работу"
+      },
+      {
+        "id": 3,
+        "icon": "courier_accepted",
+        "slug": "priniato-kurerom-v-rabotu",
+        "name_en": "Courier accepted",
+        "name_ru": "Принято курьером в работу",
+        "position": 3,
+        "button_name": "К клиенту"
+      },
+      {
+        "id": 25,
+        "icon": "at_client",
+        "slug": "u-klienta",
+        "name_en": "At client",
+        "name_ru": "У клиента",
+        "position": 4,
+        "button_name": "Отправить SMS с кодом"
+      },
+      {
+        "id": 20,
+        "icon": "post_control",
+        "slug": "kod-otpravlen",
+        "name_en": "OTP sent",
+        "name_ru": "Код отправлен",
+        "position": 5,
+        "button_name": "Проверить код"
+      },
+      {
+        "id": 24,
+        "icon": "post_control",
+        "slug": "skanirovanie-karty",
+        "name_en": "Card scanning",
+        "name_ru": "Сканирование карты",
+        "position": 6,
+        "button_name": "Сканировать карту"
+      },
+      {
+        "id": 16,
+        "icon": "post_control",
+        "slug": "fotografirovanie",
+        "name_en": "Photo capturing",
+        "name_ru": "Фотографирование",
+        "position": 7,
+        "button_name": "Отправить на последконтроль"
+      },
+      {
+        "id": 12,
+        "icon": "post_control",
+        "slug": "posledkontrol",
+        "name_en": "Postcontrol",
+        "name_ru": "Последконтроль",
+        "position": 8,
+        "button_name": null
+      },
+      {
+        "id": 7,
+        "icon": "order_delivered",
+        "slug": "dostavleno",
+        "name_en": "Delivered",
+        "name_ru": "Доставлено",
+        "position": 9,
+        "button_name": null
+      }
+    ],
+    "partner_id": null,
+    "slug": null,
+    "types": "{urgent,operative,planned}",
+    "graph_courier": [
+      {
+        "id": 1,
+        "icon": "order_new",
+        "slug": "novaia-zaiavka",
+        "name_en": "New order",
+        "name_ru": "Новая заявка",
+        "position": 1,
+        "button_name": null
+      },
+      {
+        "id": 2,
+        "icon": "courier_appointed",
+        "slug": "kurer-naznachen",
+        "name_en": "Courier appointed",
+        "name_ru": "Курьер назначен",
+        "position": 2,
+        "button_name": "Принять в работу"
+      },
+      {
+        "id": 3,
+        "icon": "courier_accepted",
+        "slug": "priniato-kurerom-v-rabotu",
+        "name_en": "Courier accepted",
+        "name_ru": "Принято курьером в работу",
+        "position": 3,
+        "button_name": "К клиенту"
+      },
+      {
+        "id": 25,
+        "icon": "at_client",
+        "slug": "u-klienta",
+        "name_en": "At client",
+        "name_ru": "У клиента",
+        "position": 4,
+        "button_name": "Отправить SMS с кодом"
+      },
+      {
+        "id": 20,
+        "icon": "post_control",
+        "slug": "kod-otpravlen",
+        "name_en": "OTP sent",
+        "name_ru": "Код отправлен",
+        "position": 5,
+        "button_name": "Проверить код"
+      },
+      {
+        "id": 24,
+        "icon": "post_control",
+        "slug": "skanirovanie-karty",
+        "name_en": "Card scanning",
+        "name_ru": "Сканирование карты",
+        "position": 6,
+        "button_name": "Сканировать карту"
+      },
+      {
+        "id": 16,
+        "icon": "post_control",
+        "slug": "fotografirovanie",
+        "name_en": "Photo capturing",
+        "name_ru": "Фотографирование",
+        "position": 7,
+        "button_name": "Отправить на последконтроль"
+      },
+      {
+        "id": 12,
+        "icon": "post_control",
+        "slug": "posledkontrol",
+        "name_en": "Postcontrol",
+        "name_ru": "Последконтроль",
+        "position": 8,
+        "button_name": null
+      },
+      {
+        "id": 7,
+        "icon": "order_delivered",
+        "slug": "dostavleno",
+        "name_en": "Delivered",
+        "name_ru": "Доставлено",
+        "position": 9,
+        "button_name": null
+      }
+    ],
+    "name_en": null,
+    "name_zh": null,
+    "name_ru": "Базовый",
+    "name_kk": null
+  },
+  {
+    "id": 2,
+    "graph": [
+      {
+        "id": 1,
+        "icon": "order_new",
+        "name": "Новая заявка",
+        "slug": "novaia-zaiavka",
+        "position": 1,
+        "button_name": null
+      },
+      {
+        "id": 2,
+        "icon": "courier_appointed",
+        "name": "Курьер назначен",
+        "slug": "kurer-naznachen",
+        "position": 2,
+        "button_name": "Принять в работу"
+      },
+      {
+        "id": 3,
+        "icon": "courier_accepted",
+        "name": "Принято курьером в работу",
+        "slug": "priniato-kurerom-v-rabotu",
+        "position": 3,
+        "button_name": "К точке доставки"
+      },
+      {
+        "id": 4,
+        "icon": "otw_delivery_point",
+        "name": "В пути к точке доставки",
+        "slug": "v-puti-k-tochke-dostavki",
+        "position": 4,
+        "button_name": "На точке доставки"
+      },
+      {
+        "id": 5,
+        "icon": "on_delivery_point",
+        "name": "На точке доставки",
+        "slug": "na-tochke-dostavki",
+        "position": 5,
+        "button_name": "Контакт с получателем"
+      },
+      {
+        "id": 6,
+        "icon": "at_client",
+        "name": "Контакт с получателем",
+        "slug": "kontakt-s-poluchatelem",
+        "position": 6,
+        "button_name": "Посылка передана"
+      },
+      {
+        "id": 7,
+        "icon": "order_delivered",
+        "name": "Доставлено",
+        "slug": "dostavleno",
+        "position": 7,
+        "button_name": null
+      }
+    ],
+    "partner_id": null,
+    "slug": null,
+    "types": "{urgent,operative,planned}",
+    "graph_courier": [
+      {
+        "id": 1,
+        "icon": "order_new",
+        "name": "Новая заявка",
+        "slug": "novaia-zaiavka",
+        "position": 1,
+        "button_name": null
+      },
+      {
+        "id": 2,
+        "icon": "courier_appointed",
+        "name": "Курьер назначен",
+        "slug": "kurer-naznachen",
+        "position": 2,
+        "button_name": "Принять в работу"
+      },
+      {
+        "id": 3,
+        "icon": "courier_accepted",
+        "name": "Принято курьером в работу",
+        "slug": "priniato-kurerom-v-rabotu",
+        "position": 3,
+        "button_name": "К точке доставки"
+      },
+      {
+        "id": 4,
+        "icon": "otw_delivery_point",
+        "name": "В пути к точке доставки",
+        "slug": "v-puti-k-tochke-dostavki",
+        "position": 4,
+        "button_name": "На точке доставки"
+      },
+      {
+        "id": 5,
+        "icon": "on_delivery_point",
+        "name": "На точке доставки",
+        "slug": "na-tochke-dostavki",
+        "position": 5,
+        "button_name": "Контакт с получателем"
+      },
+      {
+        "id": 6,
+        "icon": "at_client",
+        "name": "Контакт с получателем",
+        "slug": "kontakt-s-poluchatelem",
+        "position": 6,
+        "button_name": "Посылка передана"
+      },
+      {
+        "id": 7,
+        "icon": "order_delivered",
+        "name": "Доставлено",
+        "slug": "dostavleno",
+        "position": 7,
+        "button_name": null
+      }
+    ],
+    "name_en": null,
+    "name_zh": null,
+    "name_ru": "Базовый",
+    "name_kk": null
+  }
+]
