@@ -55,7 +55,6 @@ class POSTerminalRegistrationHandler(OrderStatusTransitionHandlerProtocol):
         if current_registration_status is None:
             await self.__handle_first_registration(
                 order_obj=order_obj,
-                status=status,
                 product_obj=product_obj,
                 pos_terminal_registration_data=pos_terminal_registration_data,
             )
@@ -77,28 +76,16 @@ class POSTerminalRegistrationHandler(OrderStatusTransitionHandlerProtocol):
             raise NotAllowPOSTerminalRegistration(
                 f'not allowed start registration, current registration_status: {current_registration_status}')
 
-        # Получим локальное время у заявки
-        # order_time = await order_obj.localtime
-
-        # В order_statuses запишем лишь единожды статус
-        # current_order_status = await models.OrderStatuses.filter(order_id=order_obj.id, status_id=status.id)
-        # if not current_order_status:
-        #     await models.OrderStatuses.update_or_create(order_id=order_obj.id, status_id=status.id, created_at=order_time)
-
 
     async def __handle_first_registration(
             self,
             order_obj: 'models.Order',
-            status: 'models.Status',
             product_obj: 'models.Product',
             pos_terminal_registration_data: 'POSTerminalRegistrationData',
     ):
-        # order_obj.current_status_id = status.id
 
         product_obj.attributes['model'] = pos_terminal_registration_data.model
         product_obj.attributes['serial_number'] = pos_terminal_registration_data.serial_number
-        product_obj.attributes['inventory_number'] = pos_terminal_registration_data.inventory_number
-        product_obj.attributes['sum'] = float(pos_terminal_registration_data.sum) if pos_terminal_registration_data.sum else None
 
         product_attributes = product_obj.attributes
 
@@ -124,8 +111,6 @@ class POSTerminalRegistrationHandler(OrderStatusTransitionHandlerProtocol):
                 courier_full_name=user_obj.fullname,
                 request_number_ref=product_attributes.get('request_number_ref'),
                 is_installment_enabled=product_attributes.get('is_installment_enabled', False),
-                inventory_number=product_obj.attributes.get('inventory_number'),
-                sum=pos_terminal_registration_data.sum,
             )
         except BasePOSTerminalAdapterError as e:
             raise POSTerminalRegistrationHandlerIntegrationError(f'registrate pos terminal error: {e}') from e

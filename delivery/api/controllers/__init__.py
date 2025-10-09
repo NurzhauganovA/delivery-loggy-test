@@ -62,6 +62,7 @@ from .order import order_address_update  # noqa: F401
 from .order import order_address_update_v2  # noqa: F401
 from .order import order_biometry_verify  # noqa: F401
 from .order import order_cancel  # noqa: F401
+from .order import order_accept_cancel  # noqa: F401
 from .order import order_postpone  # noqa: F401
 from .order import order_noncall  # noqa: F401
 from .order import order_resume  # noqa: F401

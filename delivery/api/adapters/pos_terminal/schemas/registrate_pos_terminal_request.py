@@ -20,8 +20,6 @@ class POSTerminalRegistrationRequest(BaseModel):
     courier_full_name: str
     request_number_ref: Optional[str]
     is_installment_enabled: bool
-    inventory_number: Optional[str]
-    sum: Optional[Decimal]
 
     @validator(
         'serial_number', 'model', 'merchant_id', 'terminal_id', 'receiver_iin',

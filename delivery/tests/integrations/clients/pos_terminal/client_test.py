@@ -17,14 +17,12 @@ async def test_registrate_pos_terminal(client: POSTerminalClient):
         store_address="Alatau centre",
         branch_name="0",
         oked_code="",
-        mcc_code="",
+        mcc_code="0",
         receiver_phone_number="+77476911585",
         receiver_full_name="Кыдырбаева Дана Курбанбаевна",
         courier_full_name="Тестовый Курьер Курьерович",
         request_number_ref=None,
         is_installment_enabled=False,
-        inventory_number=None,
-        sum=0.0,
     )
     assert response.status_code == 200
 

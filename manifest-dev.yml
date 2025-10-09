@@ -12,18 +12,16 @@ namespaces:
 preconfiguredHelmRepos:
   - projects
   - bitnami
-  - robjuz
 
 helmRepos:
   bitnami: https://charts.bitnami.com/bitnami
-  robjuz: https://robjuz.github.io/helm-charts/
 
 appsTemplates:
   default-chart: &default-chart
     namespace: loggy-dev
     enabled: true
     chart: "projects/default-chart"
-    version: "1.0.0"
+    version: "1.9.3"
 
 apps:
   courier-service-api:

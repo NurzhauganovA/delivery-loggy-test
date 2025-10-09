@@ -112,8 +112,6 @@ order_report_query = """
                 ord.actual_delivery_datetime                              as actual_delivery_datetime,
                 ord.idn                                                   as idn,
                 ord.manager                                               as manager,
-                ord.courier_service                                       as courier_service,
-                ord.track_number                                          as track_number,
                 c.name_%(locale)s                                         as city,
                 co.name_%(locale)s                                        as country,
                 coalesce(p.name_%(locale)s, p.name_en, p.name_ru) as partner,
@@ -121,6 +119,7 @@ order_report_query = """
                 a.slug                                                    as area,
                 CONCAT(us.first_name, ' ', us.last_name)                  as courier,
                 CASE
+                    WHEN ord.archived IS TRUE THEN 'Архивировано'
                     WHEN ord.delivery_status::text <> '{}'::text THEN
                         CASE ord.delivery_status ->> 'status'
                             WHEN 'cancelled' THEN 'Отменена'
@@ -129,6 +128,8 @@ order_report_query = """
                             WHEN 'rescheduled' THEN 'Перенос встречи'
                             WHEN 'noncall' THEN 'Недозвон'
                             WHEN 'is_delivered' THEN 'Доставлено'
+                            WHEN 'being_finalized' THEN 'На доработке'
+                            WHEN 'being_finalized_on_cancel' THEN 'На доработке'
                         ELSE ls.name_%(locale)s
                         END
                     ELSE
@@ -142,7 +143,7 @@ order_report_query = """
                 pap.approver_name                                         as postcontrol_approver_name,
                 ls.name_%(locale)s 					                      as current_status_name,
 				ls.created_at 							                  as current_status_datetime,
-                caa.created_at                                            as courier_appointed_at
+                caa.created_at as courier_appointed_at
 FROM "order" as ord
          left join city c on ord.city_id = c.id
          left join country co on co.id = c.country_id
@@ -199,7 +200,6 @@ def order_report_query_builder(**kwargs):
     current_status_range = kwargs.get('current_status__created_at__range', None)
     idn_isnull = kwargs.get('idn__isnull')
     country_id = kwargs.get('city__country_id', None)
-    courier_service = kwargs.get('courier_service')
 
     filtering_parameters = ''
     if sorter_id:
@@ -241,7 +241,5 @@ def order_report_query_builder(**kwargs):
         filtering_parameters += f'AND ord.idn IS {"" if idn_isnull else "NOT"} NULL \n'
     if country_id:
         filtering_parameters += f'AND co.id = {country_id} \n'
-    if courier_service:
-        filtering_parameters += f"AND ord.courier_service = '{courier_service}' \n"
     result = order_report_query % {'locale': locale, 'filter_params': filtering_parameters}
     return result

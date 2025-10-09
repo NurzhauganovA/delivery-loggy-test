@@ -1,6 +1,10 @@
-from httpx import Response, AsyncClient, HTTPStatusError, RequestError
+from httpx import (
+    Response,
+    AsyncClient,
+    HTTPStatusError,
+)
 
-from api.logging_module import logger
+from api.utils.logging import log_client_request
 
 
 class PosTerminalOTPClient:
@@ -9,6 +13,7 @@ class PosTerminalOTPClient:
             'Authorization': auth_header,
         }
         self.__client = AsyncClient(
+            timeout=15.0,
             base_url=base_url,
             headers=headers,
         )
@@ -16,34 +21,26 @@ class PosTerminalOTPClient:
     async def aclose(self):
         await self.__client.aclose()
 
+    @log_client_request(
+        client_name="pos_terminal",
+        method_name="send"
+    )
     async def send(self, business_key: str, phone_number: str) -> Response | HTTPStatusError:
         params = {
             'phoneNumber': phone_number,
         }
 
-        try:
-            response = await self.__client.post(
-                url=f'/tms/send-otp/{business_key}',
-                params=params
-            )
-        except RequestError as e:
-            logger.error(e)
-            raise e
-
-        try:
-            response.raise_for_status()
-        except HTTPStatusError as e:
-            logger.bind(
-                status_code=response.status_code,
-                method="POST",
-                url=str(response.url),
-                params=params,
-                response=response.text,
-            ).error(e)
-            raise e
+        response = await self.__client.post(
+            url=f'/tms/send-otp/{business_key}',
+            params=params
+        )
 
         return response
 
+    @log_client_request(
+        client_name="pos_terminal",
+        method_name="verify"
+    )
     async def verify(
         self,
         business_key: str,
@@ -57,25 +54,9 @@ class PosTerminalOTPClient:
             'managerFio': courier_full_name,
         }
 
-        try:
-            response = await self.__client.post(
-                url=f'/tms/user-task/complete/{business_key}',
-                params=params,
-            )
-        except RequestError as e:
-            logger.error(e)
-            raise e
-
-        try:
-            response.raise_for_status()
-        except HTTPStatusError as e:
-            logger.bind(
-                status_code=response.status_code,
-                method="POST",
-                url=str(response.url),
-                params=params,
-                response=response.text,
-            ).error(e)
-            raise e
+        response = await self.__client.post(
+            url=f'/tms/user-task/complete/{business_key}',
+            params=params,
+        )
 
         return response

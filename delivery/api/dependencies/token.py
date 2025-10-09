@@ -1,10 +1,10 @@
 from fastapi import Depends
 from fastapi.security import OAuth2PasswordRequestFormStrict
 
-from .. import PydanticException
+from api.exceptions import PydanticException
 from ..exceptions import HTTPNotFoundException
 from ..enums import ProfileType
-from ..models.profile import profile_types_to_models
+from ..models import profile_types_to_models
 
 
 async def token_validate_payload(

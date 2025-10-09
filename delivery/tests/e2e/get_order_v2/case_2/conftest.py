@@ -139,6 +139,9 @@ def orders_insert_script() -> str:
     return """
         INSERT INTO public."order" (id, type, created_at, delivery_datetime, delivery_status, receiver_name, receiver_iin, receiver_phone_number, comment, city_id, courier_id, item_id, partner_id, partner_order_id, main_order_id, position, area_id, archived, created_by, deliverygraph_id, callbacks, initial_delivery_datetime, order_group_id, revised, allow_courier_assign, actual_delivery_datetime, current_status_id, shipment_point_id, delivery_point_id) 
         VALUES (1, 'planned', '2024-02-08 06:11:17.160374 +00:00', '2024-02-20 23:59:00.000000 +00:00', '{"status": "is_delivered"}', 'МАТАШЕВ АКБАР МУСЛИМЖАНОВИЧ', '860824302113', '+77781254616', '', 1, 1, 1, 1, null, null, null, 1, false, 'integration', 1, '{"set_otp": "https://business.bankffin.kz/api/loggy/callbacks/set-otp/3928b9e9-91a5-481c-88d2-9980a3f75f10?token=f0ce3fd77de24e0a9b07e7a02da2aa02", "set_pan": null, "set_status": "https://business.bankffin.kz/api/loggy/callbacks/set-status/3928b9e9-91a5-481c-88d2-9980a3f75f10?token=f0ce3fd77de24e0a9b07e7a02da2aa02"}', null, null, false, true, '2024-02-20 11:21:50.279633 +00:00', 7, null, 1);
+        INSERT INTO public."order" (id, type, created_at, delivery_datetime, delivery_status, receiver_name, receiver_iin, receiver_phone_number, comment, city_id, courier_id, item_id, partner_id, partner_order_id, main_order_id, position, area_id, archived, created_by, deliverygraph_id, callbacks, initial_delivery_datetime, order_group_id, revised, allow_courier_assign, actual_delivery_datetime, current_status_id, shipment_point_id, delivery_point_id) 
+        VALUES (2, 'planned', '2024-02-08 06:11:17.160374 +00:00', '2024-02-20 23:59:00.000000 +00:00', '{"status": "is_delivered"}', 'МАТАШЕВ АКБАР МУСЛИМЖАНОВИЧ', '860824302113', '+77781254616', '', 1, 1, 1, 1, null, null, null, 1, false, 'integration', 1, '{"set_otp": "https://business.bankffin.kz/api/loggy/callbacks/set-otp/3928b9e9-91a5-481c-88d2-9980a3f75f10?token=f0ce3fd77de24e0a9b07e7a02da2aa02", "set_pan": null, "set_status": "https://business.bankffin.kz/api/loggy/callbacks/set-status/3928b9e9-91a5-481c-88d2-9980a3f75f10?token=f0ce3fd77de24e0a9b07e7a02da2aa02"}', null, null, false, true, '2024-02-20 11:21:50.279633 +00:00', 7, null, 1);
+    
     """
 
 
@@ -147,7 +150,7 @@ def product_insert_script() -> str:
         INSERT INTO "product" ("type", "attributes", "order_id")
         VALUES (
             'card',
-            '{"pan": "5269********3427", "pan_suffix": "3427"}',
+            '{"pan": "5269111111113427", "pan_suffix": "3427"}',
             1
         );
     """

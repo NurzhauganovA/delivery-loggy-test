@@ -38,10 +38,29 @@ def client() -> FreedomBankOTPProtocol:
                     request=request,
                 )
                 raise HTTPStatusError(message="", response=response, request=request)
+            elif request_id == "BFF000600":
+                request = Request("POST", "https://example.com/test")
+                response = Response(
+                    status_code=200,
+                    json={
+                         "success": False,
+                         "errorCode": "ERROR",
+                         "errorMessage": "Request with id: BFF000122 already verified",
+                         "payload": None
+                    },
+                    request=request,
+                )
+                raise HTTPStatusError(message="", response=response, request=request)
             else:
                 return Response(
                     status_code=202,
                     request=Request("POST", "https://example.com/test"),
+                    json={
+                        "success": True,
+                        "errorCode": None,
+                        "errorMessage": None,
+                        "payload": "SUCCESS"
+                    },
                 )
 
         async def verify(self, request_id: str, otp_code: str) -> Response:

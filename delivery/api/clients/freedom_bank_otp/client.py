@@ -1,11 +1,17 @@
-from httpx import Response, AsyncClient, BasicAuth, HTTPStatusError, RequestError
+from httpx import (
+    Response,
+    AsyncClient,
+    BasicAuth,
+    HTTPStatusError,
+)
 
-from api.logging_module import logger
+from api.utils.logging import log_client_request
 
 
 class FreedomBankOTPClient:
     def __init__(self, base_url: str, username: str, password: str):
         self.__client = AsyncClient(
+            timeout=15.0,
             auth=BasicAuth(username, password),
             base_url=base_url,
         )
@@ -13,87 +19,62 @@ class FreedomBankOTPClient:
     async def aclose(self):
         await self.__client.aclose()
 
+    @log_client_request(
+        client_name="freedom_bank_otp",
+        method_name="send"
+    )
     async def send(self, request_id: str) -> Response | HTTPStatusError:
         params = {
             "requestId": request_id,
         }
 
-        try:
-            response = await self.__client.post(
-                url="/send",
-                params=params,
-            )
-        except RequestError as e:
-            logger.error(e)
-            raise e
+        response = await self.__client.post(
+            url="/send",
+            params=params,
+        )
 
-        try:
-            response.raise_for_status()
-        except HTTPStatusError as e:
-            logger.bind(
-                status_code=response.status_code,
-                method="POST",
-                url=str(response.url),
-                params=params,
-                response=response.text,
-            ).error(e)
-            raise e
+        # Проверим ошибки при HTTP статусе 200
+        data = response.json()
+
+        if data.get("errorCode") == "ERROR":
+            raise HTTPStatusError(
+                message="bad response, errorCode: ERROR",
+                request=response.request,
+                response=response,
+            )
 
         return response
 
+    @log_client_request(
+        client_name="freedom_bank_otp",
+        method_name="verify"
+    )
     async def verify(self, request_id: str, otp_code: str) -> Response | HTTPStatusError:
         params = {
             "requestId": request_id,
             "otp": otp_code,
         }
 
-        try:
-            response = await self.__client.post(
-                url="/verify",
-                params=params,
-            )
-            logger.bind(
-                status_code=response.status_code,
-                method="POST",
-                url=str(response.url),
-                params=params,
-                response=response.text,
-            ).debug(response.request)
-        except RequestError as e:
-            logger.error(e)
-            raise e
-
-        try:
-            response.raise_for_status()
-        except HTTPStatusError as e:
-            logger.bind(
-                status_code=response.status_code,
-                method="POST",
-                url=str(response.url),
-                params=params,
-                response=response.text,
-            ).error(e)
-            raise e
+        response = await self.__client.post(
+            url="/verify",
+            params=params,
+        )
 
         # Проверим ошибки при HTTP статусе 200
         data = response.json()
 
         if data.get("payload") == "NOT_FOUND":
-            logger.bind(
-                status_code=response.status_code,
-                method="POST",
-                url=str(response.url),
-                params=params,
-                response=response.text,
-            ).error("verify error: NOT_FOUND")
+            raise HTTPStatusError(
+                message="bad response, payload: NOT_FOUND",
+                request=response.request,
+                response=response,
+            )
 
-        if data.get("payload") == "FAILURE":
-            logger.bind(
-                status_code=response.status_code,
-                method="POST",
-                url=str(response.url),
-                params=params,
-                response=response.text,
-            ).error("verify error: FAILURE")
+        elif data.get("payload") == "FAILURE":
+            raise HTTPStatusError(
+                message="bad response, payload: FAILURE",
+                request=response.request,
+                response=response,
+            )
 
         return response

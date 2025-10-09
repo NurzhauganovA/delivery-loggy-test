@@ -35,6 +35,35 @@ async def test_order_pan_v2(
 
 
 @pytest.mark.asyncio
+async def test_pan_is_not_matched_by_mask(
+        client,
+        credentials,
+        profile_data,
+        get_access_token_v1,
+        db,
+        pre_start_sql_script,
+        run_pre_start_sql_script,
+        expected,
+):
+    await run_pre_start_sql_script(pre_start_sql_script)
+
+    access_token = await get_access_token_v1(client, credentials, profile_data)
+
+    body = {
+        'pan': '1169880012192985',
+        'input_type': 'manually',
+    }
+
+    response = await client.post(
+        url='/v2/order/1/pan',
+        headers={'Authorization': 'Bearer ' + access_token},
+        json=body,
+    )
+    assert response.status_code == 422
+    assert response.json() == {'detail': [{'loc': ['body', 'pan'], 'msg': 'Pan is not valid', 'type': 'validation_error'}]}
+
+
+@pytest.mark.asyncio
 async def test_order_pan_double_request(
         client,
         credentials,

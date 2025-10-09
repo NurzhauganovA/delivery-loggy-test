@@ -20,7 +20,5 @@ class POSTerminalAdapterProtocol(Protocol):
             courier_full_name: str,
             is_installment_enabled: bool,
             request_number_ref: Optional[str],
-            inventory_number: Optional[str],
-            sum: Optional[Decimal],
     ) -> str:
         ...

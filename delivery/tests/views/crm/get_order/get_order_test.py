@@ -32,7 +32,7 @@ async def test_get_order_not_found(
 ):
     await run_pre_start_sql_script(pre_start_sql_script)
 
-    with pytest.raises(DoesNotExist, match='Order with provided ID: 2 was not found'):
+    with pytest.raises(DoesNotExist, match='Object does not exist'):
          await get_order(
             order_id=2,
             default_filter_args=[],

@@ -91,6 +91,7 @@ from .order import OrderStatusGetWithDatetime  # noqa: F401
 from .order import OrderStatusesGet  # noqa: F401
 from .order import OrderUpdate  # noqa: F401
 from .order import OrderUpdateStatus  # noqa: F401
+from .order import OrderUpdateDeliveryPoint # noqa: F401
 from .order import OrdersCount  # noqa: F401
 from .order import Status  # noqa: F401
 from .order import StatusBulkCreate  # noqa: F401

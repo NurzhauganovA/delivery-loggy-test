@@ -2,12 +2,14 @@ import datetime
 import io
 import json
 import typing
+from tempfile import SpooledTemporaryFile
 from typing import List, Iterable
 from typing import Optional
 from typing import Type
 from typing import Union
 from zoneinfo import ZoneInfo
 
+import loguru
 from tortoise.transactions import in_transaction
 import xlsxwriter
 from fastapi_pagination.ext.tortoise import paginate
@@ -16,24 +18,18 @@ from pydantic import parse_obj_as
 from shapely.geometry import Point
 from shapely.geometry.polygon import Polygon
 from starlette.datastructures import UploadFile
-from tortoise import(
-    BaseDBAsyncClient,
-    Model,
-    fields,
-    signals,
-)
-from tortoise.exceptions import(
-    DoesNotExist,
-    IntegrityError,
-)
-from tortoise.queryset import Q
-from tortoise.expressions import(
-    RawSQL,
-    Subquery,
-)
+from tortoise import BaseDBAsyncClient
+from tortoise import Model
+from tortoise import fields
+from tortoise import signals
+from tortoise.exceptions import DoesNotExist
+from tortoise.exceptions import IntegrityError
+from tortoise.expressions import RawSQL
+from tortoise.expressions import Subquery
 from tortoise.functions import Count
 from tortoise.manager import Manager
 from tortoise.query_utils import Prefetch
+from tortoise.queryset import Q
 from tortoise.timezone import now
 from tortoise.transactions import atomic
 
@@ -51,6 +47,7 @@ from .. import schemas
 from .. import services
 from ..conf import conf
 from ..controllers.websocket_managers import websocket_manager
+from api.domain.order.delivery_graph_old import get_delivery_graph_step
 from ..enums import *
 from ..enums.descriptions import delivery_status_description
 from ..modules.city.infrastructure.db_table import City
@@ -73,6 +70,7 @@ from ..services.sms.notification import send_feedback_link
 from ..services.sms.notification import send_post_control_otp
 from api.domain.pan import Pan
 
+from api.adapters.freedom_bank_otp import FreedomBankOTPAdapter
 from .publisher import publish_callback, call_task
 
 
@@ -252,16 +250,6 @@ class Order(Model):
     allow_courier_assign = fields.BooleanField(default=True)
     idn = fields.CharField(max_length=255, null=True)
     manager = fields.CharField(max_length=255, null=True)
-
-    # Курьер сервис который реально доставляет заявку
-    courier_service = fields.CharEnumField(
-        enum_type=enums.CourierService,
-        description=enums.CourierService.describe(),
-        max_length=50,
-        null=True,
-    )
-    # ID заявки в системе курьерской службы
-    track_number = fields.CharField(max_length=255, null=True)
 
     # reverse relation type hints that won't touch the db.
     geolocation: fields.OneToOneNullableRelation['OrderGeolocation']
@@ -574,6 +562,7 @@ async def order_statuses_get_count(order_default_args, order_group_default_args,
         d_sts.BEING_FINALIZED.value,
         d_sts.NONCALL.value,
         d_sts.POSTPONED.value,
+        d_sts.REQUESTED_TO_CANCEL.value,
         d_sts.CANCELLED.value,
         d_sts.CANCELED_AT_CLIENT.value,
         d_sts.RESCHEDULED.value,
@@ -598,6 +587,11 @@ async def order_statuses_get_count(order_default_args, order_group_default_args,
         current_status=RawSQL(current_status_sql)
     ).filter(*order_group_default_args).distinct().count()
     result[sts.NEW] = await orders.filter(delivery_status__filter={'status__isnull': True}).count()
+    result[d_sts.BEING_FINALIZED] = await orders.filter(
+        delivery_status__filter={
+            'status__in': (d_sts.BEING_FINALIZED.value, d_sts.BEING_FINALIZED_ON_CANCEL.value),
+        },
+    ).count()
     if profile_type == ProfileType.COURIER:
         result[sts.POST_CONTROL] = await orders.filter(
             current_status__slug__in=(sts.POST_CONTROL.value, sts.POST_CONTROL_BANK.value)
@@ -770,8 +764,11 @@ async def order_get_v2(order_id: int, default_filter_args: list = None, profile_
                      'statuses'),
             Prefetch('item__postcontrol_config_set', models.PostControlConfig.filter(
                 parent_config_id__isnull=True,
+                type=PostControlType.POST_CONTROL.value,
             ).prefetch_related(
-                Prefetch('inner_param_set', models.PostControlConfig.all().prefetch_related(
+                Prefetch('inner_param_set', models.PostControlConfig.filter(
+                    type=PostControlType.POST_CONTROL.value
+                ).prefetch_related(
                     Prefetch(
                         'postcontrol_document_set',
                         models.PostControl.filter(order_id=order_id),
@@ -784,6 +781,25 @@ async def order_get_v2(order_id: int, default_filter_args: list = None, profile_
                     'postcontrol_documents',
                 ),
             ), 'postcontrol_configs'),
+            Prefetch('item__postcontrol_config_set', models.PostControlConfig.filter(
+                parent_config_id__isnull=True,
+                type=PostControlType.CANCELED.value,
+            ).prefetch_related(
+                Prefetch('inner_param_set', models.PostControlConfig.filter(
+                    type=PostControlType.CANCELED.value,
+                ).prefetch_related(
+                    Prefetch(
+                        'postcontrol_document_set',
+                        models.PostControl.filter(order_id=order_id),
+                        'postcontrol_documents',
+                    ),
+                ), 'inner_params'),
+                Prefetch(
+                    'postcontrol_document_set',
+                    models.PostControl.filter(order_id=order_id),
+                    'postcontrol_documents',
+                ),
+            ), 'postcontrol_cancellation_configs'),
         ).select_related(
             'area', 'city', 'courier__user', 'item', 'deliverygraph',
             'partner', 'current_status', 'shipment_point', 'delivery_point', 'product'
@@ -888,8 +904,11 @@ async def order_get_v1(order_id: int, default_filer_args: list = None,  profile_
             ),
             Prefetch('item__postcontrol_config_set', models.PostControlConfig.filter(
                 parent_config_id__isnull=True,
+                type=PostControlType.POST_CONTROL.value,
             ).prefetch_related(
-                Prefetch('inner_param_set', models.PostControlConfig.all().prefetch_related(
+                Prefetch('inner_param_set', models.PostControlConfig.filter(
+                    type=PostControlType.POST_CONTROL.value,
+                ).prefetch_related(
                     Prefetch(
                         'postcontrol_document_set',
                         models.PostControl.filter(order_id=order_id),
@@ -902,6 +921,25 @@ async def order_get_v1(order_id: int, default_filer_args: list = None,  profile_
                     'postcontrol_documents',
                 ),
             ), 'postcontrol_configs'),
+            Prefetch('item__postcontrol_config_set', models.PostControlConfig.filter(
+                parent_config_id__isnull=True,
+                type=PostControlType.CANCELED.value,
+            ).prefetch_related(
+                Prefetch('inner_param_set', models.PostControlConfig.filter(
+                    type=PostControlType.CANCELED.value,
+                ).prefetch_related(
+                    Prefetch(
+                        'postcontrol_document_set',
+                        models.PostControl.filter(order_id=order_id),
+                        'postcontrol_documents',
+                    ),
+                ), 'inner_params'),
+                Prefetch(
+                    'postcontrol_document_set',
+                    models.PostControl.filter(order_id=order_id),
+                    'postcontrol_documents',
+                ),
+            ), 'postcontrol_cancellation_configs'),
         ).select_related(
             'area', 'city', 'courier__user', 'item', 'deliverygraph', 'partner', 'product'
         )
@@ -1109,11 +1147,12 @@ async def get_default_values(create: dict) -> dict:
         item_obj = await models.Item.get(id=create['item_id'])
     except DoesNotExist:
         raise DoesNotExist(f'Item with given ID: {create["item_id"]}')
-    if item_obj.has_postcontrol and not create.get('receiver_iin'):
-        raise OrderReceiverIINNotProvided(
-            'You trying to create order using a product with post_control '
-            "status but don't provide receiver_iin",
-        )
+    if create.get('product_type') != enums.ProductType.SEP_UNEMBOSSED.value:
+        if item_obj.has_postcontrol and not create.get('receiver_iin'):
+            raise OrderReceiverIINNotProvided(
+                'You trying to create order using a product with post_control '
+                "status but don't provide receiver_iin",
+            )
 
     deliverygraph_obj = await item_obj.deliverygraph_set.filter(
         types__contains=create['type'].value,
@@ -1387,31 +1426,27 @@ async def order_expel_courier(order_id: int, current_user: schemas.UserCurrent, 
     await order_obj.save()
 
 
-async def order_cancel(order_id: int, reason: str, user: UserCurrent, default_filter_args=None):
-    order_qs = Order.filter(
-        *default_filter_args,
-    ).distinct().get(id=order_id).select_related('city', 'courier__city')
-    try:
-        order_obj = await order_qs
-    except DoesNotExist as e:
-        raise DoesNotExist(
-            f'Order with provided ID: {order_id} was not found') from e
-
+async def order_accept_cancel(
+    order_obj: Order,
+    user: UserCurrent,
+):
+    order_obj.delivery_datetime = None
     delivery_status = {
         'status': OrderDeliveryStatus.CANCELLED.value,
-        'reason': reason,
+        'reason': order_obj.delivery_status['reason'],
         'datetime': None,
-        'comment': None,
+        'comment': order_obj.delivery_status['comment'],
     }
     order_obj.delivery_status = delivery_status
     await order_obj.save()
+
     await models.history_create(
         schemas.HistoryCreate(
             initiator_type=InitiatorType.USER,
             initiator_id=user.id,
             initiator_role=user.profile['profile_type'],
             model_type=HistoryModelName.ORDER,
-            model_id=order_id,
+            model_id=order_obj.id,
             request_method=RequestMethods.PATCH,
             action_data={
                 'delivery_status': delivery_status,
@@ -1437,31 +1472,34 @@ async def order_cancel(order_id: int, reason: str, user: UserCurrent, default_fi
             headers=headers,
         )
 
-    if fcmdevice_ids := await models.FCMDevice.filter(
-        user__profile_courier=order_obj.courier_id,
-    ).values_list('id', flat=True):
-        message_data = schemas.FirebaseMessage(
-            registration_ids=fcmdevice_ids,
-            notification=schemas.Notification(
-                title='Заявка отменена',
-                body=f'Заявка № {order_id} отменена. Откройте заявку, чтобы посмотреть причину.',
-            ),
-            data={
-                'title': 'Заявка отменена',
-                'description': 'Заявка № {order_id} отменена. Откройте заявку, чтобы посмотреть причину.',
-                'id': order_id,
-                'type': order_obj.type,
-                'push_type': PushType.INFO,
-                'delivery_status': OrderDeliveryStatus.CANCELLED.value,
-            }
-        )
-        await call_task(
-            task_name='firebase-send',
-            data=message_data.dict(),
-        )
+    # if fcmdevice_ids := await models.FCMDevice.filter(
+    #     user__profile_courier=order_obj.courier_id,
+    # ).values_list('id', flat=True):
+    #     message_data = schemas.FirebaseMessage(
+    #         registration_ids=fcmdevice_ids,
+    #         notification=schemas.Notification(
+    #             title='Заявка отменена',
+    #             body=f'Заявка № {order_id} отменена. Откройте заявку, чтобы посмотреть причину.',
+    #         ),
+    #         data={
+    #             'title': 'Заявка отменена',
+    #             'description': 'Заявка № {order_id} отменена. Откройте заявку, чтобы посмотреть причину.',
+    #             'id': order_id,
+    #             'type': order_obj.type,
+    #             'push_type': PushType.INFO,
+    #             'delivery_status': OrderDeliveryStatus.CANCELLED.value,
+    #         }
+    #     )
+    #     await call_task(
+    #         task_name='firebase-send',
+    #         data=message_data.dict(),
+    #     )
 
-    if order_obj.courier is None:
+    if order_obj.courier_id is None:
         return
+
+    if not isinstance(order_obj.courier, Model):
+        await order_obj.fetch_related('courier')
 
     courier_time = await order_obj.courier.localtime
 
@@ -1470,6 +1508,10 @@ async def order_cancel(order_id: int, reason: str, user: UserCurrent, default_fi
         delivery_datetime__month=courier_time.month,
         delivery_datetime__day=courier_time.day,
         courier_id=order_obj.courier_id,
+        delivery_point__latitude__isnull=False,
+        delivery_point__longitude__isnull=False,
+        delivery_point__latitude__not=0,
+        delivery_point__longitude__not=0,
     )
     if orders:
         courier = await models.ProfileCourier.filter(
@@ -1477,6 +1519,38 @@ async def order_cancel(order_id: int, reason: str, user: UserCurrent, default_fi
         await redistribute_order_immediately_for_current_courier(
             orders, courier
         )
+
+
+async def order_request_cancellation(
+    order_obj: Order,
+    reason: str,
+    user: UserCurrent,
+    comment: str | None = None,
+):
+    order_obj.delivery_datetime = None
+    delivery_status = {
+        'status': OrderDeliveryStatus.REQUESTED_TO_CANCEL.value,
+        'reason': reason,
+        'datetime': None,
+        'comment': comment,
+    }
+    order_obj.delivery_status = delivery_status
+    await order_obj.save()
+
+    await models.history_create(
+        schemas.HistoryCreate(
+            initiator_type=InitiatorType.USER,
+            initiator_id=user.id,
+            initiator_role=user.profile['profile_type'],
+            model_type=HistoryModelName.ORDER,
+            model_id=order_obj.id,
+            request_method=RequestMethods.PATCH,
+            action_data={
+                'delivery_status': delivery_status,
+            },
+            created_at=await order_obj.localtime,
+        )
+    )
 
 
 async def order_postpone(order_id: int, until: datetime, comment: str, user: UserCurrent, default_filter_args=None):
@@ -1563,6 +1637,10 @@ async def order_postpone(order_id: int, until: datetime, comment: str, user: Use
         delivery_datetime__month=courier_time.month,
         delivery_datetime__day=courier_time.day,
         courier_id=order_obj.courier_id,
+        delivery_point__latitude__isnull=False,
+        delivery_point__longitude__isnull=False,
+        delivery_point__latitude__not=0,
+        delivery_point__longitude__not=0,
     )
     if orders:
         courier = await models.ProfileCourier.filter(
@@ -1659,35 +1737,6 @@ async def order_noncall(order_id: int, comment: str, user: UserCurrent, default_
             headers=headers,
         )
 
-    if fcmdevice_ids := await models.FCMDevice.filter(
-        user__profile_courier=order_obj.courier_id,
-    ).values_list('id', flat=True):
-        message_data = schemas.FirebaseMessage(
-            registration_ids=fcmdevice_ids,
-            notification=schemas.Notification(
-                title='Заявка в "Недозвоне"',
-                body=f'Заявка № {order_id} в статусе "Недозвон". Не забудьте, позже еще раз позвонить получателю'
-                ,
-            ),
-            data={
-                'title': 'Заявка в "Недозвоне"',
-                'description': f'Заявка № {order_id} в статусе "Недозвон". '
-                               f'Не забудьте, позже еще раз позвонить получателю',
-                'id': order_id,
-                'type': order_obj.type,
-                'push_type': PushType.INFO,
-                'delivery_status': OrderDeliveryStatus.NONCALL.value,
-            }
-        )
-        pubsub_message = json.dumps({
-            'task_name': 'firebase-send',
-            'kwargs': message_data.dict(),
-        })
-        await call_task(
-            task_name='firebase-send',
-            data=message_data.dict(),
-        )
-
     if order_obj.courier is None:
         return
     courier_time = await order_obj.courier.localtime
@@ -1696,6 +1745,10 @@ async def order_noncall(order_id: int, comment: str, user: UserCurrent, default_
         delivery_datetime__month=courier_time.month,
         delivery_datetime__day=courier_time.day,
         courier_id=order_obj.courier_id,
+        delivery_point__latitude__isnull=False,
+        delivery_point__longitude__isnull=False,
+        delivery_point__latitude__not=0,
+        delivery_point__longitude__not=0,
     )
     if orders:
         courier = await models.ProfileCourier.filter(
@@ -1779,6 +1832,10 @@ async def order_resume(
         delivery_datetime__month=courier_time.month,
         delivery_datetime__day=courier_time.day,
         courier_id=order_obj.courier_id,
+        delivery_point__latitude__isnull=False,
+        delivery_point__longitude__isnull=False,
+        delivery_point__latitude__not=0,
+        delivery_point__longitude__not=0,
     )
     if orders:
         courier = await models.ProfileCourier.filter(
@@ -1833,8 +1890,7 @@ async def order_restore(
         history_created_at = order_time
         await OrderStatuses.create(order=order_obj, status=new_status, created_at=order_time)
         order_obj.current_status = new_status
-        product = await models.Product.get_or_none(order_id=order_id)
-        await product.delete()
+
         await models.SMSPostControl.filter(order_id=order_id).delete()
         await order_obj.save()
 
@@ -1848,7 +1904,6 @@ async def order_restore(
                 request_method=RequestMethods.PATCH,
                 action_data={
                     'delivery_status': {'status': 'restored'},
-                    'deleted_product': product.attributes,
                 },
                 created_at=history_created_at,
             )
@@ -1874,6 +1929,16 @@ async def order_courier_assign(default_filters: list, order_id: int, courier_id:
     if not order_obj.allow_courier_assign:
         raise exceptions.HTTPBadRequestException(f'It is not allowed to assign a courier to the order')
     order_obj.courier_id = courier_id
+
+    if order_obj.delivery_status.get('status') == enums.OrderDeliveryStatus.ADDRESS_CHANGED:
+        order_obj.current_status_id = 2
+        order_obj.delivery_status = {
+            'status': None,
+            'datetime': None,
+            'comment': None,
+            'reason': None,
+        }
+
     async with in_transaction('default'):
         await order_obj.save()
         assigned_status = await models.Status.get(
@@ -2351,8 +2416,6 @@ async def order_report(query: schemas.ExportExcel, profile_type, **kwargs):
             'Дата назначения курьера',
             'Дата текущего статуса',
             'Текущий статус',
-            'Курьерская служба',
-            'Трек номер',
         ]
         if profile_type == ProfileType.BANK_MANAGER:
             field_names = [
@@ -2549,15 +2612,42 @@ async def get_next_status_from_status(order_obj: Order, status_slug: str) -> Opt
 async def get_order_for_order_sms_postcontrol_check(
         order_id: int,
 ):
-    order_qs = Order.get(id=order_id).prefetch_related(
-        Prefetch('status_set', OrderStatuses.all().prefetch_related('status'),
-                 'statuses'),
-        Prefetch('address_set', OrderAddress.all().prefetch_related('place'),
-                 'addresses'),
-        Prefetch('postcontrol_set', models.PostControl.all(), 'postcontrols'),
-    ).select_related('area', 'city', 'courier__user', 'item', 'deliverygraph', 'partner', 'product')
+    order_obj = await (
+        models.Order.all_objects.filter(
+            deliverygraph_id__isnull=False
+        ).distinct()
+        .prefetch_related(
+            Prefetch('status_set', OrderStatuses.all().prefetch_related('status'),
+                     'statuses'),
+            Prefetch('address_set', OrderAddress.all().prefetch_related('place'),
+                     'addresses'),
+            Prefetch('postcontrol_set', models.PostControl.all(), 'postcontrols'),
+            Prefetch('item__postcontrol_config_set', models.PostControlConfig.filter(
+                parent_config_id__isnull=True,
+                type=PostControlType.POST_CONTROL.value,
+            ).prefetch_related(
+                Prefetch('inner_param_set', models.PostControlConfig.filter(
+                    type=PostControlType.POST_CONTROL.value,
+                ).prefetch_related(
+                    Prefetch(
+                        'postcontrol_document_set',
+                        models.PostControl.filter(order_id=order_id),
+                        'postcontrol_documents',
+                    ),
+                ), 'inner_params'),
+                Prefetch(
+                    'postcontrol_document_set',
+                    models.PostControl.filter(order_id=order_id),
+                    'postcontrol_documents',
+                ),
+            ), 'postcontrol_configs'),
+        ).select_related(
+            'area', 'city', 'courier__user', 'item', 'deliverygraph', 'partner', 'product'
+        ).get(id=order_id)
+    )
 
-    return schemas.OrderGetV1.from_orm(await order_qs)
+    return schemas.OrderGetV1.from_orm(order_obj)
+
 
 async def order_sms_postcontrol_check(
         order: Order,
@@ -2589,6 +2679,25 @@ async def order_sms_postcontrol_check(
             Prefetch('address_set', OrderAddress.all().prefetch_related('place'),
                      'addresses'),
             Prefetch('postcontrol_set', models.PostControl.all(), 'postcontrols'),
+            Prefetch('item__postcontrol_config_set', models.PostControlConfig.filter(
+                parent_config_id__isnull=True,
+                type=PostControlType.POST_CONTROL.value,
+            ).prefetch_related(
+                Prefetch('inner_param_set', models.PostControlConfig.filter(
+                    type=PostControlType.POST_CONTROL.value,
+                ).prefetch_related(
+                    Prefetch(
+                        'postcontrol_document_set',
+                        models.PostControl.filter(order_id=order.id),
+                        'postcontrol_documents',
+                    ),
+                ), 'inner_params'),
+                Prefetch(
+                    'postcontrol_document_set',
+                    models.PostControl.filter(order_id=order.id),
+                    'postcontrol_documents',
+                ),
+            ), 'postcontrol_configs'),
         ).select_related('area', 'city', 'courier__user', 'item', 'deliverygraph', 'partner', 'product')
 
         if any(otp_object.accepted_at is not None for otp_object in stored_otp_objects):
@@ -2766,7 +2875,6 @@ async def order_distribution_for_area(**kwargs) -> None:
             delivery_datetime__year=localtime.year,
             delivery_datetime__month=localtime.month,
             delivery_datetime__day=localtime.day,
-            courier_service__isnull=True,  # LG-521
         ).order_by('-delivery_datetime')
         orders_filtered = []
         for order_obj in orders:
@@ -2800,7 +2908,7 @@ async def order_mass_courier_assign(
     given_order_count = len(data.orders)
     has_ready_for_shipment = f"order__deliverygraph.graph @? '$.slug[*] ? (@ == \"{StatusSlug.READY_FOR_SHIPMENT}\")'"
 
-    qs = models.Order.annotate(
+    orders = await models.Order.annotate(
         has_ready_for_shipment=RawSQL(has_ready_for_shipment),
     ).filter(
         *default_filter_args,
@@ -2808,12 +2916,6 @@ async def order_mass_courier_assign(
         current_status__slug=StatusSlug.NEW.value,
         deliverygraph__id__isnull=False,  # needed to join deliverygraph table only.
     )
-    other_orders_exists = await qs.filter(courier_service__isnull=False).exists()
-    if other_orders_exists:
-        raise NotDistributionOrdersError(
-            'Can not assign a courier to cdek orders',
-        )
-    orders = await qs
     actual_order_count = len(orders)
 
     if given_order_count != actual_order_count:
@@ -2849,25 +2951,16 @@ async def order_mass_status_update(
 ):
     current_user = kwargs.pop('current_user')
     given_order_count = len(data.orders)
-    qs = models.Order.filter(
+    qs = await models.Order.filter(
         id__in=data.orders,
         **kwargs,
     ).exclude(
         delivery_status={'status': OrderDeliveryStatus.IS_DELIVERED},
         archived=True).select_related('city')
-
-    other_orders_exists = await qs.filter(courier_service__isnull=False).exists()
-    if other_orders_exists:
-        raise NotDistributionOrdersError(
-            'Can not assign a courier to cdek orders',
-        )
-
-    orders = await qs
-    actual_order_count = len(orders)
+    actual_order_count = len(qs)
     if given_order_count != actual_order_count:
         raise models.OrderNotFound(
-            table='order',
-            detail='Some orders was not found',
+            'Some orders was not found',
         )
     dict_delivery_status = data.delivery_status.dict()
     for order_obj in qs:
@@ -2923,16 +3016,6 @@ async def order_distribution_selective(**kwargs) -> List:
     }
     areas = await models.Area.filter(**filter_params)
     not_distributed_orders = []
-
-    other_orders_exists = await Order.filter(
-        id__in=selective_order_ids,
-        courier_service__isnull=False,
-    ).exists()
-    if other_orders_exists:
-        raise NotDistributionOrdersError(
-            'Can not assign a courier to cdek orders',
-        )
-
     for area in areas:
         orders = await Order.filter(
             id__in=selective_order_ids, area_id=area.id
@@ -3172,11 +3255,18 @@ async def external_order_create_v2(
                 f"{partner_id} and item_id {order_dict.get('item_id')}"
                 f", not found"
             )
-        if item_obj.has_postcontrol and not order_dict.get('receiver_iin'):
-            raise OrderReceiverIINNotProvided(
-                'You trying to create order using a product with post_control '
-                "status but don't provide receiver_iin",
-            )
+        if order.product_type == enums.ProductType.SEP_UNEMBOSSED:
+            client_code = product_payload.client_code
+            if not client_code:
+                raise ValueError(
+                    'Payload client_code required for sep_unembossed product type'
+                )
+        else:
+            if item_obj.has_postcontrol and not order_dict.get('receiver_iin'):
+                raise OrderReceiverIINNotProvided(
+                    'You trying to create order using a product with post_control '
+                    "status but don't provide receiver_iin",
+                )
         has_preparation = f"graph @? '$.slug[*] ? (@ == \"{StatusSlug.PACKED}\")'"
         deliverygraph = await item_obj.deliverygraph_set.filter(
             types__contains=order.type.value
@@ -3204,34 +3294,41 @@ async def external_order_create_v2(
         # TODO: Сейчас параллельно тут доработки по двум продуктам, ЗП проект и Пос терминалы, + SEP неименные в будущем
         # TODO: Поэтому пока без рефакторинга, чтобы не было конфликтов
 
-        if order.product_type == enums.ProductType.GROUP_OF_CARDS and product_payload:
-            await models.Product.create(
-                order_id=order_created.id,
-                type=order.product_type,
-                attributes=product_payload.json(),
-                name=order.product_name,
+        if product_payload:
+            if order.product_type == enums.ProductType.GROUP_OF_CARDS:
+                await models.Product.create(
+                    order_id=order_created.id,
+                    type=order.product_type,
+                    attributes=product_payload.json(),
+                    name=order.product_name,
+                )
+
+            if order.product_type == enums.ProductType.CARD:
+                pan = Pan(value=product_payload.pan)
+                await models.Product.create(
+                    order_id=order_created.id,
+                    type='card',
+                    name=order.product_name,
+                    attributes={
+                        "pan": pan.get_masked(),
+                        "pan_suffix": pan.get_suffix(),
+                    },
+                    pan_suffix=pan.get_suffix(),
+                )
+
+            if order.product_type == enums.ProductType.POS_TERMINAL:
+                await models.Product.create(
+                    order_id=order_created.id,
+                    type='pos_terminal',
+                    attributes=product_payload.json()
             )
 
-        if order.product_type == enums.ProductType.CARD and product_payload:
-            pan = Pan(value=product_payload.pan)
-            await models.Product.create(
-                order_id=order_created.id,
-                type='card',
-                name=order.product_name,
-                attributes={
-                    "pan": pan.get_masked(),
-                    "pan_suffix": pan.get_suffix(),
-                },
-                pan_suffix=pan.get_suffix(),
-            )
-
-        if order.product_type == enums.ProductType.POS_TERMINAL and product_payload:
-            await models.Product.create(
-                order_id=order_created.id,
-                type='pos_terminal',
-                attributes=product_payload.json()
-            )
-
+            if order.product_type == enums.ProductType.SEP_UNEMBOSSED:
+                await models.Product.create(
+                    order_id=order_created.id,
+                    type=enums.ProductType.SEP_UNEMBOSSED.value,
+                    attributes=product_payload.json()
+                )
 
         await order_update_status(order_created, OrderStatus.NEW)
         if city_name and not order.type == OrderType.PICKUP:
@@ -3312,11 +3409,12 @@ async def external_order_create(
                 f"{partner_id} and item_id {order_dict.get('item_id')}"
                 f", not found"
             )
-        if item_obj.has_postcontrol and not order_dict.get('receiver_iin'):
-            raise OrderReceiverIINNotProvided(
-                'You trying to create order using a product with post_control '
-                "status but don't provide receiver_iin",
-            )
+        if order.product_type != enums.ProductType.SEP_UNEMBOSSED:
+            if item_obj.has_postcontrol and not order_dict.get('receiver_iin'):
+                raise OrderReceiverIINNotProvided(
+                    'You trying to create order using a product with post_control '
+                    "status but don't provide receiver_iin",
+                )
         has_preparation = f"graph @? '$.slug[*] ? (@ == \"{StatusSlug.PACKED}\")'"
         deliverygraph = await item_obj.deliverygraph_set.filter(
             types__contains=order.type.value
@@ -3399,7 +3497,7 @@ async def order_pan(order_id: int, pan_schema: schemas.OrderPAN, default_filter_
     pan = Pan(value=pan_schema.pan)
 
     # Проверим есть ли уже созданный продукт
-    current_product = await models.Product.get_or_none(order_id=order_id, type='card')
+    current_product = await models.Product.get_or_none(order_id=order_id)
 
     # Если есть, то редактируем текущий продукт
     if current_product:
@@ -3455,7 +3553,7 @@ async def order_pan_v2(order_id: int, pan_schema: schemas.OrderPAN, default_filt
     pan = Pan(value=pan_schema.pan)
 
     # Проверим есть ли уже созданный продукт
-    current_product = await models.Product.get_or_none(order_id=order_id, type='card')
+    current_product = await models.Product.get_or_none(order_id=order_id)
 
     # Если есть, то редактируем текущий продукт
     if current_product:
@@ -3620,16 +3718,6 @@ async def order_change_status(default_filter_args, body):
         order_statuses.append(
             OrderStatuses(order=order_obj, status=status_obj, created_at=order_time)
         )
-
-    other_orders_exists = await Order.filter(
-        id__in=order_ids,
-        courier_service__isnull=False,
-    ).exists()
-    if other_orders_exists:
-        raise NotDistributionOrdersError(
-            'Can not assign a courier to cdek orders',
-        )
-
     await OrderStatuses.bulk_create(order_statuses, 100)
     await Order.filter(id__in=order_ids).update(current_status_id=body.status_id)
 

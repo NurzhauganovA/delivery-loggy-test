@@ -1,33 +1,68 @@
-import os
-
-import json
 import pytest
-from _pytest.fixtures import FixtureRequest
 
-from unittest.mock import(
-    AsyncMock,
-    MagicMock,
+from delivery.tests.utils import json_fixture
+from delivery.tests.utils import query
+
+from tests.fixtures.default_pre_start_sql_scripts import (
+    default_countries_insert_script,
+    default_cities_insert_script,
+    statuses_insert_script
 )
-
-from tests.utils import(
-    query,
-    json_fixture,
-    get_sql_script_from_fixtures,
-)
-
-from tests.fixtures.default_pre_start_sql_scripts import default_pre_start_sql_script
-
 
 
 @pytest.fixture
-def mock_value():
-    mock = AsyncMock(return_value='214876ac-fb04-453d-a1d3-e89b304e4e3e')
-    return mock
+def body() -> dict:
+    json = {
+            "city": "Алматы",
+            "comment": "Нет комментариев",
+            "delivery_datetime": "2025-03-13T12:22:00.350Z",
+            "item_id": 1,
+            "receiver_name": "Имя Фамилия",
+            "receiver_phone_number": "+77056119742",
+            "type": "planned",
+            "callbacks": {
+                "set_otp": "https://bankffin.kz/api/set-opt?orderId=1234",
+                "set_pan": "https://bankffin.kz/api/set-pan?orderId=1234",
+                "set_photo_urls": "https://bankffin.kz/api/set-photo?orderId=1234"
+            },
+            "address": "Алматы, Жибек Жолы 135",
+            "latitude": 43.24796815,
+            "longitude": 76.95038633,
+            "partner_order_id": "223o486346082346074360368",
+            "product_type": "sep_unembossed",
+            "product_name": "Доставка неименных карт",
+            "payload": {
+                "client_code": "001666280"
+            }
+        }
+    return json
 
 
 @pytest.fixture
-def path(request: FixtureRequest) -> str:
-    return str(request.fspath)
+def invalid_body() -> dict:
+    json = {
+            "city": "Алматы",
+            "comment": "Нет комментариев",
+            "delivery_datetime": "2025-03-13T12:22:00.350Z",
+            "item_id": 1,
+            "receiver_name": "Имя Фамилия",
+            "receiver_iin": "123456789012",
+            "receiver_phone_number": "+77056119742",
+            "type": "planned",
+            "callbacks": {
+                "set_otp": "https://bankffin.kz/api/set-opt?orderId=1234",
+                "set_pan": "https://bankffin.kz/api/set-pan?orderId=1234",
+                "set_photo_urls": "https://bankffin.kz/api/set-photo?orderId=1234"
+            },
+            "address": "Алматы, Жибек Жолы 135",
+            "latitude": 43.24796815,
+            "longitude": 76.95038633,
+            "partner_order_id": "223o486346082346074360368",
+            "product_type": "sep_unembossed",
+            "product_name": "Доставка неименных карт",
+            "payload": []
+        }
+    return json
 
 
 @pytest.fixture
@@ -36,113 +71,34 @@ def api_key() -> str:
 
 
 @pytest.fixture
-def body() -> str:
-    json = """
-        {
-            "city": "Москва",
-            "comment": "sample comment",
-            "delivery_datetime": "2025-03-13T12:22:00.350Z",
-            "item_id": 1,
-            "shipment_point_id": 1,
-            "receiver_name": "Нурсултан Кемелович",
-            "receiver_phone_number": "+77071112233",
-            "receiver_iin": "012345050101",
-            "type": "planned",
-            "callbacks": {
-                "set_otp": "https://bankffin.kz/api/set-opt?orderId=1234",
-                "set_pan": "https://bankffin.kz/api/set-pan?orderId=1234",
-                "set_photo_urls": "https://bankffin.kz/api/set-photo?orderId=1234"
-            },
-            "address": "Алматы, Жибек Жолы 135",
-            "latitude": 72.12332,
-            "longitude": 41.232355,
-            "partner_order_id": "223o486346082346074360349",
-
-            "product_type": "group_of_cards",
-            "product_name": "Групповая доставка ЗП карт",
-
-            "payload": [
-                {
-                  "id": 0,
-                  "pan": "5269xxxxxxxx1234",
-                  "iin": "990208350377",
-                  "fio": "Иванов Иван"
-                },
-                {
-                  "id": 1,
-                  "pan": "5269xxxxxxxx1234",
-                  "iin": "990208350377",
-                  "fio": "Иванов Иван"
-                },
-                {
-                  "id": 2,
-                  "pan": "5269xxxxxxxx1234",
-                  "iin": "990208350377",
-                  "fio": "Иванов Иван"
-                }
-            ]
-        }
-    """
-    return json
+def expected() -> str:
+    return "001666280"
 
 
 @pytest.fixture
-def expected() -> dict:
-    response = {
-        'current_status': 'transfer_to_cdek',
-        'courier_service': 'cdek',
-        'delivery_status': {
-            'status': 'transfer_to_cdek',
-            'datetime': None,
-            'reason': None,
-            'comment': None,
-        }
+def pre_start_sql_script() -> str:
+    """Важен порядок скриптов, так как есть зависимость от внешних ключей у таблиц"""
+    scripts = [
+        default_countries_insert_script(),
+        default_cities_insert_script(),
+        statuses_insert_script(),
+    ]
+    tables_and_fixtures = {
+        'public.partner': 'partner',
+        'public."partner.publicapitoken"': 'publicapitoken',
+        'public.item': 'item',
+        'public.item_city': 'item_city',
+        'public.deliverygraph': 'deliverygraph',
+        'public.item_deliverygraph': 'item_deliverygraph',
+        'public.partner_shipment_point': 'partner_shipment_point',
     }
-    return response
+    for table, fixture in tables_and_fixtures.items():
+        fixtures = json_fixture.get_fixture(
+            'e2e',
+            'external_order_create/case_10',
+            fixture,
+        )
+        insert_query = query.create_insert(table, fixtures)
+        scripts.append(insert_query)
 
-
-@pytest.fixture
-def fixtures() -> dict:
-    return {
-        'public."user"': 'user',
-        'partner': 'partner',
-        'public."partner.publicapitoken"': 'partner_publicapitoken',
-        'partner_shipment_point': 'partner_shipment_point',
-        'public.profile_courier': 'profile_courier',
-        'item': 'item',
-        'item_city': 'item_city',
-        'deliverygraph': 'deliverygraph',
-        'item_deliverygraph': 'item_deliverygraph',
-        'public.area': 'area',
-        'public."order"': 'order',
-        'public."order.statuses"': 'order_statuses',
-        'product': 'product',
-        'courier_service': 'courier_service',
-    }
-
-
-@pytest.fixture
-def pre_start_sql_script(
-    request: FixtureRequest,
-    fixtures: dict,
-    default_pre_start_sql_script: str,
-) -> str:
-    """
-    Сборка всех SQL запросов из json
-    Склеивание с устаревшими запросами, для совместимости
-
-    Args:
-        request: глобальный объект Pytest
-        fixtures: список фикстур. Парсится из словаря выше
-        default_pre_start_sql_script: легаси sql запросы
-
-    Returns:
-        SQL запрос спарсенный из фикстур
-    """
-
-    current_test_sql_scripts = get_sql_script_from_fixtures(
-        current_dir=os.path.dirname(str(request.fspath)),
-        fixtures=fixtures,
-    )
-
-    return default_pre_start_sql_script + current_test_sql_scripts
+    return " ".join(scripts)

@@ -60,6 +60,7 @@ def expected() -> dict:
         "receiver_iin": "012345050101",
         "receiver_name": "Нурсултан Кемелович",
         "receiver_phone_number": "+77071112233",
+
         "has_receiver_feedback": None,
         "comment": "sample comment",
         "area_id": None,
@@ -111,6 +112,7 @@ def expected() -> dict:
             "message_for_noncall": None,
             "upload_from_gallery": True,
             "postcontrol_configs": [],
+            "postcontrol_cancellation_configs": [],
             "accepted_delivery_statuses": None,
         },
         "deliverygraph": {

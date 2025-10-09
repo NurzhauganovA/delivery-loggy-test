@@ -27,8 +27,6 @@ async def test_registrate_pos_terminal(adapter: POSTerminalAdapter):
         courier_full_name="Тестовый Курьер Курьерович",
         is_installment_enabled=False,
         request_number_ref=None,
-        inventory_number='123456789',
-        sum=Decimal('1000.1'),
     )
 
     assert business_key == "OVERDRAFT-TMS25-02263"
@@ -53,8 +51,6 @@ async def test_registrate_pos_terminal_validation_error(adapter: POSTerminalAdap
             courier_full_name="",
             is_installment_enabled=False,
             request_number_ref="",
-            inventory_number='',
-            sum=Decimal('12345678910.11'),
         )
 
 
@@ -77,6 +73,4 @@ async def test_registrate_pos_terminal_bad_request_error(adapter: POSTerminalAda
             courier_full_name="Тестовый Курьер Курьерович",
             is_installment_enabled=False,
             request_number_ref=None,
-            inventory_number='12345678910',
-            sum=Decimal('12345678910.11'),
         )

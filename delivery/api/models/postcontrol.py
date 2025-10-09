@@ -4,27 +4,26 @@ import json
 from datetime import datetime
 from typing import List
 
-from tortoise.expressions import Q
-
-from .order import get_next_status_from_status
-from .partner_callbacks import get_headers
-from .publisher import publish_callback
-from ..conf import conf
 from pydantic import parse_obj_as
 from tortoise import Model
 from tortoise import fields
 from tortoise.exceptions import DoesNotExist
 from tortoise.exceptions import IntegrityError
+from tortoise.expressions import Q
 from tortoise.transactions import atomic
 
+from api import redis_module
+from api.conf import conf
+from api.enums import OrderStatus, PostControlResolution
+from api.models.order import get_next_status_from_status
+from api.models.partner_callbacks import get_headers
+from api.models.publisher import publish_callback
 from . import fields as custom_fields
 from .mixins import DeleteFilesMixin
-from .. import redis_module
 from .. import enums
 from .. import models
 from .. import schemas
 from .. import services
-from ..enums import OrderStatus
 
 
 class PostControlCanNotDelete(Exception):
@@ -75,7 +74,7 @@ class PostControlConfig(Model):
     class Meta:
         table = 'postcontrol_configs'
         unique_together = ('item', 'name')
-        ordering = ('order', )
+        ordering = ('order',)
 
 
 class PostControl(DeleteFilesMixin, Model):
@@ -148,10 +147,12 @@ class PAN(Model):
 @atomic()
 async def postcontrol_create(order_id: int, image, config_id, default_filter_args, current_user):
     order_obj = await models.Order.filter(*default_filter_args).get(id=order_id)
+    config_obj = await models.PostControlConfig.get(id=config_id)
     instance = await PostControl.create(
         order_id=order_obj.id,
         image=image,
         config_id=config_id,
+        type=config_obj.type,
     )
     order_time = await order_obj.localtime
     await models.history_create(
@@ -204,7 +205,6 @@ async def postcontrol_get(postcontrol_id: int, default_filter_args: list = None)
             f'Post-control document with provided ID: {postcontrol_id} was not found')
 
 
-@atomic()
 async def postcontrol_make_resolution(resolutions, default_filter_args, user: schemas.UserCurrent):
     documents = []
 
@@ -226,15 +226,31 @@ async def postcontrol_make_resolution(resolutions, default_filter_args, user: sc
     postcontrols = parse_obj_as(List[schemas.PostControlGet], documents)
 
     order_obj = await models.Order.select_for_update().get(id=documents[0].order_id)
+
+    # Определяем тип документов послед-контроля
+    postcontrol_type = enums.PostControlType.CANCELED.value if all(
+        p.type == enums.PostControlType.CANCELED for p in postcontrols
+    ) else enums.PostControlType.POST_CONTROL.value
+
+    # Если хотя бы один документ отклонен, то отправляем заявку на доработку и выходим из функции.
     if enums.PostControlResolution.DECLINED in (r.resolution for r in resolutions):
+        if postcontrol_type == enums.PostControlType.CANCELED.value:
+            status = enums.OrderDeliveryStatus.BEING_FINALIZED_ON_CANCEL.value
+        else:
+            status = enums.OrderDeliveryStatus.BEING_FINALIZED.value
+
+        current_delivery_reson = order_obj.delivery_status.get('reason')
         order_obj.delivery_status = {
-            'status': enums.OrderDeliveryStatus.BEING_FINALIZED.value,
-            'reason': None,
+            'status': status,
+            'reason': current_delivery_reson,
             'datetime': None,
             'comment': None,
         }
         await order_obj.save()
         return postcontrols
+
+    # Если хотя бы один документ отклонен банком, то отправляем заявку на доработку в курьерскую службу
+    # и выходим из функции.
     if enums.PostControlResolution.BANK_DECLINED in (r.resolution for r in resolutions):
         order_obj.delivery_status = {
             'status': enums.OrderDeliveryStatus.BEING_FINALIZED_AT_CS.value,
@@ -265,9 +281,23 @@ async def postcontrol_make_resolution(resolutions, default_filter_args, user: sc
         ))
         await order_obj.save()
         return postcontrols
+
+    # Если все документы отмены одобрены, то заявку помечаем как "отменено"
+    if postcontrol_type == enums.PostControlType.CANCELED.value:
+        cancellation_postcontrol_objects = await PostControl.filter(
+            type=enums.PostControlType.CANCELED.value,
+            order_id=order_obj.id,
+        )
+        if all(p.resolution == PostControlResolution.ACCEPTED.value for p in cancellation_postcontrol_objects):
+            await models.order_accept_cancel(order_obj=order_obj, user=user)
+            return postcontrols
+
+    # В случае одобрения всех документов послед-контроля помечаем заявку как "доставлено"
+    # отправляем статус
     if all((enums.PostControlResolution.ACCEPTED == r.resolution for r in resolutions)):
         config_ids = await PostControlConfig.filter(
             Q(parent_config_id__isnull=True, inner_param_set__isnull=True) | Q(parent_config_id__isnull=False),
+            type=enums.PostControlType.POST_CONTROL.value,
             item_id=order_obj.item_id,
         ).values_list('id', flat=True)
         accepted_postcontrols = await PostControl.filter(
@@ -291,11 +321,13 @@ async def postcontrol_make_resolution(resolutions, default_filter_args, user: sc
             )
             await models.history_create(history_schema)
 
-            next_status = await get_next_status_from_status(order_obj=order_obj,
-                                                            status_slug=enums.StatusSlug.POST_CONTROL)
+            next_status = await get_next_status_from_status(
+                order_obj=order_obj,
+                status_slug=enums.StatusSlug.POST_CONTROL.value,
+            )
             if next_status and next_status.id not in (
-                int(enums.OrderStatus.DELIVERED.value),
-                int(enums.OrderStatus.ISSUED.value),
+                    int(enums.OrderStatus.DELIVERED.value),
+                    int(enums.OrderStatus.ISSUED.value),
             ):
                 return postcontrols
 
@@ -335,6 +367,7 @@ async def postcontrol_accept(order_id: int, current_user, default_filter_args: l
 
     config_ids = await PostControlConfig.filter(
         Q(parent_config_id__isnull=True, inner_param_set__isnull=True) | Q(parent_config_id__isnull=False),
+        type=enums.PostControlType.POST_CONTROL.value,
         item_id=order_obj.item_id,
     ).values_list('id', flat=True)
     config_count = len(config_ids)

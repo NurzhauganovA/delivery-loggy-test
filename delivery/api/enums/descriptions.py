@@ -30,8 +30,6 @@ order_descriptions = {
         'current_status_datetime': ('Дата текущего статуса',),
         'initial_delivery_datetime': ('Исходная дата доставки',),
         'courier_appointed_at': ('Дата назначения курьера',),
-        'courier_service': ('Курьерская служба',),
-        'track_number': ('Трек номер',),
     },
 }
 

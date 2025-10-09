@@ -64,11 +64,6 @@ env:
   FREEDOM_BANK_OTP_PASSWORD: "tNvpwH4HH8GGjPFYtjcEwR=="
   FREEDOM_BANK_KZ_CALLBACKS_TOKEN: "Basic dHJhZmZpY3dhdmU6THJmU04zYnl0eG1ZdWFPN2xDQm5zbFNRaVFmdlM0cDA="
 
-  # CDEK
-  CDEK_BASE_URL: "https://api.cdek.ru/v2"
-  CDEK_CLIENT_ID: "wj9yCGKMfEDQMzMmtzBsiccJOYojcLjn"
-  CDEK_CLIENT_SECRET: "cTcEw5CNnmILMeZMAYmShJmIcETlIS0y"
-
 # secretEnv:
 #  - secretName: "courier-service"
 #    secretKeys: "POETRY_HTTP_BASIC_GLOBERCE_USERNAME"
@@ -114,15 +109,6 @@ env:
 #    secretKeys: "FREEDOM_POS_TERMINAL_REGISTRATION_TOKEN"
 #    secretEnvName: "FREEDOM_POS_TERMINAL_REGISTRATION_TOKEN"
 
-
-resources:
-  limits:
-    cpu: 0.3
-    memory: 500Mi
-  requests:
-    cpu: 0.1
-    memory: 150Mi
-
 replicaCount: 1
 
 rollingUpdate:
@@ -142,7 +128,7 @@ ingress:
      31.31.217.170/32, 10.233.90.0/24, 94.247.134.91/32, 94.247.134.94/32, 77.240.44.46/32, 77.240.44.47/32,
       176.119.229.155/32, 176.119.229.167/32, 94.247.128.90/32, 194.31.133.15/32, 194.31.135.46/32, 194.31.133.151/32,
        194.31.135.45/32, 91.147.95.80/29, 195.49.209.171, 185.102.75.178, 91.147.111.59/32, 91.147.111.60/32,
-       91.247.58.172/24"
+       91.247.58.172/24,193.43.251.161"
 
   hosts:
     - host: *domain

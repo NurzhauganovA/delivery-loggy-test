@@ -55,7 +55,8 @@ def expected() -> dict[str, Any]:
             'name': 'Базовая кредитная карта 1',
             'partner': {'id': 2, 'name': 'Партнер 1'},
             'partner_id': 2,
-            'postcontrol_configs': []
+            'postcontrol_configs': [],
+            'postcontrol_cancellation_configs': [],
         }
 
 
@@ -83,7 +84,8 @@ def expected_empty_non_call_message() -> dict[str, Any]:
             'name': 'Базовая кредитная карта 2',
             'partner': {'id': 2, 'name': 'Партнер 1'},
             'partner_id': 2,
-            'postcontrol_configs': []
+            'postcontrol_configs': [],
+            'postcontrol_cancellation_configs': [],
         }
 
 

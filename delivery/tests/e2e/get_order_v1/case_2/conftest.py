@@ -148,7 +148,7 @@ def product_insert_script() -> str:
         INSERT INTO "product" ("type", "attributes", "order_id")
         VALUES (
             'card',
-            '{"pan": "5269********3427", "pan_suffix": "3427"}',
+            '{"pan": "5269111111113427", "pan_suffix": "3427"}',
             1
         );
     """

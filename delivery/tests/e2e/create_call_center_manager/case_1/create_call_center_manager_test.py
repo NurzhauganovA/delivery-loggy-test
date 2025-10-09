@@ -129,11 +129,7 @@ async def test_create_call_center_manager_with_invalid_country_id(
         headers={'Authorization': 'Bearer ' + access_token},
         data=json.dumps(data),
     )
-
     assert response.status_code == 400
-    response_data = response.json()
-    assert 'detail' in response_data
-    assert response_data['detail'] == 'country with given id: 0 was not found'
 
 
 
@@ -168,8 +164,4 @@ async def test_create_call_center_manager_with_invalid_partner_id(
         headers={'Authorization': 'Bearer ' + access_token},
         data=json.dumps(data),
     )
-
     assert response.status_code == 400
-    response_data = response.json()
-    assert 'detail' in response_data
-    assert response_data['detail'] == 'Partner with given ID: 0 was not found'

@@ -37,8 +37,6 @@ class POSTerminalAdapter(POSTerminalAdapterProtocol):
             courier_full_name: str,
             is_installment_enabled: bool,
             request_number_ref: Optional[str],
-            inventory_number: Optional[str],
-            sum: Optional[Decimal],
     ) -> str:
         try:
             POSTerminalRegistrationRequest(
@@ -57,8 +55,6 @@ class POSTerminalAdapter(POSTerminalAdapterProtocol):
                 courier_full_name=courier_full_name,
                 request_number_ref=request_number_ref,
                 is_installment_enabled=is_installment_enabled,
-                inventory_number=inventory_number,
-                sum=sum,
             )
         except ValidationError as e:
             raise POSTerminalAdapterValidationError(e) from e
@@ -80,8 +76,6 @@ class POSTerminalAdapter(POSTerminalAdapterProtocol):
                 courier_full_name=courier_full_name,
                 request_number_ref=request_number_ref,
                 is_installment_enabled=is_installment_enabled,
-                inventory_number=inventory_number,
-                sum=float(sum) if sum is not None else None,
             )
         except (HTTPStatusError, RequestError) as e:
             raise POSTerminalAdapterBadRequestError("can not registrate pos terminal, bad request") from e

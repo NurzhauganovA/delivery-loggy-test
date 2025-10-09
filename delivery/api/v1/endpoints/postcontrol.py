@@ -1,10 +1,14 @@
 import typing
 
 import fastapi
-from fastapi import UploadFile, File
+from fastapi import Depends
 from fastapi.encoders import jsonable_encoder
 from starlette.responses import JSONResponse
 
+from api import exceptions
+from api.utils.image.exceptions import ImageValidationError
+from api.utils.image.image_validator import ImageValidator
+from api.dependencies import get_cancel_image_validator
 from ... import auth
 from ... import enums
 from ... import dependencies
@@ -12,8 +16,6 @@ from ... import models
 from ... import controllers
 from ... import responses
 from ... import schemas
-from ...enums import ProfileType
-
 
 router = fastapi.APIRouter()
 
@@ -28,15 +30,23 @@ async def postcontrol_create(
     order_id: int,
     config_id: int = fastapi.Depends(dependencies.postcontrol_validate_payload),
     image: fastapi.UploadFile = fastapi.File(...),
+    image_validator: ImageValidator = Depends(get_cancel_image_validator),
     current_user: schemas.UserCurrent = fastapi.Security(
         auth.get_current_user,
     ),
     default_filter_args: list = fastapi.Security(dependencies.OrderDefaultFilter()),
 ):
     """Create post-control document."""
+    try:
+        await image_validator.validate(image)
+    except ImageValidationError as e:
+        raise exceptions.HTTPBadRequestException(e)
+
+    serialized_image = await image_validator.serialize_image(image)
+
     result = await controllers.postcontrol_create(
         order_id=order_id,
-        image=image,
+        image=serialized_image,
         config_id=config_id,
         default_filter_args=default_filter_args,
         current_user=current_user,

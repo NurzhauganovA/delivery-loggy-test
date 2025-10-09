@@ -53,4 +53,4 @@ async def test_get_order_not_found(
         headers={'Authorization': 'Bearer ' + access_token},
     )
     assert response.status_code == 404
-    assert response.json() == {'detail': 'Order with provided ID: 2 was not found', 'status': 'not-found', 'status_code': 404}
+    assert response.json() == {'detail': 'Object does not exist', 'status': 'not-found', 'status_code': 404}

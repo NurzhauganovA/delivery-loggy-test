@@ -112,3 +112,13 @@ async def test_verify_wrong_otp_during_verification_client_side(adapter: Freedom
             partner_order_id="BFF000056",
             otp_code="3333",
         )
+
+@pytest.mark.asyncio
+async def test_send_handle_error(adapter: FreedomBankOTPAdapter):
+    """
+        Клиент вернул ошибку ERROR в errorCode в теле ответа, обрабатываем ее
+    """
+    with pytest.raises(OTPBadRequestError, match='can not send otp, bad request'):
+        await adapter.send(
+            partner_order_id="BFF000600",
+        )

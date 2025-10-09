@@ -10,22 +10,31 @@ from typing import (
 import pydantic
 from fastapi import Query
 from loguru import logger
-from pydantic import BaseModel, conset, Field, conint, Extra, validator
-from pydantic import StrictBool
-from pydantic import StrictInt
-from pydantic import StrictStr
-from pydantic import conlist
-from pydantic import constr
-from pydantic import root_validator
+from pydantic import(
+    BaseModel,
+    conset,
+    Field,
+    conint,
+    validator,
+    StrictBool,
+    StrictInt,
+    StrictStr,
+    conlist,
+    constr,
+    root_validator,
+)
 from tortoise.contrib.pydantic import PydanticModel
 
-from api import exceptions
-from .deliverygraph import DeliveryGraphGet, DeliveryGraphGetV2
-from .. import enums
+from .deliverygraph import(
+    DeliveryGraphGet,
+    DeliveryGraphGetV2,
+)
+from api import enums, exceptions
 from api.common import validators
 from ..common.schema_base import BaseOutSchema
 from ..domain.pan import Pan
-from ..enums import PostControlType, CourierService
+from ..enums import PostControlType
+
 
 
 class Area(BaseModel):
@@ -91,6 +100,7 @@ class OrderPostcontrolConfigGet(BaseModel):
 class ItemGet(Item):
     upload_from_gallery: bool
     postcontrol_configs: List[OrderPostcontrolConfigGet] = []
+    postcontrol_cancellation_configs: List[OrderPostcontrolConfigGet] = []
     accepted_delivery_statuses: List[str] | None
 
 
@@ -105,6 +115,7 @@ class ItemGetV2(BaseOutSchema, PydanticModel):
     message_for_noncall: str | None
     upload_from_gallery: bool
     postcontrol_configs: List[OrderPostcontrolConfigGet] = []
+    postcontrol_cancellation_configs: List[OrderPostcontrolConfigGet] = []
     accepted_delivery_statuses: List[str] | None = []
 
 
@@ -144,11 +155,6 @@ class StatusCreate(Status):
 class StatusGet(Status):
     id: StrictInt
     slug: StrictStr
-
-
-class SubStatusGet(PydanticModel):
-    name: str
-    created_at: datetime.datetime
 
 
 class StatusGetV2(BaseOutSchema, PydanticModel):
@@ -207,14 +213,15 @@ class DeliveryStatus(BaseModel):
         status = values.get('status')
         if not status or status not in {
             enums.OrderDeliveryStatus.CANCELLED,
+            enums.OrderDeliveryStatus.REQUESTED_TO_CANCEL,
             enums.OrderDeliveryStatus.POSTPONED,
             enums.OrderDeliveryStatus.NONCALL,
             enums.OrderDeliveryStatus.CANCELED_AT_CLIENT,
             enums.OrderDeliveryStatus.RESCHEDULED,
             enums.OrderDeliveryStatus.BEING_FINALIZED_AT_CS,
+            enums.OrderDeliveryStatus.BEING_FINALIZED_ON_CANCEL,
         }:
             values['datetime'] = None
-            values['comment'] = None
             values['reason'] = None
         elif status == enums.OrderDeliveryStatus.NONCALL:
             values['reason'] = None
@@ -222,7 +229,6 @@ class DeliveryStatus(BaseModel):
         elif status in (enums.OrderDeliveryStatus.CANCELLED,
                         enums.OrderDeliveryStatus.CANCELED_AT_CLIENT,
                         enums.OrderDeliveryStatus.RESCHEDULED):
-            values['comment'] = None
             if not values.get('reason'):
                 raise ValueError(
                     'reason is required when order was canceled',
@@ -441,7 +447,6 @@ class OrderInternal(Order):
 class OrderStatusGetWithDatetime(BaseOutSchema, PydanticModel):
     status: StatusGet
     created_at: datetime.datetime
-    sub_statuses: Optional[List[SubStatusGet]]
 
     class Config:
         orm_mode = True
@@ -498,21 +503,15 @@ class Product(BaseOutSchema):
     name: str | None
     attributes: Union[dict, list]
 
-    @root_validator
-    def mask_pan(cls, values):
-        """
-            Если у продукта с типом card есть pan в attributes,
-            то наложим маску
-        """
-        product_type = values.get("type")
-
-        if product_type == "card":
-            current_pan = values.get("attributes", {}).get("pan")
+    @validator('attributes')
+    def mask_pan(cls, attributes: Union[dict, list]) -> Union[dict, list]:
+        """Если у продукта есть pan в attributes, то наложим маску"""
+        if isinstance(attributes, dict):
+            current_pan = attributes.get('pan')
             if current_pan:
-                pan = Pan(value=current_pan)
-                values["attributes"]["pan"] = pan.get_masked()
+                attributes['pan'] = Pan(value=current_pan).get_masked()
 
-        return values
+        return attributes
 
 
 class ProductList(BaseOutSchema):
@@ -602,7 +601,6 @@ class OrderFilterParamsBase(BaseModel):
     item_id__in: List[int] | None = Field(Query(None))
     delivery_status: conset(enums.OrderDeliveryStatusQuery) | None = Field(Query(None))
     exclude_order_status_ids: List[int] | None = Field(Query(None))
-    courier_service: CourierService | None = Field(Query(None))
 
     class Config:
         use_enum_values = True
@@ -733,10 +731,21 @@ class OrderPAN(BaseModel):
         if checksum != 0:
             raise ValueError('Invalid PAN')
 
-        logger.info(value)
         return value
 
 
 class OrderChangeStatus(BaseModel):
     status_id: int
     order_id_list: conlist(int, min_items=1)
+
+
+class UpdateDeliveryPoint(BaseModel):
+    latitude: Decimal
+    longitude: Decimal
+    address: pydantic.constr(strict=True, max_length=255)
+
+
+class OrderUpdateDeliveryPoint(BaseModel):
+    city_id: conint(ge=1) | None
+    delivery_point: UpdateDeliveryPoint
+    comment: str = None

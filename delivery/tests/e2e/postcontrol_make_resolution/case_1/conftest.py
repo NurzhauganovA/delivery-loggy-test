@@ -265,8 +265,8 @@ def postcontrol_config_insert_script() -> str:
 
 def delivery_graphs_insert_script() -> str:
     return """
-           INSERT INTO public.deliverygraph (id, graph, partner_id, name, slug, types, name_en, name_zh,
-                                             name_ru, name_kk)
+           INSERT INTO public.deliverygraph (id, graph, partner_id, name_ru, slug, types, graph_courier, name_en, name_zh,
+                                             name_kk)
            VALUES (1,
                        '[
                         {
@@ -343,7 +343,8 @@ def delivery_graphs_insert_script() -> str:
                         }
                       ]',
                    null, 'Базовый', null, '{urgent,operative,planned}',
-                   null, null, null, null); 
+               '[]',
+                   null, null, null); 
            """
 
 

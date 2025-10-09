@@ -226,6 +226,8 @@ async def user_delete(user_id: int, current_user) -> None:
                 await models.History.bulk_create(histories, batch_size=500)
                 await models.OrderStatuses.bulk_create(new_statuses, batch_size=500)
                 await models.Order.filter(id__in=order_ids).update(current_status_id=OrderStatus.NEW.value)
+                # Удаление прошлых сохраненных ОТП у заявок
+                await models.SMSPostControl.filter(order_id__in=order_ids).delete()
 
         except models.ProfileNotFound:
             pass

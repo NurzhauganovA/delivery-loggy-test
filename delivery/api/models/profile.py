@@ -17,7 +17,7 @@ from dateutil import rrule
 
 from api.conf import conf
 from . import fields as custom_fields
-from .. import enums, security, common, redis_module
+from .. import enums, security, redis_module
 from .. import models
 from .. import schemas
 from .. import times
@@ -31,7 +31,7 @@ class ProfileAlreadyExists(Exception):
     """Raises if profile with provided ID already exists."""
 
 
-class ProfileNotFound(common.BaseNotFoundError):
+class ProfileNotFound(DoesNotExist):
     """Raises if profile with provided ID not found."""
 
 

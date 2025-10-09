@@ -1,4 +1,3 @@
-import json
 from typing import List
 
 from fastapi.encoders import jsonable_encoder
@@ -6,10 +5,8 @@ from pydantic import parse_obj_as
 from tortoise import Model
 from tortoise import fields
 from tortoise.exceptions import DoesNotExist
-from tortoise.expressions import Q, Subquery, RawSQL, F
-from tortoise.functions import Count
+from tortoise.expressions import Q
 from tortoise.manager import Manager
-from tortoise.query_utils import Prefetch
 from tortoise.transactions import atomic
 from tortoise.validators import MaxValueValidator
 from tortoise.validators import MinValueValidator

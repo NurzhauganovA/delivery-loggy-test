@@ -7,6 +7,7 @@ from starlette.websockets import WebSocket
 from starlette.websockets import WebSocketDisconnect
 from tortoise.exceptions import DoesNotExist
 from tortoise.expressions import Q
+from tortoise.query_utils import Prefetch
 
 from api import exceptions
 from api.controllers.handle_order_status_transition.handlers import (
@@ -31,6 +32,7 @@ from .. import models
 from .. import schemas
 from .. import services
 from ..common import schema_base
+from ..enums import PostControlType
 from ..schemas import UserCurrent
 
 
@@ -169,8 +171,38 @@ async def order_update(
     )
 
 
-async def order_cancel(order_id: int, reason: str, user: UserCurrent, default_filter_args: list):
-    return await models.order_cancel(order_id, reason, user, default_filter_args)
+async def order_cancel(
+    order_id: int,
+    reason: str,
+    user: UserCurrent,
+    default_filter_args: list,
+    comment: str | None = None,
+):
+    try:
+        order_obj = await models.Order.get(*default_filter_args, id=order_id)
+    except DoesNotExist:
+        raise exceptions.HTTPNotFoundException()
+
+    return await models.order_request_cancellation(
+        order_obj=order_obj,
+        reason=reason,
+        user=user,
+        comment=comment,
+    )
+
+
+async def order_accept_cancel(
+    order_id: int,
+    user: UserCurrent,
+    default_filter_args: list,
+):
+    try:
+        order_obj = await models.Order.get(*default_filter_args, id=order_id)
+
+    except DoesNotExist:
+        raise exceptions.HTTPNotFoundException()
+
+    return await models.order_accept_cancel(order_obj=order_obj, user=user)
 
 
 async def order_postpone(order_id: int, until: datetime, comment: str, user: UserCurrent, default_filter_args: list):
@@ -553,10 +585,7 @@ async def order_current_status_external(
 
 
 async def order_change_status(default_filter_args, body):
-    try:
-        return await models.order_change_status(default_filter_args, body)
-    except models.NotDistributionOrdersError as e:
-        raise exceptions.HTTPBadRequestException(e)
+    return await models.order_change_status(default_filter_args, body)
 
 
 async def order_pan(order_id: int, pan_schema: schemas.OrderPAN, default_filter_args):

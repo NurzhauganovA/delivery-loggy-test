@@ -49,19 +49,6 @@ class PartnerCity(tortoise.models.Model):
         unique_together = (('partner', 'city'),)
 
 
-class PanValidationMask(tortoise.models.Model):
-    partner: fields.ForeignKeyNullableRelation['Partner'] = fields.ForeignKeyField(
-        "versions.Partner",
-        on_delete=fields.CASCADE,
-        null=False,
-    )
-    pan_mask = fields.CharField(max_length=16, null=False)
-
-    class Meta:
-        table = 'pan_validation_masks'
-        unique_together = (('partner', 'pan_mask'),)
-
-
 class Partner(tortoise.models.Model):
     id = fields.IntField(pk=True)
     name_en = fields.CharField(max_length=255, null=True)

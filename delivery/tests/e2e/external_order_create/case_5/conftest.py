@@ -44,13 +44,97 @@ def body() -> str:
                 "oked_code": "QWERTY123",
                 "oked_text": "OKED SAMPLE TEXT",
                 "request_number_ref": "123456789",
-                "inventory_number": "123456789",
-                "sum": 10000.1
+                "pan": "1234123412341234"
             }
         }
     """
     return json
 
+
+@pytest.fixture
+def body_without_pan() -> str:
+    json = """
+        {
+            "city": "Алматы",
+            "comment": "sample comment",
+            "delivery_datetime": "2025-03-13T12:22:00.350Z",
+            "item_id": 1,
+            "shipment_point_id": 1,
+            "receiver_name": "Нурсултан Кемелович",
+            "receiver_phone_number": "+77071112233",
+            "receiver_iin": "012345050101",
+            "type": "planned",
+            "callbacks": {
+                "set_otp": "https://bankffin.kz/api/set-opt?orderId=1234",
+                "set_pan": "https://bankffin.kz/api/set-pan?orderId=1234",
+                "set_photo_urls": "https://bankffin.kz/api/set-photo?orderId=1234"
+            },
+            "address": "Алматы, Жибек Жолы 135",
+            "latitude": 72.12332,
+            "longitude": 41.232355,
+            "partner_order_id": "223o486346082346074360349",
+
+            "product_type": "pos_terminal",
+
+            "payload": {
+                "is_installment_enabled": false,
+                "is_installment_limit": true,
+                "company_name": "ТОО Рога и Копыта",
+                "merchant_id": "12345678",
+                "terminal_id": "12345678",
+                "store_name": "MyMart",
+                "branch_name": "Основной MyMart",
+                "mcc_code": "GGG1",
+                "oked_code": "QWERTY123",
+                "oked_text": "OKED SAMPLE TEXT",
+                "request_number_ref": "123456789"
+            }
+        }
+    """
+    return json
+
+@pytest.fixture
+def body_with_empty_string_pan() -> str:
+    json = """
+        {
+            "city": "Алматы",
+            "comment": "sample comment",
+            "delivery_datetime": "2025-03-13T12:22:00.350Z",
+            "item_id": 1,
+            "shipment_point_id": 1,
+            "receiver_name": "Нурсултан Кемелович",
+            "receiver_phone_number": "+77071112233",
+            "receiver_iin": "012345050101",
+            "type": "planned",
+            "callbacks": {
+                "set_otp": "https://bankffin.kz/api/set-opt?orderId=1234",
+                "set_pan": "https://bankffin.kz/api/set-pan?orderId=1234",
+                "set_photo_urls": "https://bankffin.kz/api/set-photo?orderId=1234"
+            },
+            "address": "Алматы, Жибек Жолы 135",
+            "latitude": 72.12332,
+            "longitude": 41.232355,
+            "partner_order_id": "223o486346082346074360349",
+
+            "product_type": "pos_terminal",
+
+            "payload": {
+                "is_installment_enabled": false,
+                "is_installment_limit": true,
+                "company_name": "ТОО Рога и Копыта",
+                "merchant_id": "12345678",
+                "terminal_id": "12345678",
+                "store_name": "MyMart",
+                "branch_name": "Основной MyMart",
+                "mcc_code": "GGG1",
+                "oked_code": "QWERTY123",
+                "oked_text": "OKED SAMPLE TEXT",
+                "request_number_ref": "123456789",
+                "pan": ""
+            }
+        }
+    """
+    return json
 
 @pytest.fixture
 def invalid_body() -> str:

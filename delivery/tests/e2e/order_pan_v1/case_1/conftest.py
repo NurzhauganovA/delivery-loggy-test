@@ -161,6 +161,7 @@ def expected():
             "has_postcontrol": False,
             "message_for_noncall": None,
             "name": "Базовая кредитная карта",
+            'postcontrol_cancellation_configs': [],
             "postcontrol_configs": [],
             "upload_from_gallery": True,
         },
@@ -241,8 +242,6 @@ def expected():
             },
         ],
         "type": "planned",
-        "courier_service": None,
-        "track_number": None,
     }
 
 
@@ -259,10 +258,10 @@ def pre_start_sql_script() -> str:
         statuses_insert_script(),
         users_insert_script(),
         partners_insert_script(),
-        partner_pan_masks_insert_script(),
         profile_couriers_insert_script(),
         groups_users_insert_script(),
         item_insert_script(),
+        item_pan_validation_masks_insert_script(),
         delivery_graphs_insert_script(),
         delivery_points_insert_script(),
         orders_insert_script(),
@@ -336,11 +335,11 @@ def partners_insert_script() -> str:
            """
 
 
-def partner_pan_masks_insert_script() -> str:
+def item_pan_validation_masks_insert_script() -> str:
     return """
-    INSERT INTO "public"."pan_validation_masks" ("id", "pan_mask", "partner_id")
-    VALUES
-    (1, '526988', 1);
+        INSERT INTO "public"."item_pan_validation_mask" ("id", "mask", "item_id")
+        VALUES
+        (1, '526988', 1);
     """
 
 

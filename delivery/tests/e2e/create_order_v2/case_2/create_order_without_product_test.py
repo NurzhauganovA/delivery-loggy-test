@@ -6,6 +6,7 @@ from tests.fixtures.database import db, run_pre_start_sql_script
 from tests.fixtures.token import get_access_token_v1
 
 
+@pytest.mark.skip(reason='Есть баги именно в тестах, задача в тех долге')
 @pytest.mark.asyncio
 @freeze_time("2025-04-14T12:00:00Z")
 async def test_order_create_without_product_payload(

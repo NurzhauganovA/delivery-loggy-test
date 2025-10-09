@@ -24,7 +24,7 @@ async def test_external_order_create(
 
     response = await client.post(
         url='/v1/external/order/create',
-        data=body,
+        json=body,
         params={
             'api_key': api_key,
         }

@@ -141,6 +141,7 @@ def expected() -> dict:
             "has_postcontrol": False,
             "message_for_noncall": None,
             "name": "Базовая кредитная карта",
+            "postcontrol_cancellation_configs": [],
             "postcontrol_configs": [],
             "upload_from_gallery": True,
         },
@@ -155,7 +156,6 @@ def expected() -> dict:
         "statuses": [],
         "type": "planned",
     }
-
 
 
 @pytest.fixture
@@ -264,13 +264,14 @@ def item_insert_script() -> str:
 
 def delivery_graphs_insert_script() -> str:
     return """
-           INSERT INTO public.deliverygraph (id, graph, partner_id, name_ru, slug, types, graph_courier, name_en, name_zh, name_kk)
+           INSERT INTO public.deliverygraph (id, graph, partner_id, name_ru, slug, types, graph_courier, name_en, name_zh,
+                                             name_kk)
            VALUES (1,
                    '[{"id": 1, "icon": "order_new", "name": "Новая заявка", "slug": "novaia-zaiavka", "position": 1, "button_name": null}, {"id": 2, "icon": "courier_appointed", "name": "Курьер назначен", "slug": "kurer-naznachen", "position": 2, "button_name": "Принять в работу"}, {"id": 3, "icon": "courier_accepted", "name": "Принято курьером в работу", "slug": "priniato-kurerom-v-rabotu", "position": 3, "button_name": "К точке доставки"}, {"id": 4, "icon": "otw_delivery_point", "name": "В пути к точке доставки", "slug": "v-puti-k-tochke-dostavki", "position": 4, "button_name": "На точке доставки"}, {"id": 5, "icon": "on_delivery_point", "name": "На точке доставки", "slug": "na-tochke-dostavki", "position": 5, "button_name": "Контакт с получателем"}, {"id": 6, "icon": "at_client", "name": "Контакт с получателем", "slug": "kontakt-s-poluchatelem", "position": 6, "button_name": "Посылка передана"}, {"id": 7, "icon": "order_delivered", "name": "Доставлено", "slug": "dostavleno", "position": 7, "button_name": null}]',
                    null, 'Базовый', null, '{urgent,operative,planned}',
                    '[{"id": 1, "icon": "order_new", "name": "Новая заявка", "slug": "novaia-zaiavka", "position": 1, "button_name": null}, {"id": 2, "icon": "courier_appointed", "name": "Курьер назначен", "slug": "kurer-naznachen", "position": 2, "button_name": "Принять в работу"}, {"id": 3, "icon": "courier_accepted", "name": "Принято курьером в работу", "slug": "priniato-kurerom-v-rabotu", "position": 3, "button_name": "К точке доставки"}, {"id": 4, "icon": "otw_delivery_point", "name": "В пути к точке доставки", "slug": "v-puti-k-tochke-dostavki", "position": 4, "button_name": "На точке доставки"}, {"id": 5, "icon": "on_delivery_point", "name": "На точке доставки", "slug": "na-tochke-dostavki", "position": 5, "button_name": "Контакт с получателем"}, {"id": 6, "icon": "at_client", "name": "Контакт с получателем", "slug": "kontakt-s-poluchatelem", "position": 6, "button_name": "Посылка передана"}, {"id": 7, "icon": "order_delivered", "name": "Доставлено", "slug": "dostavleno", "position": 7, "button_name": null}]',
-                   null, null, null); 
-    """
+                   null, null, null); \
+           """
 
 
 def delivery_points_insert_script() -> str:

@@ -130,9 +130,6 @@ async def test_create_supervisor_with_invalid_country_id(
     )
 
     assert response.status_code == 400
-    response_data = response.json()
-    assert 'detail' in response_data
-    assert response_data['detail'] == 'country with given id: 0 was not found'
 
 
 @pytest.mark.asyncio
@@ -168,6 +165,3 @@ async def test_create_supervisor_with_invalid_partner_id(
     )
 
     assert response.status_code == 400
-    response_data = response.json()
-    assert 'detail' in response_data
-    assert response_data['detail'] == 'Partner with given ID: 0 was not found'

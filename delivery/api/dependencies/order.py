@@ -6,6 +6,7 @@ from fastapi import Security
 from loguru import logger
 from tortoise import Tortoise
 from tortoise.expressions import Q
+from tortoise.query_utils import Prefetch
 
 from api import exceptions
 from api.dependencies.partners_ids import (
@@ -16,18 +17,13 @@ from .. import auth
 from .. import models
 from .. import schemas
 from ..domain.pan import Pan
-from ..enums import (
-    AddressType,
-    OrderStatus,
-    ProductType,
-    CourierService,
-    OrderDeliveryStatus,
-    OrderSearchType,
-    OrderType,
-    PostControlResolution,
-    ProfileType,
-    StatusSlug,
-)
+from ..enums import AddressType, OrderStatus, ProductType, PostControlType
+from ..enums import OrderDeliveryStatus
+from ..enums import OrderSearchType
+from ..enums import OrderType
+from ..enums import PostControlResolution
+from ..enums import ProfileType
+from ..enums import StatusSlug
 from ..modules.delivery_point import DeliveryPointRepository
 from ..modules.shipment_point import PartnerShipmentPoint
 
@@ -79,9 +75,6 @@ class OrderDefaultFilter:
                         join_type=Q.OR,
                     )
                 )
-                args.append(
-                    Q(**{f'{px}courier_service__isnull': True}),
-                )
             case ProfileType.BRANCH_MANAGER:
                 cities = [item.id for item in profile_content['cities']]
                 shipment_points = await PartnerShipmentPoint.filter(
@@ -116,9 +109,6 @@ class OrderDefaultFilter:
                         join_type=Q.OR,
                     )
                 )
-                args.append(
-                    Q(**{f'{px}courier_service__isnull': True}),
-                )
             case ProfileType.DISPATCHER:
                 args.append(
                     Q(
@@ -136,15 +126,9 @@ class OrderDefaultFilter:
                         join_type=Q.OR,
                     )
                 )
-                args.append(
-                    Q(**{f'{px}courier_service__isnull': True}),
-                )
             case ProfileType.COURIER:
                 args.append(
                     Q(**{f'{px}courier_id': profile['id']})
-                )
-                args.append(
-                    Q(**{f'{px}courier_service__isnull': True}),
                 )
             case ProfileType.MANAGER:
                 args.append(
@@ -162,18 +146,12 @@ class OrderDefaultFilter:
                         join_type=Q.OR,
                     )
                 )
-                args.append(
-                    Q(**{f'{px}courier_service__isnull': True}),
-                )
             case ProfileType.BANK_MANAGER:
                 args.append(
                     Q(
                         **{f'{px}partner_id': profile_content['partner_id']},
                         **{f'{px}idn__isnull': False},
                     )
-                )
-                args.append(
-                    Q(**{f'{px}courier_service__isnull': True}),
                 )
             case ProfileType.PARTNER_BRANCH_MANAGER:
                 args.append(
@@ -183,9 +161,6 @@ class OrderDefaultFilter:
                         **{f'{px}idn__isnull': True},
                     )
                 )
-                args.append(
-                    Q(**{f'{px}courier_service__isnull': True}),
-                )
             case ProfileType.SORTER:
                 args.append(
                     Q(
@@ -194,9 +169,6 @@ class OrderDefaultFilter:
                         **{f'{px}idn__isnull': True},
                     )
                 )
-                args.append(
-                    Q(**{f'{px}courier_service__isnull': True}),
-                )
             case ProfileType.SUPERVISOR:
                 args.append(
                     Q(
@@ -204,20 +176,12 @@ class OrderDefaultFilter:
                         **{f'{px}city__country_id': profile_content['country_id']},
                     )
                 )
-                args.append(
-                    Q(**{f'{px}courier_service__isnull': True}),
-                )
             case ProfileType.LOGIST:
                 args.append(
                     Q(
                         **{f'{px}partner_id__in': current_user.partners},
                         **{f'{px}city__country_id': profile_content['country_id']},
-                    ) &
-                    Q(
-                        **{f'{px}courier_service': 'cdek'},
-                        **{f'{px}courier_service__isnull': True},
-                        join_type=Q.OR,
-                    ),
+                    )
                 )
             case ProfileType.CALL_CENTER_MANAGER:
                 args.append(
@@ -226,33 +190,20 @@ class OrderDefaultFilter:
                         **{f'{px}city__country_id': profile_content['country_id']},
                     )
                 )
-                args.append(
-                    Q(**{f'{px}courier_service__isnull': True}),
-                )
             case ProfileType.GENERAL_CALL_CENTER_MANAGER:
                 args.append(
                     Q(
                         **{f'{px}partner_id__in': current_user.partners},
-                    ) &
-                    Q(
-                        **{f'{px}courier_service': 'cdek'},
-                        **{f'{px}courier_service__isnull': True},
-                        join_type=Q.OR,
-                    ),
+                    )
                 )
             case ProfileType.SUPPORT:
                 args.append(
                     Q(
                         **{f'{px}partner_id__in': current_user.partners},
-                    ) &
-                    Q(
-                        **{f'{px}courier_service': 'cdek'},
-                        **{f'{px}courier_service__isnull': True},
-                        join_type=Q.OR,
-                    ),
+                    )
                 )
             case _:
-                args.append(Q(**{f'{px}id': -999_999_999}))
+                args.append(Q(**{f'{px}id': 999_999_999}))
 
         return args
 
@@ -299,9 +250,6 @@ class OrderDefaultFilterV2:
                         join_type=Q.OR,
                     )
                 )
-                args.append(
-                    Q(**{f'{px}courier_service__isnull': True}),
-                )
             case ProfileType.BRANCH_MANAGER:
                 cities = [item.id for item in profile_content['cities']]
                 shipment_points = await PartnerShipmentPoint.filter(
@@ -333,9 +281,6 @@ class OrderDefaultFilterV2:
                         join_type=Q.OR,
                     )
                 )
-                args.append(
-                    Q(**{f'{px}courier_service__isnull': True}),
-                )
             case ProfileType.DISPATCHER:
                 args.append(
                     Q(
@@ -353,15 +298,9 @@ class OrderDefaultFilterV2:
                         join_type=Q.OR,
                     )
                 )
-                args.append(
-                    Q(**{f'{px}courier_service__isnull': True}),
-                )
             case ProfileType.COURIER:
                 args.append(
                     Q(**{f'{px}courier_id': profile['id']})
-                )
-                args.append(
-                    Q(**{f'{px}courier_service__isnull': True})
                 )
             case ProfileType.MANAGER:
                 args.append(
@@ -379,18 +318,12 @@ class OrderDefaultFilterV2:
                         join_type=Q.OR,
                     )
                 )
-                args.append(
-                    Q(**{f'{px}courier_service__isnull': True})
-                )
             case ProfileType.BANK_MANAGER:
                 args.append(
                     Q(
                         **{f'{px}partner_id': profile_content['partner_id']},
                         **{f'{px}idn__isnull': False},
                     )
-                )
-                args.append(
-                    Q(**{f'{px}courier_service__isnull': True}),
                 )
             case ProfileType.PARTNER_BRANCH_MANAGER:
                 args.append(
@@ -400,9 +333,6 @@ class OrderDefaultFilterV2:
                         **{f'{px}idn__isnull': True},
                     )
                 )
-                args.append(
-                    Q(**{f'{px}courier_service__isnull': True}),
-                )
             case ProfileType.SORTER:
                 args.append(
                     Q(
@@ -411,9 +341,6 @@ class OrderDefaultFilterV2:
                         **{f'{px}idn__isnull': True},
                     )
                 )
-                args.append(
-                    Q(**{f'{px}courier_service__isnull': True}),
-                )
             case ProfileType.SUPERVISOR:
                 args.append(
                     Q(
@@ -421,20 +348,12 @@ class OrderDefaultFilterV2:
                         **{f'{px}city__country_id': profile_content['country_id']},
                     )
                 )
-                args.append(
-                    Q(**{f'{px}courier_service__isnull': True}),
-                )
             case ProfileType.LOGIST:
                 args.append(
                     Q(
                         **{f'{px}partner_id__in': current_user.partners},
                         **{f'{px}city__country_id': profile_content['country_id']},
-                    ) &
-                    Q(
-                        **{f'{px}courier_service': 'cdek'},
-                        **{f'{px}courier_service__isnull': True},
-                        join_type=Q.OR,
-                    ),
+                    )
                 )
             case ProfileType.CALL_CENTER_MANAGER:
                 args.append(
@@ -443,33 +362,20 @@ class OrderDefaultFilterV2:
                         **{f'{px}city__country_id': profile_content['country_id']},
                     )
                 )
-                args.append(
-                    Q(**{f'{px}courier_service__isnull': True}),
-                )
             case ProfileType.GENERAL_CALL_CENTER_MANAGER:
                 args.append(
                     Q(
                         **{f'{px}partner_id__in': current_user.partners},
-                    ) &
-                    Q(
-                        **{f'{px}courier_service': 'cdek'},
-                        **{f'{px}courier_service__isnull': True},
-                        join_type=Q.OR,
-                    ),
+                    )
                 )
             case ProfileType.SUPPORT:
                 args.append(
                     Q(
                         **{f'{px}partner_id__in': current_user.partners},
-                    ) &
-                    Q(
-                        **{f'{px}courier_service': 'cdek'},
-                        **{f'{px}courier_service__isnull': True},
-                        join_type=Q.OR,
-                    ),
+                    )
                 )
             case _:
-                args.append(Q(**{f'{px}id': -999_999_999}))
+                args.append(Q(**{f'{px}id': 999_999_999}))
 
         return args
 
@@ -539,6 +445,9 @@ async def order_get_filter_args_base(
                     )
                 else:
                     args.append(Q(delivery_status__filter={'status__in': tuple(delivery_status)}))
+            if OrderDeliveryStatus.BEING_FINALIZED in delivery_status:
+                delivery_status.add(OrderDeliveryStatus.BEING_FINALIZED_ON_CANCEL.value)
+                args.append(Q(delivery_status__filter={'status__in': tuple(delivery_status)}))
             else:
                 args.append(Q(delivery_status__filter={'status__in': tuple(delivery_status)}))
 
@@ -573,41 +482,37 @@ async def order_get_filter_args_base(
             )
         )
 
+    search_params = filter_params.pop('search', None)
     search_type = filter_params.pop('search_type', None)
-    search_value = filter_params.pop('search', None)
-    if search_value and search_type:
+    if search_params and search_type:
         match search_type:
             case OrderSearchType.ID:
                 try:
-                    int(search_value)
+                    int(search_params)
                 except ValueError:
-                    search_value = 0
+                    search_params = 0
                 args.append(
-                    Q(id=search_value),
+                    Q(id=search_params),
                 )
             case OrderSearchType.PHONE:
-                search_value = search_value.replace(' ', '').replace('-', '')
-                search_value = search_value[0:models.Order._meta.fields_map['receiver_phone_number'].max_length]
+                search_params = search_params.replace(' ', '').replace('-', '')
+                search_params = search_params[0:models.Order._meta.fields_map['receiver_phone_number'].max_length]
                 args.append(
-                    Q(receiver_phone_number=search_value),
+                    Q(receiver_phone_number=search_params),
                 )
             case OrderSearchType.IIN:
-                search_value = search_value.replace(' ', '').replace('-', '')
-                search_value = search_value[0:models.Order._meta.fields_map['receiver_iin'].max_length]
+                search_params = search_params.replace(' ', '').replace('-', '')
+                search_params = search_params[0:models.Order._meta.fields_map['receiver_iin'].max_length]
                 args.append(
-                    Q(receiver_iin=search_value)
+                    Q(receiver_iin=search_params)
                 )
             case OrderSearchType.FULL_NAME:
                 args.append(
-                    Q(receiver_name__icontains=search_value)
+                    Q(receiver_name__icontains=search_params)
                 )
             case OrderSearchType.CARD_NUMBER:
                 args.append(
-                    Q(product__pan_suffix=search_value)
-                )
-            case OrderSearchType.TRACK_NUMBER:
-                args.append(
-                    Q(track_number=search_value)
+                    Q(product__pan_suffix=search_params)
                 )
 
     for k, v in filter_params.items():
@@ -725,19 +630,23 @@ async def order_validate_pan(
     order_id: int,
     pan: schemas.OrderPAN,
 ):
+    # Приведем значение pan к доменной модели
+    pan_domain = Pan(value=pan.pan)
+
+    # Получим заявку
     order = await models.Order.get(id=order_id)
-    errors = []
-    if not await models.PanValidationMask.filter(
-        partner_id=order.partner_id,
-        pan_mask__startswith=str(pan.pan)[:6]
-    ).exists():
-        errors.append(('pan', 'Pan is not valid'))
+
+    # Получим список масок по item_id для валидации значения pan
+    masks = await models.ItemPanValidationMask.filter(item_id=order.item_id).values_list('mask', flat=True)
+
+    # Если есть маски, то проверим вхождение хоть одной маски в значение pan
+    if masks and not pan_domain.is_matched_by_any_mask(masks=masks):
+        raise exceptions.PydanticException(errors=[('pan', 'Pan is not valid')])
 
     # Проверим, был ли этот Номер карты уже привязан к текущей заявке
     current_product = await models.Product.get_or_none(order_id=order_id)
-    if current_product and current_product.attributes.get('pan') == Pan(value=pan.pan).value:
-        errors.append(('pan', 'already linked to this order'))
-        raise exceptions.PydanticException(errors=errors)
+    if current_product and current_product.attributes.get('pan') == pan_domain.value:
+        raise exceptions.PydanticException(errors=[('pan', 'already linked to this order')])
 
     # Проверим, был ли этот Номер карты уже привязан к другим заявкам
     conn = Tortoise.get_connection("default")
@@ -752,14 +661,13 @@ async def order_validate_pan(
             LIMIT 1
         """,
         [
-            Pan(value=pan.pan).get_suffix(),
-            Pan(value=pan.pan).value,
+            pan_domain.get_suffix(),
+            pan_domain.value,
             order_id,
         ]
     )
     if result:
-        errors.append(('pan', 'already linked to another order'))
-        raise exceptions.PydanticException(errors=errors)
+        raise exceptions.PydanticException(errors=[('pan', 'already linked to another order')])
 
     return pan
 
@@ -807,19 +715,22 @@ async def order_status_validate_payload(
             if StatusSlug.SMS_SENT.value in graph_statuses and not accepted_otp_exists:
                 errors.append(('status_id', previous_step))
         case StatusSlug.PHOTO_CAPTURING:
-            if StatusSlug.SCAN_CARD.value in graph_statuses and not (
-                                                                    await order_obj.product).type == ProductType.CARD.value:
+            if StatusSlug.SCAN_CARD.value in graph_statuses and not (await order_obj.product).type == ProductType.CARD.value:
                 errors.append(('status_id', previous_step))
         case StatusSlug.POST_CONTROL:
             postcontrol_configs = await order_obj.item.postcontrol_config_set.filter(
                 Q(parent_config_id__isnull=True, inner_param_set__isnull=True) | Q(parent_config_id__isnull=False),
+                Q(type=PostControlType.POST_CONTROL.value),
             ).count()
-            postcontrols = await order_obj.postcontrol_set.all().count()
+            postcontrols = await order_obj.postcontrol_set.filter(
+                type=PostControlType.POST_CONTROL.value,
+            ).count()
             if postcontrol_configs != postcontrols:
                 errors.append(('status_id', previous_step))
         case StatusSlug.DELIVERED:
             config_ids = await order_obj.item.postcontrol_config_set.filter(
                 Q(parent_config_id__isnull=True, inner_param_set__isnull=True) | Q(parent_config_id__isnull=False),
+                Q(type=PostControlType.POST_CONTROL.value),
             ).values_list('id', flat=True)
             if StatusSlug.POST_CONTROL_BANK in graph_statuses:
                 if await order_obj.postcontrol_set.filter(
@@ -835,9 +746,12 @@ async def order_status_validate_payload(
                     errors.append(('status_id', previous_step))
         case StatusSlug.ISSUED:
             if StatusSlug.POST_CONTROL in graph_statuses and (
-                not await order_obj.postcontrol_set.all().exists() or
+                not await order_obj.postcontrol_set.filter(
+                    type=PostControlType.POST_CONTROL.value,
+                ).exists() or
                 await order_obj.postcontrol_set.filter(
                     resolution__in=[PostControlResolution.PENDING.value, PostControlResolution.DECLINED.value],
+                    type=PostControlType.POST_CONTROL.value,
                 ).exists()
             ):
                 errors.append(('status_id', previous_step))
@@ -847,29 +761,8 @@ async def order_status_validate_payload(
     return True
 
 
-async def order_check_for_existence(
-    order_id: int,
-):
-    order_obj = await models.Order.filter(id=order_id).first()
-    if order_obj is None:
-        raise exceptions.HTTPBadRequestException('Not found')
-
-    return order_obj
-
-
-async def order_check_for_update(
-    order_obj = fastapi.Depends(order_check_for_existence),
-):
-    if order_obj.courier_service == CourierService.CDEK.value:
-        raise exceptions.HTTPBadRequestException(
-            'Can not update a cdek order',
-        )
-
-    return order_obj.id
-
-
 async def order_check_if_delivered(
-    order_id: int = fastapi.Depends(order_check_for_update),
+    order_id: int,
 ):
     if await models.Order.filter(
         id=order_id,
@@ -883,11 +776,32 @@ async def order_check_if_delivered(
 
 
 async def order_check_for_cancel(
-    order_id: int = fastapi.Depends(order_check_for_update),
-):
+    order_id: int,
+    reason: str = fastapi.Body(embed=True),
+) -> int:
     order_obj = await models.Order.filter(
         id=order_id,
-    ).select_related('current_status').first()
+    ).select_related('current_status').first().prefetch_related(
+        Prefetch('item__postcontrol_config_set', models.PostControlConfig.filter(
+            parent_config_id__isnull=True,
+            type=PostControlType.CANCELED.value,
+        ).prefetch_related(
+            Prefetch('inner_param_set', models.PostControlConfig.filter(
+                type=PostControlType.CANCELED.value,
+            ).prefetch_related(
+                Prefetch(
+                    'postcontrol_document_set',
+                    models.PostControl.filter(order_id=order_id),
+                    'postcontrol_documents',
+                ),
+            ), 'inner_params'),
+            Prefetch(
+                'postcontrol_document_set',
+                models.PostControl.filter(order_id=order_id),
+                'postcontrol_documents',
+            ),
+        ), 'postcontrol_cancellation_configs')
+    )
     if order_obj is None:
         raise exceptions.HTTPBadRequestException(
             'Not found',
@@ -902,15 +816,102 @@ async def order_check_for_cancel(
             raise exceptions.HTTPBadRequestException(
                 'Already cancelled',
             )
+        if order_obj.delivery_status['status'] == OrderDeliveryStatus.REQUESTED_TO_CANCEL.value:
+            raise exceptions.HTTPBadRequestException(
+                'Already requested to cancel',
+            )
     except KeyError:
         logger.debug(order_obj.id)
         logger.debug(order_obj.delivery_status)
 
+    postcontrol_cancellation_configs = order_obj.item.postcontrol_cancellation_configs
+    postcontrol_cancel_docs_exists = await models.PostControl.filter(
+        order_id=order_id,
+        type=PostControlType.CANCELED.value,
+    ).exists()
+    if reason.lower() == 'возврат по истечению срока':
+        if postcontrol_cancellation_configs and not postcontrol_cancel_docs_exists:
+            raise exceptions.HTTPBadRequestException(
+                'At least one image is required',
+            )
+    else:
+        if postcontrol_cancel_docs_exists:
+            raise exceptions.HTTPBadRequestException(
+                'Image is not allowed for this cancellation reason',
+            )
+    return order_id
+
+
+async def order_check_for_accept_cancel(
+    order_id: int,
+) -> int:
+    order_obj = await models.Order.filter(
+        id=order_id,
+    ).select_related('current_status').first().prefetch_related(
+        Prefetch('item__postcontrol_config_set', models.PostControlConfig.filter(
+            parent_config_id__isnull=True,
+            type=PostControlType.CANCELED.value,
+        ).prefetch_related(
+            Prefetch('inner_param_set', models.PostControlConfig.filter(
+                type=PostControlType.CANCELED.value,
+            ).prefetch_related(
+                Prefetch(
+                    'postcontrol_document_set',
+                    models.PostControl.filter(order_id=order_id),
+                    'postcontrol_documents',
+                ),
+            ), 'inner_params'),
+            Prefetch(
+                'postcontrol_document_set',
+                models.PostControl.filter(order_id=order_id),
+                'postcontrol_documents',
+            ),
+        ), 'postcontrol_cancellation_configs')
+    )
+    if order_obj is None:
+        raise exceptions.HTTPBadRequestException(
+            'Not found',
+        )
+    if order_obj.current_status.slug in (StatusSlug.ISSUED.value, StatusSlug.DELIVERED.value):
+        raise exceptions.HTTPBadRequestException(
+            'Already completed',
+        )
+    if order_obj.delivery_status['status'] == OrderDeliveryStatus.CANCELLED.value:
+        raise exceptions.HTTPBadRequestException(
+            'Already cancelled',
+        )
+
+    postcontrol_cancellation_configs = order_obj.item.postcontrol_cancellation_configs
+    postcontrol_cancel_docs_exists = await models.PostControl.filter(
+        order_id=order_id,
+        type=PostControlType.CANCELED.value,
+    ).exists()
+    reason = order_obj.delivery_status['reason']
+    if reason.lower() == 'возврат по истечению срока':
+        if postcontrol_cancellation_configs and not postcontrol_cancel_docs_exists:
+            raise exceptions.HTTPBadRequestException(
+                'At least one image is required',
+            )
+        if postcontrol_cancellation_configs and postcontrol_cancel_docs_exists:
+            postcontrol_cancel_docs_nonaccepted_exists = await models.PostControl.filter(
+                order_id=order_id,
+                type=PostControlType.CANCELED.value,
+                resolution__not=PostControlResolution.ACCEPTED.value,
+            ).exists()
+            if postcontrol_cancel_docs_nonaccepted_exists:
+                raise exceptions.HTTPBadRequestException(
+                    'Accept all post-control images',
+                )
+    else:
+        if postcontrol_cancel_docs_exists:
+            raise exceptions.HTTPBadRequestException(
+                'Image is not allowed for this cancellation reason',
+            )
     return order_id
 
 
 async def order_check_for_resume(
-    order_id: int = fastapi.Depends(order_check_for_update),
+    order_id: int,
 ):
     order_obj = await models.Order.filter(
         id=order_id,

@@ -4,8 +4,6 @@ from tortoise.query_utils import Prefetch
 from api import models, enums
 from api.enums import PostControlType
 from api.schemas.crm import GetOrderResponse
-from api.schemas.order import SubStatusGet
-from api.views.crm.get_order.cdek_status_mapping import get_cdek_status_name
 
 
 async def get_order(
@@ -35,11 +33,6 @@ async def get_order(
     statuses_args = []
 
     qs = instance_qs.prefetch_related(
-        Prefetch(
-            'courier_service_statuses',
-            queryset=models.CourierServiceStatus.all().order_by('created_at'),
-            to_attr='cdek_statuses'
-        ),
         Prefetch('status_set', models.OrderStatuses.filter(*statuses_args).prefetch_related('status'),
                  'statuses'),
         Prefetch('item__postcontrol_config_set', models.PostControlConfig.filter(
@@ -107,19 +100,5 @@ async def get_order(
 
 
     response = GetOrderResponse.from_orm(order_obj)
-
-    cdek_sub_statuses_list = [
-        SubStatusGet(
-            name=get_cdek_status_name(css.status),
-            created_at=css.created_at,
-        )
-        for css in getattr(order_obj, 'cdek_statuses', [])
-    ]
-
-    for status in response.statuses:
-        if status.status.slug == enums.StatusSlug.TRANSFER_TO_CDEK:
-            status.sub_statuses = cdek_sub_statuses_list
-        elif not status.sub_statuses:
-            del status.sub_statuses
 
     return response

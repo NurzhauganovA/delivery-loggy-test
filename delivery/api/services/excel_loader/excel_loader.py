@@ -121,13 +121,12 @@ class ExcelLoader:
 
     @staticmethod
     def translate_fields(cols: list, description_cols: dict) -> list:
-        translated_fields = [0] * len(cols)
         for idx, field in enumerate(cols):
             for k, v in description_cols.items():
                 if field in v:
-                    translated_fields[idx] = k
+                    cols[idx] = k
 
-        return translated_fields
+        return cols
 
     @staticmethod
     def _prepare_filtering(filtering_dict: dict) -> dict:

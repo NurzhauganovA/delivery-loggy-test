@@ -427,18 +427,5 @@
     "name_ru": "Ввод серийного номера и модели",
     "name_kk": "Ввод серийного номера и модели",
     "code": "pos_terminal_registration"
-  },
-  {
-    "id": 37,
-    "icon": "transfer_to_cdek",
-    "is_optional": false,
-    "after": null,
-    "partner_id": null,
-    "slug": "transfer_to_cdek",
-    "name_en": "Transfer to CDEK",
-    "name_zh": "Передача в CDEK",
-    "name_ru": "Передача в CDEK",
-    "name_kk": "Передача в CDEK",
-    "code": "transfer_to_cdek"
   }
 ]

@@ -1,5 +1,4 @@
 from datetime import timedelta
-from random import uniform
 from typing import List
 
 import tortoise
@@ -12,13 +11,13 @@ from tortoise.functions import Count
 from tortoise.models import Model
 from tortoise.transactions import in_transaction
 
+from api.context_vars import locale_context
 from .. import models
 from .. import schemas
-from .. import enums
 from ..database import database_connection
 
 from ..enums.statistics import ProgressInterval, progress_interval_to_query_map
-from ..modules.delivery_point import DeliveryPointRepository
+
 
 
 class CourierStat(Model):
@@ -88,38 +87,43 @@ async def courier_progress_get(courier_id: int, default_filter_args: list,
 
 
 async def statistics_get(filter_params, default_filter_args) -> schemas.StatisticsBase:
+    locale = locale_context.get()
     orders = models.Order.all_objects.filter(*default_filter_args, **filter_params)
+    orders_query = orders.as_query()
     statuses = ['all', 'new', 'others', 'cancelled', 'postponed', 'on-the-way-to-call-point',
                 'is_delivered']
-    order_status_query = f""" 
+    order_status_raw_query = """ 
             SELECT
                 COUNT(*) AS "all",
-                SUM(CASE WHEN delivery_status = '{{}}' THEN 1 ELSE 0 END) AS "new",
+                SUM(CASE WHEN delivery_status = '{}' THEN 1 ELSE 0 END) AS "new",
                 SUM(CASE
-                    WHEN delivery_status <> '{{}}' AND delivery_status->>'status' NOT IN ('cancelled', 'postponed', 'is_delivered', 'on-the-way-to-call-point') THEN 1
+                    WHEN delivery_status <> '{}' AND delivery_status->>'status' NOT IN ('cancelled', 'postponed', 'is_delivered', 'on-the-way-to-call-point') THEN 1
                         ELSE 0
                     END) AS "others",
                 SUM(CASE WHEN delivery_status->>'status' = 'cancelled' THEN 1 ELSE 0 END) AS "cancelled",
                 SUM(CASE WHEN delivery_status->>'status' = 'postponed' THEN 1 ELSE 0 END) AS "postponed",
                 SUM(CASE WHEN delivery_status->>'status' = 'is_delivered' THEN 1 ELSE 0 END) AS "is_delivered",
                 SUM(CASE WHEN delivery_status->>'status' = 'on-the-way-to-call-point' THEN 1 ELSE 0 END) as "on-the-way-to-call-point" 
-            FROM ({orders.as_query()}) AS orders
+            FROM (%(filter_query)s) AS orders
     """
+    order_status_query = order_status_raw_query % {'filter_query': orders_query}
 
-    city_order_status_query = f""" 
-            SELECT DISTINCT city.name AS city_name,
+    city_order_status_raw_query = """ 
+            SELECT DISTINCT ON (COALESCE(city.name_%(locale)s, city.name_en, city.name_ru))
+                COALESCE(city.name_%(locale)s, city.name_en, city.name_ru) AS city_name,
                 COUNT(*) AS "all",
-                SUM(CASE WHEN orders.delivery_status = '{{}}' AND orders.city_id=city.id THEN 1 ELSE 0 END) AS "new",
+                SUM(CASE WHEN orders.delivery_status = '{}' AND orders.city_id=city.id THEN 1 ELSE 0 END) AS "new",
                 SUM(CASE
-                    WHEN orders.delivery_status <> '{{}}' AND orders.delivery_status->>'status' NOT IN ('cancelled', 'postponed', 'is_delivered', 'on-the-way-to-call-point') THEN 1
+                    WHEN orders.delivery_status <> '{}' AND orders.delivery_status->>'status' NOT IN ('cancelled', 'postponed', 'is_delivered', 'on-the-way-to-call-point') THEN 1
                         ELSE 0
                     END) AS "others",
                 SUM(CASE WHEN orders.delivery_status->>'status' = 'cancelled' THEN 1 ELSE 0 END) AS "cancelled",
                 SUM(CASE WHEN orders.delivery_status->>'status' = 'postponed' THEN 1 ELSE 0 END) AS "postponed",
                 SUM(CASE WHEN orders.delivery_status->>'status' = 'is_delivered' THEN 1 ELSE 0 END) AS "is_delivered",
                 SUM(CASE WHEN orders.delivery_status->>'status' = 'on-the-way-to-call-point' THEN 1 ELSE 0 END) as "on-the-way-to-call-point"
-            FROM ({orders.as_query()}) as orders LEFT JOIN city on city.id=orders.city_id GROUP BY city_name ORDER BY city_name
+            FROM (%(filter_query)s) as orders LEFT JOIN city on city.id=orders.city_id GROUP BY city_name ORDER BY city_name
     """
+    city_order_status_query = city_order_status_raw_query % {'locale': locale, 'filter_query': orders_query}
 
     async with tortoise.transactions.in_transaction('default') as conn:
         _, order_counts = await conn.execute_query(order_status_query)

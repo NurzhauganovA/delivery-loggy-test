@@ -32,25 +32,19 @@ async def test_registration_with_data(
     product = await models.Product.get(order_id=order_id)
     assert product.attributes.get('model') is None
     assert product.attributes.get('serial_number') is None
-    assert product.attributes.get('inventory_number') is None
-    assert product.attributes.get('sum') is None
 
     await handler.handle(
         order_obj=order,
         status=pos_terminal_registration_status,
         data={
             'model': 'PAX',
-            'serial_number': '999111888222777',
-            'inventory_number': '123456789',
-            'sum': 10000.1,
+            'serial_number': '999111888222777'
         }
     )
 
     product = await models.Product.get(order_id=order_id)
     assert product.attributes.get('model') == 'PAX'
     assert product.attributes.get('serial_number') == '999111888222777'
-    assert product.attributes.get('inventory_number') == '123456789'
-    assert product.attributes.get('sum') == 10000.1
 
 
 @pytest.mark.asyncio
@@ -72,8 +66,6 @@ async def test_registration_with_data_and_already_has_another_data(
     product = await models.Product.get(order_id=order_id)
     assert product.attributes.get('model') == 'SUNMI'
     assert product.attributes.get('serial_number') == '11111111222222'
-    assert product.attributes.get('inventory_number') == '123456789'
-    assert product.attributes.get('sum') == 10000.1
 
     await handler.handle(
         order_obj=order,
@@ -81,16 +73,12 @@ async def test_registration_with_data_and_already_has_another_data(
         data={
             'model': 'PAX',
             'serial_number': '999111888222777',
-            'inventory_number': '123456777',
-            'sum': 17777.1,
         }
     )
 
     product = await models.Product.get(order_id=order_id)
     assert product.attributes.get('model') == 'PAX'
     assert product.attributes.get('serial_number') == '999111888222777'
-    assert product.attributes.get('inventory_number') == '123456777'
-    assert product.attributes.get('sum') == 17777.1
 
 
 @pytest.mark.asyncio
@@ -196,35 +184,6 @@ async def test_not_valid_serial_number(
             data={
                 'model': 'PAX',
                 'serial_number': '',
-            }
-        )
-
-
-@pytest.mark.asyncio
-@patch('api.models.publisher.__publish', new=AsyncMock(return_value=None))
-async def test_invalid_sum(
-        db,
-        pre_start_sql_script,
-        run_pre_start_sql_script,
-        handler,
-):
-    await run_pre_start_sql_script(pre_start_sql_script)
-
-    order_id = 3
-
-    pos_terminal_registration_status = await models.Status.get(code='pos_terminal_registration')
-
-    order = await models.Order.get(id=order_id)
-
-    with pytest.raises(POSTerminalRegistrationHandlerValidationError):
-        await handler.handle(
-            order_obj=order,
-            status=pos_terminal_registration_status,
-            data={
-                'model': 'PAX',
-                'serial_number': '999111888222777',
-                'inventory_number': '123456789',
-                'sum': 12345678910.1,
             }
         )
 

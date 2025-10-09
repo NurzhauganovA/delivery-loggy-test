@@ -39,11 +39,14 @@ class FreedomBankOTPAdapter(
 
     async def __send(self, partner_order_id: str) -> None:
         try:
-            await self.__client.send(
+            response = await self.__client.send(
                 request_id=partner_order_id,
             )
         except HTTPStatusError as e:
             raise OTPBadRequestError("can not send otp, bad request") from e
+
+        if response.json().get("errorCode") == "ERROR":
+            raise OTPBadRequestError("can not send otp, bad request")
 
     async def __verify(self, partner_order_id: str, otp_code: str) -> None:
         try:

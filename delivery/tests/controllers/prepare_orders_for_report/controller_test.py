@@ -1,4 +1,5 @@
 import json
+import os
 from datetime import datetime
 
 import pytest
@@ -19,6 +20,7 @@ CASES_PATH = f'{CUR_DIR}/controllers/prepare_orders_for_report/cases'
 
 @pytest.mark.asyncio
 async def test_prepare_orders_for_report_other(
+    request,
     db,
     pre_start_sql_script,
     run_pre_start_sql_script,
@@ -82,7 +84,7 @@ async def test_prepare_orders_for_report_bank_manager(
 
 
 @pytest.mark.asyncio
-async def test_prepare_orders_for_courier_service_field(
+async def test_prepare_orders_for_report_status(
     db,
     pre_start_sql_script,
     run_pre_start_sql_script,
@@ -90,19 +92,17 @@ async def test_prepare_orders_for_courier_service_field(
 
     await run_pre_start_sql_script(pre_start_sql_script)
 
-    path = f'{CASES_PATH}/courier_service_and_track_number.json'
+    path = f'{CASES_PATH}/status.json'
     with open(path) as file:
         fixture = json.load(file)
         values = fixture['values']
         columns = values['columns']
 
-    kwargs = {
-        'courier_service': 'cdek',
-    }
+    response = await prepare_orders_for_report(columns=columns)
+    order0_status = response[0][16]
+    order1_status = response[1][16]
+    order2_status = response[2][16]
 
-    response = await prepare_orders_for_report(columns=columns, **kwargs)
-    order0_courier_service = response[0][25]
-    order1_track_number = response[0][26]
-
-    assert order0_courier_service == 'cdek'
-    assert order1_track_number == '11111'
+    assert order0_status == 'Доставлено'
+    assert order1_status == 'На доработке'
+    assert order2_status == 'Архивировано'
